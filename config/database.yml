@@ -17,8 +17,4 @@ test:
 
 
 production:
-  <<: *default
-  database: lit-ocean-47493
-  username: root
-  password: 
-  host: localhost
+  <%= ENV['DATABASE_URL'] %>
