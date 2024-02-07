@@ -1,0 +1,28 @@
+class User < ApplicationRecord
+ 
+  belongs_to :member
+  has_secure_password
+  def self.decode_jwt(token)
+    
+    secret_key = Rails.application.secret_key_base
+    puts "Secret Key=#{secret_key}" 
+    decoded_token = JWT.decode(token, secret_key, true, algorithm: 'HS256')
+    user_id = decoded_token[0]['user_id']
+    puts "Decoded User ID: #{user_id}"
+    User.find_by(id: user_id)
+    rescue JWT::DecodeError => e
+    puts "JWT Decode Error: #{e.message}"
+    nil
+  end
+
+  def generate_jwt
+    payload = { user_id: id } 
+    secret_key = Rails.application.secret_key_base
+    JWT.encode(payload, secret_key, 'HS256')
+  end
+  def authenticate(password)
+    return false unless self.encrypted_password.present?
+    BCrypt::Password.new(self.encrypted_password).is_password?(password)
+  end
+ 
+end
