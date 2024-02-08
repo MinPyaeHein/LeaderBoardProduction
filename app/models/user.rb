@@ -5,10 +5,8 @@ class User < ApplicationRecord
   def self.decode_jwt(token)
     
     secret_key = Rails.application.secret_key_base
-    puts "Secret Key=#{secret_key}" 
     decoded_token = JWT.decode(token, secret_key, true, algorithm: 'HS256')
     user_id = decoded_token[0]['user_id']
-    puts "Decoded User ID: #{user_id}"
     User.find_by(id: user_id)
     rescue JWT::DecodeError => e
     puts "JWT Decode Error: #{e.message}"

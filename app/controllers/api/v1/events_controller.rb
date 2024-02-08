@@ -12,21 +12,27 @@ module Api
        
         def create
           
-          @service = Event::CreateService.new(event_type_params)
-          event_type=@service.create()
-          if @service
-            render json: event_type, status: :created
+          @service = Event::CreateService.new(event_params)
+          result=@service.create()
+          message={}
+          if result[:event]
+            message=true
+            message = result[:event]
+            render json:{message: message}, status: :created
           else
-            render json: { errors: event_type.create_event_type.errors.full_messages }, status: :unprocessable_entity
+            message[:success] = false
+            message[:errors] = result[:errors]
+            render json: { message: message }, status: :unprocessable_entity
+  
           end
         end
 
         private
-        def event_type_params
-          params.require(:event).permit(:name, :desc, :active, :event_type_id)
+        def event_params
+          params.require(:event).permit(:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:organizer_id,:score_type_id )
         end
         def set_service
-          @service = ScoreType::CreateService.new(event_type_params)
+          @service = ScoreType::CreateService.new(event_params)
         end
 
       end

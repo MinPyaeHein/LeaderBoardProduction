@@ -11,7 +11,7 @@ class ApplicationController < ActionController::API
     end
   
     def current_user
-      puts request.headers['Authorization']
+    
       @current_user ||= User.decode_jwt(request.headers['Authorization'])
     end
 end

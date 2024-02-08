@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       resources :score_types, only: [:index, :create]
       resources :members do
         post 'login', on: :collection
-        delete 'logout', on: :collection
+        get 'logout', on: :collection
       end
      
       # Add other resourceful routes if needed

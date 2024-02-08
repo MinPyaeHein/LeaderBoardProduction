@@ -5,14 +5,14 @@ module Api
       class MembersController < ApplicationController
        
         skip_before_action :authenticate_request, only: [:create, :login]
-        before_action :set_service, only: [:create, :destroy, :logout, :login]
+        before_action :set_service, only: [:create, :destroy, :login]
 
         def login
           result=@loginLogout_service.login
           if result[:token].present?
-            render json: { user: result[:user], member: result[:member],token: result[:token] }, status: :created
+            render json: {success: true,user: result[:user], member: result[:member],token: result[:token] }, status: :created
           elsif result[:error].present?
-            render json: { error: result[:error] }, status: :unprocessable_entity
+            render json: {success: false, error: result[:error] }, status: :unprocessable_entity
           end
         end
         def logout
@@ -31,11 +31,10 @@ module Api
         end
         def create
           result=@create_service.create_member
-          
           if result[:token]
-            render json: { user: result[:user], member: result[:member], token: result[:token],password: result[:password] }, status: :created
+            render json: {success: true, user: result[:user], member: result[:member], token: result[:token],password: result[:password] }, status: :created
           elsif result[:errors]
-            render json: { errors: result[:errors] }, status: :unprocessable_entity
+            render json: {success: false, errors: result[:errors] }, status: :unprocessable_entity
           else
             render json: { member: result[:member] }, status: :unprocessable_entity
           end

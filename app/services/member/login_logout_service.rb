@@ -4,6 +4,7 @@
 class Member::LoginLogoutService
     def initialize(params)
       @params = params
+   
     end
 
     def login
@@ -12,7 +13,6 @@ class Member::LoginLogoutService
         member = user.member if user
         if user && bool
           token = user.generate_jwt
-          puts "Token: #{token}"
           { token: token, user: user, member: member }
         else
           { error: 'Invalid email or password' }
@@ -20,6 +20,7 @@ class Member::LoginLogoutService
     end
 
     def logout
+       
          { message: 'Logged out successfully' }
     end
 
