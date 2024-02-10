@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_08_015216) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_10_030357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,17 +26,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_08_015216) do
     t.text "desc"
     t.boolean "active"
     t.bigint "event_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.date "start_date"
     t.date "end_date"
     t.time "start_time"
     t.time "end_time"
     t.boolean "all_day"
     t.string "location"
-    t.integer "organizer_id"
-    t.integer "score_type_id"
+    t.bigint "organizer_id"
+    t.bigint "score_type_id"
     t.index ["event_type_id"], name: "index_events_on_event_type_id"
+  end
+
+  create_table "judges", force: :cascade do |t|
+    t.integer "judge_id"
+    t.integer "event_id"
+    t.integer "current_ammount", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "members", force: :cascade do |t|
@@ -53,6 +61,36 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_08_015216) do
     t.text "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "team_events", force: :cascade do |t|
+    t.integer "team_id"
+    t.integer "event_id"
+    t.float "total_score", default: 0.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.bigint "member_id"
+    t.bigint "team_id"
+    t.boolean "leader"
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "event_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.text "desc"
+    t.boolean "active"
+    t.string "website_link"
+    t.bigint "organizer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "event_id"
+    t.float "total_score"
   end
 
   create_table "users", force: :cascade do |t|
@@ -74,5 +112,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_08_015216) do
   add_foreign_key "events", "members", column: "organizer_id"
   add_foreign_key "events", "score_types"
   add_foreign_key "events", "score_types", column: "id"
+  add_foreign_key "judges", "events"
+  add_foreign_key "judges", "members", column: "judge_id"
+  add_foreign_key "team_events", "events"
+  add_foreign_key "team_events", "teams"
+  add_foreign_key "team_members", "events"
+  add_foreign_key "team_members", "members"
+  add_foreign_key "team_members", "teams"
+  add_foreign_key "teams", "events"
+  add_foreign_key "teams", "members", column: "organizer_id"
   add_foreign_key "users", "members"
 end

@@ -9,10 +9,20 @@ module Api
           
         end
 
+        def get_events_by_id
+          @event= Event.includes(:teams, :organizer, :judges).find(params[:id])
+          message={}
+          message[:status]=true
+          message[:event]=@event
+          message[:organizer]=@event.organizer
+          message[:judges]=@event.judges
+          message[:teams]=@event.teams
+          render json: message
+        end
+
        
         def create
-          
-          @service = Event::CreateService.new(event_params)
+        
           result=@service.create()
           message={}
           if result[:event]
@@ -29,10 +39,10 @@ module Api
 
         private
         def event_params
-          params.require(:event).permit(:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:organizer_id,:score_type_id )
+          params.require(:event).permit(:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id )
         end
         def set_service
-          @service = ScoreType::CreateService.new(event_params)
+          @service = Event::CreateService.new(event_params,current_user)
         end
 
       end

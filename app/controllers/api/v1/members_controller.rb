@@ -16,7 +16,6 @@ module Api
           end
         end
         def logout
-       
           render json: { message: 'Logged out successfully' }
         end
         def index
@@ -48,7 +47,6 @@ module Api
           params.require(:member).permit(:email, :password)
         end
         def set_service
-          
           @create_service = Member::CreateService.new(member_params)
           @destroy_service = Member::DestroyService.new(member_params)
           @loginLogout_service = Member::LoginLogoutService.new(login_params)
