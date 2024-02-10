@@ -21,6 +21,7 @@
                 all_day: @params[:all_day],
                 location: @params[:location],
                 organizer_id: @current_user.id, 
+                status: @params[:status],
                 event_type_id: @params[:event_type_id],
                 score_type_id: @params[:score_type_id])
         if event.save     

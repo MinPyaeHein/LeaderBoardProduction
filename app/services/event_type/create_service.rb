@@ -7,7 +7,6 @@
       end
   
       def create
-        puts "creating event type!!"
         puts @params[:name]
         puts @params[:desc]
         eventType = ::EventType.create(name: @params[:name], desc: @params[:desc])

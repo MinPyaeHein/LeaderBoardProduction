@@ -1,4 +1,4 @@
-class Judge < ApplicationRecord
+class Editor < ApplicationRecord
     belongs_to :member
     belongs_to :event
     

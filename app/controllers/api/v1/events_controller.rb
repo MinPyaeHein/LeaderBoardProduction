@@ -5,7 +5,7 @@ module Api
       class EventsController < ApplicationController
         before_action :set_service, only: [:create]
         def index
-          render json:Event.all
+          render json:Event.where(active: true)
           
         end
 
@@ -39,7 +39,7 @@ module Api
 
         private
         def event_params
-          params.require(:event).permit(:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id )
+          params.require(:event).permit(:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id,:status )
         end
         def set_service
           @service = Event::CreateService.new(event_params,current_user)

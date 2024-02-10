@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_10_030357) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_10_184553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "editors", force: :cascade do |t|
+    t.bigint "member_id"
+    t.bigint "event_id"
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "event_types", force: :cascade do |t|
     t.string "name"
@@ -36,15 +44,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_10_030357) do
     t.string "location"
     t.bigint "organizer_id"
     t.bigint "score_type_id"
+    t.integer "status"
     t.index ["event_type_id"], name: "index_events_on_event_type_id"
   end
 
-  create_table "judges", force: :cascade do |t|
-    t.integer "judge_id"
-    t.integer "event_id"
-    t.integer "current_ammount", default: 0
+  create_table "faculties", force: :cascade do |t|
+    t.string "name"
+    t.text "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "judges", force: :cascade do |t|
+    t.integer "member_id"
+    t.integer "event_id"
+    t.integer "current_amount", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "active"
   end
 
   create_table "members", force: :cascade do |t|
@@ -54,6 +71,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_10_030357) do
     t.text "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "org_name"
+    t.string "profile_url"
+    t.integer "faculty_id"
+    t.string "phone"
   end
 
   create_table "score_types", force: :cascade do |t|
@@ -103,17 +124,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_10_030357) do
     t.datetime "updated_at", null: false
     t.bigint "member_id"
     t.string "password_digest"
+    t.integer "role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["member_id"], name: "index_users_on_member_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "editors", "events"
+  add_foreign_key "editors", "members"
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "members", column: "organizer_id"
   add_foreign_key "events", "score_types"
   add_foreign_key "events", "score_types", column: "id"
   add_foreign_key "judges", "events"
-  add_foreign_key "judges", "members", column: "judge_id"
+  add_foreign_key "judges", "members"
+  add_foreign_key "members", "faculties"
   add_foreign_key "team_events", "events"
   add_foreign_key "team_events", "teams"
   add_foreign_key "team_members", "events"

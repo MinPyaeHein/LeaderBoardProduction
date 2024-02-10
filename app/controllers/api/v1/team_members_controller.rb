@@ -17,7 +17,7 @@ module Api
           @teamMembers = TeamMember.where(team_id: params[:team_id], active: true)
           message={}
           message[:success]=true
-          message[:teamMember]=@teamMembers
+          message[:teamMembers]=@teamMembers
           render json: {message: message}
         end
        
@@ -26,7 +26,7 @@ module Api
           message={}
           if result[:teamMember].present?
             message[:success] = true
-            message = result[:teamMember]
+            message[:teamMember] = result[:teamMember]
             render json:{message: message}, status: :created
           else
             message[:success] = false

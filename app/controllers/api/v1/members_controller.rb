@@ -21,7 +21,8 @@ module Api
         def index
         
           active_members = Member.includes(:users).where(active: true)
-          render json: active_members, include: :users
+          message ={members: active_members, include: :users}
+          render json: message
         end
 
         def destroy   
@@ -30,27 +31,54 @@ module Api
         end
         def create
           result=@create_service.create_member
+          message={}
           if result[:token]
-            render json: {success: true, user: result[:user], member: result[:member], token: result[:token],password: result[:password] }, status: :created
+            message[:token]=result[:token]
+            message[:password]=result[:password]
+            message[:user]=result[:user]
+            message[:member]=result[:member]
+            message[:success]=true
+            render json: message, status: :created
           elsif result[:errors]
-            render json: {success: false, errors: result[:errors] }, status: :unprocessable_entity
+            message[:success]=false
+            message[:errors]=result[:errors]
+            render json: message, status: :unprocessable_entity
           else
-            render json: { member: result[:member] }, status: :unprocessable_entity
+            message[:errors]=result[:errors]
+            render json: result[:errors], status: :unprocessable_entity
+          end
+        end
+        def events_by_member_id
+          # Find the judge and associated member by member_id
+          judge = Judge.includes(:member).find_by(member_id: params[:member_id])
+      
+          if judge
+            # Get ongoing, past, and future events
+            ongoing_events = Event.where(status: :ongoing, active: true, judge_id: judge.id)
+            past_events = Event.where(status: :past,active: true, judge_id: judge.id)
+            future_events = Event.where(status: :future,active: true, judge_id: judge.id)
+            message={}
+            message[:member]=judge.member
+            message[:ongoing_event]=ongoing_events
+            message[:past_event]=past_events
+            message[:future_event]=future_events
+            render json: message
+          else
+            render json: { error: 'Judge not found for the provided member_id' }, status: :not_found
           end
         end
 
         private
         def member_params
-          params.require(:member).permit(:email)
+          params.require(:member).permit(:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name)
         end
-        def login_params
-          params.require(:member).permit(:email, :password)
-        end
+        
         def set_service
           @create_service = Member::CreateService.new(member_params)
           @destroy_service = Member::DestroyService.new(member_params)
-          @loginLogout_service = Member::LoginLogoutService.new(login_params)
+          @loginLogout_service = Member::LoginLogoutService.new(member_params)
         end 
+
 
       end
     end

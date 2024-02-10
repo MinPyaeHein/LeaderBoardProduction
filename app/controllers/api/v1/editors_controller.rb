@@ -2,23 +2,25 @@
 
 module Api
     module V1
-      class TeamsController < ApplicationController
+      class EditorsController < ApplicationController
         before_action :set_service, only: [:create]
+       
         def index
+          @editors = Editor.where(active: true)
           message={}
-          message[:teams]=Team.all
-          render json:{message: message}
+          message[:success]=true
+          message[:editors]=@editors
+          render json: {message: message}
         end
 
        
-        def create
-          
-          
+       
+        def create 
           result=@service.create()
           message={}
-          if result[:team].present?
+          if result[:editor].present?
             message[:success] = true
-            message = result[:team]
+            message[:editor] = result[:editor]
             render json:{message: message}, status: :created
           else
             message[:success] = false
@@ -29,11 +31,11 @@ module Api
         end
 
         private
-        def team_params
-          params.require(:team).permit(:name, :desc, :active,:website_link , :member_id, :event_id, :total_score)
+        def editor_params
+          params.require(:editor).permit(:member_id,:event_id ,:active)
         end
         def set_service
-          @service = Team::CreateService.new(team_params,current_user)
+          @service = Editor::CreateService.new(editor_params)
         end
 
       end

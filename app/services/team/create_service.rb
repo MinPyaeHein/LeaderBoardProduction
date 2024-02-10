@@ -5,11 +5,14 @@
       def initialize(params,current_user)
         @params = params
         @current_user = current_user
+        @teamMemberService = TeamMember::CreateService.new(params)
       end
   
-      def create
-        puts "current user ID: #{@current_user.id}"
-      
+      def create  
+        result=@teamMemberService.check_team_member
+        if result[:errors].present?
+          return result
+        end
         team = ::Team.create(
           name:  @params[:name],
           desc:  @params[:desc],
@@ -21,19 +24,20 @@
           event_id: @params[:event_id]
         )
         teamStatus=team.save
-        puts "Team Id: #{team.id}"
-        puts "Leader Id: #{@params[:leader_id]}"
-        teamMember = ::TeamMember.new(active: false, leader: true, member_id: @params[:leader_id],team_id: team.id)
-        teamMemberStatus=teamMember.save
-        if teamStatus && teamMemberStatus   
+        @params[:team_id]=team.id
+        result=@teamMemberService.create()
+        if teamStatus && result[:teamMember].present?
           puts "success team created successfully" 
           { team: team}
         else
-          { errors: team.errors.full_messages }
+          errors = team.errors.full_messages
+          errors << result[:errors] if result[:errors].present?
+         { errors: errors.flatten }
         end
+      end
        
       
-      end
+  
     
     end
 
