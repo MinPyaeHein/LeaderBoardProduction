@@ -49,22 +49,38 @@ module Api
           end
         end
         def events_by_member_id
-          # Find the judge and associated member by member_id
-          judge = Judge.includes(:member).find_by(member_id: params[:member_id])
+         
+       
       
-          if judge
-            # Get ongoing, past, and future events
-            ongoing_events = Event.where(status: :ongoing, active: true, judge_id: judge.id)
-            past_events = Event.where(status: :past,active: true, judge_id: judge.id)
-            future_events = Event.where(status: :future,active: true, judge_id: judge.id)
+
+          @member= Member.includes(:teams,:judgeEvents,:users,:editorEvents).find(params[:id])
+         
+          if  @member
+            # Filter events based on status
+            ongoing_judge_events = @member.judgeEvents.where(status: :ongoing)
+            past_judge_events = @member.judgeEvents.where(status: :past)
+            future_judge_events = @member.judgeEvents.where(status: :future)
+
+            ongoing_editor_events = @member.editorEvents.where(status: :ongoing)
+            past_editor_events = @member.editorEvents.where(status: :past)
+            future_editor_events = @member.editorEvents.where(status: :future)
+
             message={}
-            message[:member]=judge.member
-            message[:ongoing_event]=ongoing_events
-            message[:past_event]=past_events
-            message[:future_event]=future_events
+            message[:users]=@users
+            message[:member]=@member
+            message[:teams]=@member.teams
+
+            message[:ongoing_editor_events]=ongoing_editor_events
+            message[:past_editor_events]=past_editor_events
+            message[:future_editor_events]=future_editor_events
+
+            message[:ongoing_judge_events]=ongoing_judge_events
+            message[:past_judge_events]=past_judge_events
+            message[:future_judge_events]=future_judge_events
+
             render json: message
           else
-            render json: { error: 'Judge not found for the provided member_id' }, status: :not_found
+            render json: { error: 'Member not found for the provided member_id' }, status: :not_found
           end
         end
 
