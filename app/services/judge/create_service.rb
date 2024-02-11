@@ -28,6 +28,10 @@
         unless member
           return { errors: ["Member with ID #{@params[:member_id]} does not exist in the database."] }
         end
+        existing_judge = ::Judge.find_by(member_id: @params[:member_id], event_id: @params[:event_id], active: true)
+        if existing_judge
+          return { errors: ["This judge is already part of the this Event."] }
+        end
         {}
       end
 

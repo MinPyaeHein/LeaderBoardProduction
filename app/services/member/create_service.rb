@@ -81,6 +81,7 @@
         if user.present?
           return { errors: ["User with Email #{ @params[:email]} already exist in the System!!"] }
         end
+        {}
       end
     end
 

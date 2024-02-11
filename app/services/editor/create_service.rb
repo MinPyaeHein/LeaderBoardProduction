@@ -26,7 +26,7 @@
         unless member
           return { errors: ["Member with ID #{@params[:member_id]} does not exist in the database."] }
         end
-        editor = ::Editor.find_by(member_id: @params[:member_id], member_id: @params[:event_id], active: true)
+        editor = ::Editor.find_by(member_id: @params[:member_id], event_id: @params[:event_id], active: true)
         if editor.present?
           return { errors: ["This member is already editor in the part of the event!!"] }
         end
