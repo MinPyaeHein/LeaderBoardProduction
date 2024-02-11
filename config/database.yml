@@ -16,5 +16,5 @@ test:
   database: leader_board_db
 
 
-# production:
-#   <%= ENV['DATABASE_URL'] %>
+production:
+  <%= ENV['DATABASE_URL'] %>
