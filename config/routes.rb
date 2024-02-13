@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       resources :score_types, only: [:index, :create]
       resources :teams, only: [:index, :create]
       resources :judges, only: [:index, :create]
-      resources :editors, only: [:index, :create]
+      
       
       resources :members, only: [:index, :create]
       resources :members do
@@ -22,6 +22,10 @@ Rails.application.routes.draw do
       end
       resources :judges do
         get 'get_judges_by_event_id', on: :collection 
+      end
+      resources :editors, only: [:index, :create]
+      resources :editors do
+        get 'get_editors_by_event_id', on: :collection 
       end
 
       resources :events, only: [:index, :create]
