@@ -5,7 +5,10 @@ module Api
       class ScoreTypesController < ApplicationController
         before_action :set_service, only: [:create]
         def index
-          render json:ScoreType.all
+          message={}
+          message[:scoreTypes]=ScoreType.all
+          render json: {success: true,message: message}, status: :ok
+        
           
         end
 
@@ -13,11 +16,13 @@ module Api
         def create
           
          
-          @service =@service.create()
-          if @service 
-            render json: @service, status: :created
+          result =@service.create()
+          message={}
+          if result[:scoreType].present?
+            message[:scoreType]=result[:scoreType]
+            render json: { success: true,message: message}, status: :created
           else
-            render json: { errors: @service.create_event_type.errors.full_messages }, status: :unprocessable_entity
+            render json: {success: false ,errors: result[:errors] }, status: :unprocessable_entity
           end
         end
 

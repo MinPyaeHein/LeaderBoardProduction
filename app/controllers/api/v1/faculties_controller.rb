@@ -5,7 +5,9 @@ module Api
       class FacultiesController < ApplicationController
         before_action :set_service, only: [:create]
         def index
-          render json:Faculty.all
+          message={}
+          message[:Faculties]=Faculty.all
+          render json:{success: true,message: message}, status: :ok
           
         end
 
@@ -15,10 +17,10 @@ module Api
           message={}
           if result[:faculty].present?
             message[:faculty] = result[:faculty]
-            render json: message, status: :created
+            render json: { success: true,message: message}, status: :created
           else
             message[:errors]=result[:errors]
-            render json: message, status: :unprocessable_entity
+            render json:{success: false,message: message}, status: :unprocessable_entity
           end
         end
 

@@ -18,7 +18,10 @@ Rails.application.routes.draw do
 
       resources :team_members, only: [:index, :create]
       resources :team_members do
-        get 'get_team_members_by_team', on: :collection 
+        get 'get_members_by_team_id', on: :collection 
+      end
+      resources :judges do
+        get 'get_judges_by_event_id', on: :collection 
       end
 
       resources :events, only: [:index, :create]

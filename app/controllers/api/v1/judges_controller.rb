@@ -27,14 +27,13 @@ module Api
       ongoing_events = ongoing_events.where(active: true)
       past_events = past_events.where(active: true)
       future_events = future_events.where(active: true)
-
-      render json: {
-        judge: judge,
-        member: judge.member,
-        ongoing_events: ongoing_events,
-        past_events: past_events,
-        future_events: future_events
-      }
+      message={}
+      message[:judge]=judge
+      message[:member]=judge.member
+      message[:ongoing_events]=ongoing_events
+      message[:past_events]=past_events
+      message[:future_events]=future_events
+      render json: {message: message, success: true}, status: :ok
     else
       render json: { error: 'Judge not found for the provided member_id' }, status: :not_found
     end
@@ -45,23 +44,35 @@ module Api
         def create 
           result=@service.create()
           message={}
-          if result[:judge].present?
-            message[:success] = true
-            message[:judge] = result[:judge]
-            render json:{message: message}, status: :created
-          else
-            message[:success] = false
+          if result.present?
+            message[:judges] = result[:judges]
             message[:errors] = result[:errors]
-            render json: { message: message }, status: :unprocessable_entity
-  
+            render json:{success: true,message: message}, status: :created
           end
+        end
+
+        def get_judges_by_event_id
+          event_id = params[:event_id] # Assuming you're passing event_id as a parameter
+        
+          
+          # Fetching judges associated with the given event for the specified team
+          members = Member.joins(:judges)
+                         .where('judges.event_id = ?', event_id)
+                         .select('judges.*') # Selecting only judge attributes
+          puts "members #{members}"
+          # members = judges.map(&:member)
+          message={}
+          
+          message[:members]=members
+          render json: {success: true,message: message}
         end
 
         private
         def judge_params
-          params.require(:judge).permit(:member_id,:event_id ,:active, :current_amount)
+          params.require(:judge).permit(:event_id ,:active, :current_amount, member_ids: [])
         end
         def set_service
+          puts "set service#{judge_params}"
           @service = Judge::CreateService.new(judge_params)
         end
 

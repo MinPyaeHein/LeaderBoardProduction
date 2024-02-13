@@ -6,31 +6,43 @@
         @params = params
       end
       def create
-        result=check_judge
-        if result[:errors].present?
-          return result
+        judges=[]
+        errors=[]
+        puts "Member ID___#{@params[:member_ids]}"
+        @params[:member_ids].each do |member_id|
+          result=check_judge(member_id)
+        
+          if result[:errors].present?
+            puts "result_error: #{result[:errors]}"
+            errors << result[:errors]
+          else
+            puts "success to save"
+            judge = ::Judge.create(
+              member_id:  member_id,  
+              event_id: @params[:event_id],
+              active:  @params[:active],
+              current_amount:  @params[:current_amount]
+            ) 
+            if judge.save
+              judges << judge
+             
+            else
+              errors << judge.errors.full_messages
+            end
+          end
         end
-        judge = ::Judge.create(
-          member_id:  @params[:member_id],  
-          event_id: @params[:event_id],
-          active:  @params[:active],
-          current_amount:  @params[:current_amount]
-        ) 
-        if judge.save
-          puts "success judge created successfully" 
-          { judge: judge}
-        else
-          { errors: judge.errors.full_messages }
-        end
+        { judges: judges, errors: errors }
+          
       end
-      def check_judge
-        member = ::Member.find_by(id: @params[:member_id],active: true)
+      def check_judge(member_id)
+        member = Member.includes(:users).find_by(id: member_id, active: true)
         unless member
-          return { errors: ["Member with ID #{@params[:member_id]} does not exist in the database."] }
+          return { errors: ["Member with Mail #{member.users.first.email} does not exist in the database."] }
         end
-        existing_judge = ::Judge.find_by(member_id: @params[:member_id], event_id: @params[:event_id], active: true)
+        existing_judge = ::Judge.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
         if existing_judge
-          return { errors: ["This judge is already part of the this Event."] }
+         
+          return { errors: ["This judge with Mail  #{member.users.first.email} already part of the this Event."] }
         end
         {}
       end

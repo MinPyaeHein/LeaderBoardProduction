@@ -10,13 +10,17 @@ class Member::LoginLogoutService
     def login
         user = User.find_by(email:@params[:email])
         bool=user.authenticate(@params[:password])
+        puts "bool: #{bool}"
+        puts "user: #{user}"
         member = user.member if user
-        if user && bool
+        if user.present? && bool
           token = user.generate_jwt
-          { token: token, user: user, member: member }
+          puts "token: #{token}"
+          return  { token: token, user: user, member: member }
         else
-          { error: 'Invalid email or password' }
+          return  { errors: 'Invalid email or password' }
         end
+      
     end
 
     def logout

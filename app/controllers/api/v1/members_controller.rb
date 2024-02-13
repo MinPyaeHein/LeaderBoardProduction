@@ -9,11 +9,19 @@ module Api
 
         def login
           result=@loginLogout_service.login
-          if result[:token].present?
-            render json: {success: true,user: result[:user], member: result[:member],token: result[:token] }, status: :created
-          elsif result[:error].present?
-            render json: {success: false, error: result[:error] }, status: :unprocessable_entity
+          message={}
+          if result[:user].present?
+           
+            message[:user]=result[:user]
+            message[:token]=result[:token]
+            message[:member]=result[:member]
+            render json: {success: true,message:message}, status: :ok
+          else
+            message[:success]=false
+            message[:errors]=result[:errors]
+            render json: messaage, status: :unprocessable_entity
           end
+         
         end
         def logout
           render json: { message: 'Logged out successfully' }
@@ -21,8 +29,8 @@ module Api
         def index
         
           active_members = Member.includes(:users).where(active: true)
-          message ={members: active_members, include: :users}
-          render json: message
+          message ={members: active_members}
+          render json: {success: true,message: message}, status: :ok
         end
 
         def destroy   

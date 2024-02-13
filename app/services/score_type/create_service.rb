@@ -7,10 +7,12 @@
       end
   
       def create
-        
         scoreType = ::ScoreType.create(name: @params[:name], desc: @params[:desc])
-        return scoreType unless scoreType.persisted?
-        scoreType
+        if scoreType.save
+          {scoreType:scoreType}
+        else
+          { errors: scoreType.errors.full_messages }
+        end
       
       end
     

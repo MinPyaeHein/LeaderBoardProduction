@@ -7,7 +7,7 @@ module Api
         def index
           message={}
           message[:teams]=Team.all
-          render json:{message: message}
+          render json:{success: true,message: message}
         end
 
        
@@ -17,14 +17,11 @@ module Api
           result=@service.create()
           message={}
           if result[:team].present?
-            message[:success] = true
             message = result[:team]
-            render json:{message: message}, status: :created
+            render json:{success: true,message: message}, status: :created
           else
-            message[:success] = false
             message[:errors] = result[:errors]
-            render json: { message: message }, status: :unprocessable_entity
-  
+            render json: {success: false ,message: message }, status: :unprocessable_entity
           end
         end
 

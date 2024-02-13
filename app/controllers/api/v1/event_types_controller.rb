@@ -6,13 +6,17 @@ module Api
        
         before_action :set_service, only: [:create]
         def index
-          render json:EventType.all
+          message={}
+          message[:eventTypes]=EventType.all
+          render json:{success: true,message: message}, status: :ok
           
         end       
         def create
           eventType=@service.create()
           if @service
-            render json: eventType, status: :created
+            message={}
+            message[:eventType]=eventType
+            render json: {success: true,message: message}, status: :created
           else
             render json: { errors: @service.create_event_type.errors.full_messages }, status: :unprocessable_entity
           end

@@ -6,32 +6,29 @@ module Api
         before_action :set_service, only: [:create]
        
         def index
-          @teamMembers = TeamMember.all
+          teamMembers = TeamMember.all
           message={}
-          message[:success]=true
-          message[:teamMember]=@teamMembers
-          render json: {message: message}
+          message[:teamMembers]=teamMembers
+          render json: {success: true,message: message}
         end
 
-        def get_team_members_by_team
-          @teamMembers = TeamMember.where(team_id: params[:team_id], active: true)
+        def get_members_by_team_id
+          team_id = params[:team_id] # assuming you're passing team_id as a parameter
+          members = Member.joins(:teams).where(teams: { id: team_id }).distinct
           message={}
-          message[:success]=true
-          message[:teamMembers]=@teamMembers
-          render json: {message: message}
+          message[:members]=members
+          render json: {success: true,message: message}
         end
        
         def create 
           result=@service.create()
           message={}
           if result[:teamMember].present?
-            message[:success] = true
             message[:teamMember] = result[:teamMember]
-            render json:{message: message}, status: :created
+            render json:{success: true,message: message}, status: :created
           else
-            message[:success] = false
             message[:errors] = result[:errors]
-            render json: { message: message }, status: :unprocessable_entity
+            render json: {success: false ,message: message }, status: :unprocessable_entity
   
           end
         end
