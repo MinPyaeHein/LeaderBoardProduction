@@ -40,7 +40,7 @@
       
         member_in_another_team = ::TeamMember.find_by(member_id: @params[:member_id], event_id: @params[:event_id], active: true)
         if !member_in_another_team.nil?
-          return { errors: ["This member is already part of another team."] }
+          return { errors: ["This member #{member.users.first.email} is already part of another team."] }
         end
         {}
       end

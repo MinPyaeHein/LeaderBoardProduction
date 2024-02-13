@@ -41,7 +41,7 @@
         end
         existing_judge = ::Judge.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
         if !existing_judge.nil?
-          return { errors: ["This judge already part of the this Event."] }
+          return { errors: ["This judge #{member.users.first.email} already part of the this Event."] }
         end
         {}
       end
