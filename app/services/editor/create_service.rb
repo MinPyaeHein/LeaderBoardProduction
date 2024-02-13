@@ -36,7 +36,7 @@
         end
         editor = ::Editor.find_by(member_id: id, event_id: @params[:event_id], active: true)
         if !editor.nil?
-          return { errors: ["This member #{member.users.first.email} is already editor in the part of the event!!"] }
+          return { errors: ["This member is already editor in the part of the event!!"] }
         end
         {}
       end
