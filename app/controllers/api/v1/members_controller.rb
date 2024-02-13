@@ -19,7 +19,7 @@ module Api
           else
             message[:success]=false
             message[:errors]=result[:errors]
-            render json: messaage, status: :unprocessable_entity
+            render json: message, status: :unprocessable_entity
           end
          
         end
