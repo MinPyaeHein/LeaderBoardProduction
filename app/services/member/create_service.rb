@@ -19,8 +19,12 @@
         end
 
         begin
-          password = SecureRandom.hex(8)
-          bcPassword = BCrypt::Password.create(password)
+          if !@params[:password].present?
+            password = SecureRandom.hex(8)
+            bcPassword = BCrypt::Password.create(password)
+          else
+            bcPassword = BCrypt::Password.create(@params[:password])
+          end
           member = ::Member.new(
           name: username, 
           phone: @params[:phone],

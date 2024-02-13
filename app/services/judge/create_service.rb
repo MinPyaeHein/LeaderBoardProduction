@@ -36,12 +36,11 @@
       end
       def check_judge(member_id)
         member = Member.includes(:users).find_by(id: member_id, active: true)
-        unless member
-          return { errors: ["Member with Mail #{member.users.first.email} does not exist in the database."] }
+        if member.nil? 
+          return { errors: ["Member does not exist in the database."] }
         end
         existing_judge = ::Judge.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
-        if existing_judge
-         
+        if !existing_judge.nil?
           return { errors: ["This judge with Mail  #{member.users.first.email} already part of the this Event."] }
         end
         {}

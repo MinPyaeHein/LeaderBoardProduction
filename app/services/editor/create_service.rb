@@ -31,11 +31,11 @@
       
       def check_editor(id)
         member = Member.includes(:users).find_by(id: id, active: true)
-        unless member
-          return { errors: ["Member with ID #{member.users.first.email} does not exist in the database."] }
+        if member.nil? 
+          return { errors: ["Member does not exist in the database."] }
         end
         editor = ::Editor.find_by(member_id: id, event_id: @params[:event_id], active: true)
-        if editor.present?
+        if !editor.nil?
           return { errors: ["This member #{member.users.first.email} is already editor in the part of the event!!"] }
         end
         {}
