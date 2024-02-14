@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_10_184553) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_14_154255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -55,6 +55,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_10_184553) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "investor_matrices", force: :cascade do |t|
+    t.float "total_amount"
+    t.float "one_time_pay"
+    t.integer "event_id"
+    t.float "judge_acc_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "judges", force: :cascade do |t|
     t.integer "member_id"
     t.integer "event_id"
@@ -75,6 +84,23 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_10_184553) do
     t.string "profile_url"
     t.integer "faculty_id"
     t.string "phone"
+  end
+
+  create_table "score_infos", force: :cascade do |t|
+    t.string "name"
+    t.string "desc"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "score_matrices", force: :cascade do |t|
+    t.float "weight"
+    t.float "max"
+    t.float "min"
+    t.bigint "event_id"
+    t.bigint "score_info_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "score_types", force: :cascade do |t|
@@ -136,9 +162,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_10_184553) do
   add_foreign_key "events", "members", column: "organizer_id"
   add_foreign_key "events", "score_types"
   add_foreign_key "events", "score_types", column: "id"
+  add_foreign_key "investor_matrices", "events"
   add_foreign_key "judges", "events"
   add_foreign_key "judges", "members"
   add_foreign_key "members", "faculties"
+  add_foreign_key "score_matrices", "events"
+  add_foreign_key "score_matrices", "score_infos"
   add_foreign_key "team_events", "events"
   add_foreign_key "team_events", "teams"
   add_foreign_key "team_members", "events"

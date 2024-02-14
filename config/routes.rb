@@ -7,6 +7,9 @@ Rails.application.routes.draw do
       resources :score_types, only: [:index, :create]
       resources :teams, only: [:index, :create]
       resources :judges, only: [:index, :create]
+      resources :score_infos, only: [:index, :create]
+      resources :score_matrices, only: [:index, :create]
+      resources :investor_matrices, only: [:index, :create]
       
       
       resources :members, only: [:index, :create]
