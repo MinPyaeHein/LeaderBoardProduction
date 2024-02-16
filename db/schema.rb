@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_14_154255) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_16_171807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,6 +140,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_14_154255) do
     t.float "total_score"
   end
 
+  create_table "tran_investors", force: :cascade do |t|
+    t.float "amount"
+    t.string "desc"
+    t.bigint "team_event_id"
+    t.bigint "investor_matrix_id"
+    t.bigint "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "judge_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -175,5 +186,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_14_154255) do
   add_foreign_key "team_members", "teams"
   add_foreign_key "teams", "events"
   add_foreign_key "teams", "members", column: "organizer_id"
+  add_foreign_key "tran_investors", "events"
+  add_foreign_key "tran_investors", "investor_matrices"
+  add_foreign_key "tran_investors", "judges"
+  add_foreign_key "tran_investors", "team_events"
   add_foreign_key "users", "members"
 end

@@ -4,7 +4,6 @@
     class TeamMember::CreateService
       def initialize(params)
         @params = params
-       
       end
       def create
         result=check_team_member
@@ -18,9 +17,6 @@
           active:  @params[:active],
           leader:  @params[:leader]
         )
-       
-    
-       
         if teamMember.save
           puts "success teamMember created successfully" 
           { teamMember: teamMember}
@@ -37,7 +33,6 @@
         if !existing_team_member.nil?
           return { errors: ["This member is already part of the team."] }
         end
-      
         member_in_another_team = ::TeamMember.find_by(member_id: @params[:member_id], event_id: @params[:event_id], active: true)
         if !member_in_another_team.nil?
           return { errors: ["This member #{member.users.first.email} is already part of another team."] }

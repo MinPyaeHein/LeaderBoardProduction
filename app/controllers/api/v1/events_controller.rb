@@ -12,7 +12,6 @@ module Api
         def get_events_by_id
           @event= Event.includes(:teams, :organizer, :judges).find(params[:id])
           message={}
-         
           message[:event]=@event
           message[:organizer]=@event.organizer
           message[:judges]=@event.judges

@@ -16,7 +16,6 @@
         team = ::Team.create(
           name:  @params[:name],
           desc:  @params[:desc],
-
           active:  @params[:active],
           website_link:  @params[:website_link],
           organizer_id: @current_user.id,
