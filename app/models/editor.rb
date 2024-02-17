@@ -1,6 +1,6 @@
 class Editor < ApplicationRecord
-    belongs_to :member
-    belongs_to :editorEvent,class_name: 'Event', foreign_key: 'event_id'
+    belongs_to :member, dependent: :destroy
+    belongs_to :event, dependent: :destroy
    
     
   end

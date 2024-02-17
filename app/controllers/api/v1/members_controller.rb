@@ -5,7 +5,7 @@ module Api
       class MembersController < ApplicationController
        
         skip_before_action :authenticate_request, only: [:create, :login]
-        before_action :set_service, only: [:create, :destroy, :login]
+        before_action :set_service, only: [:create, :login]
 
         def login
           result=@loginLogout_service.login
@@ -32,11 +32,15 @@ module Api
           message ={members: active_members}
           render json: {success: true,message: message}, status: :ok
         end
-
-        def destroy   
-          result = @destroy_service.destroy_member(params[:id])
-          render json: result
+       def reset_all
+       
+        if Member.destroy_all
+          render json: {success: true,message: "All members successfully deleted."}, status: :ok
+        else
+          render json: {success: false,message: "Failed to delete all members."}, status: :unprocessable_entity
         end
+      end
+
         def create
           result=@create_service.create_member
           message={}
@@ -57,21 +61,18 @@ module Api
           end
         end
         def events_by_member_id
-         
-       
-      
-
-          @member= Member.includes(:teams,:judgeEvents,:users,:editorEvents).find(params[:id])
+          @member= Member.includes(:teams,:judges,:users,:editors).find(params[:id])
          
           if  @member
             # Filter events based on status
-            ongoing_judge_events = @member.judgeEvents.where(status: :ongoing)
-            past_judge_events = @member.judgeEvents.where(status: :past)
-            future_judge_events = @member.judgeEvents.where(status: :future)
-
-            ongoing_editor_events = @member.editorEvents.where(status: :ongoing)
-            past_editor_events = @member.editorEvents.where(status: :past)
-            future_editor_events = @member.editorEvents.where(status: :future)
+            ongoing_judge_events = @member.judges.joins(:event).where(events: { status: :ongoing }).select('events.*')
+            past_judge_events = @member.judges.joins(:event).where(events: { status: :past }).select('events.*')
+            future_judge_events = @member.judges.joins(:event).where(events: { status: :future }).select('events.*')
+            
+            ongoing_editor_events = @member.editors.joins(:event).where(events: { status: :ongoing }).select('events.*')
+            past_editor_events = @member.editors.joins(:event).where(events: { status: :past }).select('events.*')
+            future_editor_events = @member.editors.joins(:event).where(events: { status: :future }).select('events.*')
+            
 
             message={}
             message[:users]=@users
@@ -99,7 +100,6 @@ module Api
         
         def set_service
           @create_service = Member::CreateService.new(member_params)
-          @destroy_service = Member::DestroyService.new(member_params)
           @loginLogout_service = Member::LoginLogoutService.new(member_params)
         end 
 

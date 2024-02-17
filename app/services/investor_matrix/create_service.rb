@@ -10,7 +10,9 @@
       def create
         errors=[]
         result=check_investor_matrix
+        puts "result: :::::#{result}"
         if result[:errors].nil?
+          puts "Arrive Create Investor Matrix"
             investorMatrix= ::InvestorMatrix.create(
             total_amount: @params[:total_amount],
             judge_acc_amount: @params[:judge_acc_amount],
@@ -18,17 +20,19 @@
             event_id: @params[:event_id])
             if @params[:judge_acc_amount].present?
               judge_acc_amount_to_judge
-            end
-           
-            if investorMatrix.save && !result[:errors].present?
+            end          
+            puts "result of error : #{result[:errors].nil?}"
+            if investorMatrix.save && result[:errors].nil?
+
                 puts "event_id: #{@params[:event_id]}"
                 teams=Team.where(event_id: @params[:event_id])
                 puts "teams::::#{teams.present?}"
                 if teams.present?
                   teams.each do |team|
                     result=@teamEventService.create(@params[:event_id],team.id)
-                    if result[:errors].present?
-                      puts "result_error: #{result[:errors]}"
+                    
+                    if result[:errors].nil? &&result[:errors].present?
+                     
                       errors << result[:errors]
                     end
 
@@ -36,8 +40,9 @@
                 end
                 {investorMatrix:investorMatrix, team_event:result[:team_event]}
             else
-              errors << result[:team_event].errors.full_messages
-              errors << investorMatrix.errors.full_messages
+              if investorMatrix.errors.present?
+                errors << investorMatrix.errors.full_messages
+              end         
               { errors: errors}
             end
         else
@@ -49,9 +54,10 @@
       def judge_acc_amount_to_judge
         judges = Judge.where(event_id: @params[:event_id], active: true)
 
-        if judges.present?
+        if judges.nil? && judges.present?
           judges.each do |judge|
             Judge.update(judge.id, current_amount: @params[:judge_acc_amount])
+            puts "judge.current_amount: #{judge.errors.full_messages}"
           end
         end
       end

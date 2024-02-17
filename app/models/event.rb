@@ -1,12 +1,9 @@
 class Event < ApplicationRecord
     enum status: { ongoing: 1, past: 2, fature: 3 }
-    belongs_to :event_type
-    belongs_to :score_type
-    has_many :teams
-
-    has_many :judges
-    has_many :members, through: :judges
-    
-    belongs_to :organizer, class_name: 'Member'
+    belongs_to :event_type, dependent: :destroy
+    belongs_to :score_type, dependent: :destroy
+    has_many :teams, dependent: :destroy
+    has_many :judges, dependent: :destroy
+    belongs_to :organizer, dependent: :destroy, class_name: 'Member'
     validates :organizer_id, presence: true
   end

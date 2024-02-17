@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       resources :members do
         post 'login', on: :collection
         get 'logout', on: :collection
+        delete 'reset_all', on: :collection
         get 'events_by_member_id', on: :collection
       end
 

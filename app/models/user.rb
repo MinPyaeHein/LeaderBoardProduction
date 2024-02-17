@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   enum role: { member: 1, admin: 2, editor: 3 }
-  belongs_to :member
+  belongs_to :member, dependent: :destroy
   has_secure_password
  
   def self.decode_jwt(token)

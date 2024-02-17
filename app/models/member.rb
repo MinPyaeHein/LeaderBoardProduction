@@ -1,9 +1,7 @@
 class Member < ApplicationRecord
-    has_many :team_members
-    has_many :teams, through: :team_members
-    has_many :users
-    has_many :judges
-    has_many :judgeEvents, through: :judges 
-    has_many :editors
-    has_many :editorEvents, through: :editors
+    has_many :team_members, dependent: :destroy
+    has_many :teams, through: :team_members, dependent: :destroy
+    has_many :users, dependent: :destroy
+    has_many :judges, dependent: :destroy
+    has_many :editors, dependent: :destroy
 end

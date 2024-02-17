@@ -1,5 +1,5 @@
 class Judge < ApplicationRecord
-    belongs_to :member
-    belongs_to :judgeEvent,class_name: 'Event', foreign_key: 'event_id'
+    belongs_to :member, dependent: :destroy
+    belongs_to :event, dependent: :destroy
     
   end

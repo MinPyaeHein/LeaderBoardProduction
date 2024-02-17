@@ -1,6 +1,6 @@
 class TeamMember< ApplicationRecord
-  belongs_to :member
-  belongs_to :team
+  belongs_to :member, :dependent => :destroy
+  belongs_to :team, :dependent => :destroy
   
 
   
