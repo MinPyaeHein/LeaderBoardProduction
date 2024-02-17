@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       resources :score_matrices, only: [:index, :create]
       resources :investor_matrices, only: [:index, :create]
       resources :tran_investors, only: [:index, :create]
+      resources :team_events, only: [:index]
       
       
       resources :members, only: [:index, :create]
