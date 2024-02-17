@@ -11,7 +11,6 @@ module Api
           result=@loginLogout_service.login
           message={}
           if result[:user].present?
-           
             message[:user]=result[:user]
             message[:token]=result[:token]
             message[:member]=result[:member]

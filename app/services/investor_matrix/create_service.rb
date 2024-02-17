@@ -30,12 +30,9 @@
                 if teams.present?
                   teams.each do |team|
                     result=@teamEventService.create(@params[:event_id],team.id)
-                    
                     if result[:errors].nil? &&result[:errors].present?
-                     
                       errors << result[:errors]
                     end
-
                   end
                 end
                 {investorMatrix:investorMatrix, team_event:result[:team_event]}
