@@ -49,8 +49,9 @@
       end
       private
       def judge_acc_amount_to_judge
+        puts "judge_acc_amount_to_judge #{@params[:event_id]}"
         judges = Judge.where(event_id: @params[:event_id], active: true)
-
+        puts "judges: #{judges}"
         if judges.nil? && judges.present?
           judges.each do |judge|
             Judge.update(judge.id, current_amount: @params[:judge_acc_amount])
