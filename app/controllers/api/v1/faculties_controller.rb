@@ -3,6 +3,7 @@
 module Api
     module V1
       class FacultiesController < ApplicationController
+        skip_before_action :authenticate_request, only: [:create, :index]
         before_action :set_service, only: [:create]
         def index
           message={}
