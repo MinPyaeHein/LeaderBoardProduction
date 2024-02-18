@@ -9,7 +9,8 @@
       end
   
       def create  
-        result=@teamMemberService.check_team_member(@params[:member_id])
+        puts "params first:::: #{@params[:member_ids].first}"
+        result=@teamMemberService.check_team_member(@params[:member_ids].first)
         if result[:errors].present?
           return result
         end
@@ -25,7 +26,7 @@
         teamStatus=team.save
         @params[:team_id]=team.id
         result=@teamMemberService.create()
-        if teamStatus && result[:teamMember].present?
+        if teamStatus && result[:teamMembers].present?
           puts "success team created successfully" 
           { team: team}
         else

@@ -8,8 +8,11 @@
       def create
         teamMembers=[]
         errors=[]
+        puts "params: #{@params[:member_ids]}"
         @params[:member_ids].each do |member_id|
+          puts "member_id:::: #{member_id}"
           result=check_team_member(member_id)
+          puts "result::::::#{result}"
           if result[:errors].present?
             errors << result[:errors]
           else
