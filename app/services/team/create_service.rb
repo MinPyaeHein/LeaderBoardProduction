@@ -9,7 +9,7 @@
       end
   
       def create  
-        result=@teamMemberService.check_team_member
+        result=@teamMemberService.check_team_member(@params[:member_id])
         if result[:errors].present?
           return result
         end
