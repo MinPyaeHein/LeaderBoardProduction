@@ -13,7 +13,7 @@ module Api
         end
 
         def get_members_by_team_id
-          team_id = params[:team_id] # assuming you're passing team_id as a parameter
+          team_id = params[:team_id] 
           members = Member.joins(:teams).where(teams: { id: team_id }).distinct
           message={}
           message[:members]=members
@@ -22,20 +22,15 @@ module Api
        
         def create 
           result=@service.create()
-          message={}
-          if result[:teamMember].present?
-            message[:teamMember] = result[:teamMember]
-            render json:{success: true,message: message}, status: :created
-          else
-            message[:errors] = result[:errors]
-            render json: {success: false ,message: message }, status: :unprocessable_entity
-  
-          end
+          message={success: true, message: result}
+          render json: message, status: :ok
+          
+        
         end
 
         private
         def team_params
-          params.require(:team_member).permit(:team_id, :member_id,:event_id ,:active, :leader)
+          params.require(:team_member).permit(:team_id,:event_id ,:active, :leader, member_ids: [])
         end
         def set_service
           @service = TeamMember::CreateService.new(team_params)

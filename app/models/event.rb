@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-    enum status: { ongoing: 1, past: 2, fature: 3 }
+    enum status: { ongoing: 1, past: 2, future: 3 }
     belongs_to :event_type, dependent: :destroy
     belongs_to :score_type, dependent: :destroy
     has_many :teams, dependent: :destroy

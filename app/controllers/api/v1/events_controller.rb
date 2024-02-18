@@ -5,7 +5,9 @@ module Api
       class EventsController < ApplicationController
         before_action :set_service, only: [:create]
         def index
-          render json:Event.where(active: true)
+          message={}
+          message[:events]=Event.where(active: true)
+          render json: {success: true,message: message}, status: :ok
           
         end
 
@@ -26,7 +28,7 @@ module Api
           message={}
           if result[:event]
           
-            message = result[:event]
+            message[:event] = result[:event]
             render json: {success: true ,message: message}, status: :created
           else
            

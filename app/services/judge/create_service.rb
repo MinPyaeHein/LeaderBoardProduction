@@ -8,7 +8,7 @@
       def create
         judges=[]
         errors=[]
-        puts "Member ID___#{@params[:member_ids]}"
+       
         @params[:member_ids].each do |member_id|
           result=check_judge(member_id)
         

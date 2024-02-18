@@ -31,8 +31,7 @@ module Api
         end
         def authenticate_user
           token = request.headers['Authorization'].to_s.split(' ').last
-          user = User.decode_jwt(token)
-      
+          user = User.decode_jwt(token)     
           render json: { error: 'Unauthorized' }, status: :unauthorized unless user
         end
 

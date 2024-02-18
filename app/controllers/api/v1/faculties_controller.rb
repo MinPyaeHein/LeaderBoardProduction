@@ -7,7 +7,7 @@ module Api
         before_action :set_service, only: [:create]
         def index
           message={}
-          message[:Faculties]=Faculty.all
+          message[:faculties]=Faculty.all
           render json:{success: true,message: message}, status: :ok
           
         end
