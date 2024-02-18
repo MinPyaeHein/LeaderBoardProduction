@@ -36,15 +36,15 @@ module Api
         #     render json: { error: 'Judge not found for the provided member_id' }, status: :not_found
         #   end
         # end
-        # def create 
-        #   result=@service.create()
-        #   message={}
-        #   if result.present?
-        #     message[:judges] = result[:judges]
-        #     message[:errors] = result[:errors]
-        #     render json:{success: true,message: message}, status: :created
-        #   end
-        # end
+        def create 
+          result=@service.create()
+          message={}
+          if result.present?
+            message[:judges] = result[:judges]
+            message[:errors] = result[:errors]
+            render json:{success: true,message: message}, status: :created
+          end
+        end
 
         def get_judges_by_event_id
           event_id = params[:event_id] # Assuming you're passing event_id as a parameter         
