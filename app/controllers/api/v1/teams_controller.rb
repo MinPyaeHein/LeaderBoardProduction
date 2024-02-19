@@ -3,7 +3,7 @@
 module Api
     module V1
       class TeamsController < ApplicationController
-        before_action :set_service, only: [:create]
+        before_action :set_service, only: [:create,:create_team_with_leaders]
         def index
           message={}
           message[:teams]=Team.all
@@ -11,9 +11,7 @@ module Api
         end
 
        
-        def create
-          
-          
+        def create  
           result=@service.create()
           message={}
           if result[:team].present?
@@ -24,6 +22,20 @@ module Api
             render json: {success: false ,message: message }, status: :unprocessable_entity
           end
         end
+        def create_team_with_leaders
+          result=@service.createTeamWithLeaders()
+          message={}
+          message[:teams] = result[:teams]
+          message[:errors]=result[:errors]
+          render json:{success: true,message: message}, status: :created
+          # if result[:teams].present?
+          #   message = result[:team]
+          #   render json:{success: true,message: message}, status: :created
+          # else
+          #   message[:errors] = result[:errors]
+          #   render json: {success: false ,message: message }, status: :unprocessable_entity
+          # end
+        end
 
         private
         def team_params
@@ -31,7 +43,7 @@ module Api
           params.require(:team).permit(:name, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
         end
         def set_service
-          puts "team_params::::::: #{team_params}"
+        
           @service = Team::CreateService.new(team_params,current_user)
         end
 

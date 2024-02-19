@@ -7,9 +7,8 @@ module Api
         def index
           @judges = Judge.where(active: true)
           message={}
-          message[:success]=true
           message[:judges]=@judges
-          render json: {message: message}
+          render json: {success: true,message: message}
         end
         # def events_by_member_id
           

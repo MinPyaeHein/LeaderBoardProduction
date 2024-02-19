@@ -4,6 +4,7 @@ class Event < ApplicationRecord
     belongs_to :score_type, dependent: :destroy
     has_many :teams, dependent: :destroy
     has_many :judges, dependent: :destroy
+    has_many :editors, dependent: :destroy
     belongs_to :organizer, dependent: :destroy, class_name: 'Member'
     validates :organizer_id, presence: true
   end

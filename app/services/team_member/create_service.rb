@@ -27,7 +27,7 @@
               teamMembers << teamMember
               
             else
-              errors << TeamMember.errors.full_messages
+              errors << teamMember.errors.full_messages
             
             end
           end
@@ -48,7 +48,7 @@
         if !member_in_another_team.nil?
           return { errors: ["This member #{member.users.first.email} is already part of another team."] }
         end
-        {}
+        {member: member}
       end
 
     

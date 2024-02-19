@@ -5,7 +5,6 @@ Rails.application.routes.draw do
       resources :faculties, only: [:index, :create]
       resources :event_types, only: [:index, :create]
       resources :score_types, only: [:index, :create]
-      resources :teams, only: [:index, :create]
       resources :judges, only: [:index, :create]
       resources :score_infos, only: [:index, :create]
       resources :score_matrices, only: [:index, :create]
@@ -37,7 +36,12 @@ Rails.application.routes.draw do
       resources :events, only: [:index, :create]
       resources :events do
         get 'get_events_by_id', on: :collection
-        
+      
+      end
+
+      resources :teams, only: [:index, :create]
+      resources :teams do
+        post 'create_team_with_leaders', on: :collection
       end
 
     end
