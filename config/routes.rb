@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       resources :team_events, only: [:index]
       
       
-      resources :members, only: [:index, :create]
+      resources :members, only: [:index, :create, :update]
       resources :members do
         post 'login', on: :collection
         get 'logout', on: :collection

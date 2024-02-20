@@ -5,7 +5,7 @@ module Api
       class MembersController < ApplicationController
        
         skip_before_action :authenticate_request, only: [:create, :login]
-        before_action :set_service, only: [:create, :login]
+        before_action :set_service, only: [:create, :login, :update]
 
         def login
           result=@loginLogout_service.login
@@ -38,6 +38,19 @@ module Api
         else
           render json: {success: false,message: "Failed to delete all members."}, status: :unprocessable_entity
         end
+      end
+      def show
+       
+        @member = Member.find(params[:member_id])
+        message={}
+        message[:member] = @member
+        render json: { success: true,message: message }
+      end
+      def update
+        result=@update_service.update
+        message={}
+        message[:member] = result[:member]
+        render json: {success: true,message: message}, status: :ok 
       end
 
         def create
@@ -94,10 +107,11 @@ module Api
 
         private
         def member_params
-          params.require(:member).permit(:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name)
+          params.require(:member).permit(:member_id,:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name)
         end
         
         def set_service
+          @update_service = Member::UpdateService.new(member_params)
           @create_service = Member::CreateService.new(member_params)
           @loginLogout_service = Member::LoginLogoutService.new(member_params)
         end 
