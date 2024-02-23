@@ -26,6 +26,9 @@ module Api
           result=@service.createTeamWithLeaders()
           message={}
           message[:teams] = result[:teams]
+          message[:teamLeaders]= result[:teamLeaders]
+          message[:teamEvents]= result[:teamEvents]
+          
           message[:errors]=result[:errors]
           render json:{success: true,message: message}, status: :created
           # if result[:teams].present?

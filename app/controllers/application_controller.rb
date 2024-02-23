@@ -14,4 +14,7 @@ class ApplicationController < ActionController::API
     
       @current_user ||= User.decode_jwt(request.headers['Authorization'])
     end
+    def nothing
+      head :not_found
+    end
 end

@@ -8,7 +8,18 @@ module Api
           message={}
           message[:tranInvestors]=TranInvestor.all
           render json:{success: true,message: message}, status: :ok
-        end       
+        end   
+        
+        def get_tran_invest_amount_by_team
+          tranInvestByTeams = TranInvestor.group(:team_event_id, 'teams.id', 'teams.name')
+          .select('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
+          .joins(team_event: :team)
+          .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
+
+          message={}
+          message[:tranInvestByTeams]=tranInvestByTeams
+          render json: {success: true,message: message}, status: :ok
+        end
         def create
           result=@service.create()
           if result[:tranInvestor].present?

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
- 
+  root 'score_boards#home'
+  resources :score_boards do
+    get 'score_boards', to: 'score_boards#home'
+  end
   namespace :api do
     namespace :v1 do
       resources :faculties, only: [:index, :create]
@@ -9,16 +12,23 @@ Rails.application.routes.draw do
       resources :score_infos, only: [:index, :create]
       resources :score_matrices, only: [:index, :create]
       resources :investor_matrices, only: [:index, :create]
-      resources :tran_investors, only: [:index, :create]
+      
       resources :team_events, only: [:index]
-      
-      
+     
+      resources :tran_investors, only: [:index, :create]
+      resources :tran_investors do
+        get 'get_tran_invest_amount_by_team', on: :collection
+        
+      end
+
       resources :members, only: [:index, :create, :update]
       resources :members do
+        get 'score_boards', on: :collection
         post 'login', on: :collection
         get 'logout', on: :collection
         delete 'reset_all', on: :collection
         get 'events_by_member_id', on: :collection
+        post 'get_member_by_id', on: :collection
       end
 
       resources :team_members, only: [:index, :create]
@@ -46,4 +56,5 @@ Rails.application.routes.draw do
 
     end
   end
+  match "/favicon.ico", to: "application#nothing", via: :all
 end

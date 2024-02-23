@@ -23,15 +23,14 @@
                 judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id])
 
                 if judge
-                  puts "judge:::::: #{judge.current_amount}"
-                  puts "invest_matrix.one_time_pay: #{invest_matrix.one_time_pay}"
-                  new_amount = judge.current_amount - invest_matrix.one_time_pay
-                  puts "new_amount: #{new_amount}"
-                  judge.update(current_amount: new_amount)
-                  puts "judge.current_amount: #{judge.current_amount}"
-                  puts "errors #{judge.errors.full_messages}"
+                  if (judge.current_amount - invest_matrix.one_time_pay)<=0
+                    { errors: ["Insuficient Judge Acc Balance"] }
+                  else
+                    new_amount = judge.current_amount - invest_matrix.one_time_pay
+                    judge.update(current_amount: new_amount)
+                  end
                 else
-                  puts "judge not found"
+                  { errors: ["Judge not exist in the database"] }
                 end
                 {tranInvestor:tranInvestor}
               else

@@ -6,7 +6,9 @@ module Api
        
         skip_before_action :authenticate_request, only: [:create, :login]
         before_action :set_service, only: [:create, :login, :update]
-
+        def score_boards
+          render 'score_cards/home'
+        end
         def login
           result=@loginLogout_service.login
           message={}
@@ -39,9 +41,10 @@ module Api
           render json: {success: false,message: "Failed to delete all members."}, status: :unprocessable_entity
         end
       end
-      def show
-       
+      def get_member_by_id
+        puts "get_member_by_id----member_id ==#{params[:member_id]}"
         @member = Member.find(params[:member_id])
+
         message={}
         message[:member] = @member
         render json: { success: true,message: message }
@@ -107,7 +110,7 @@ module Api
 
         private
         def member_params
-          params.require(:member).permit(:member_id,:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name)
+          params.require(:member).permit(:member_id,:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name, :desc)
         end
         
         def set_service

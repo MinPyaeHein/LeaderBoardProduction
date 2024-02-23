@@ -8,11 +8,8 @@
       def create
         teamMembers=[]
         errors=[]
-        puts "params: #{@params[:member_ids]}"
         @params[:member_ids].each do |member_id|
-          puts "member_id:::: #{member_id}"
           result=check_team_member(member_id)
-          puts "result::::::#{result}"
           if result[:errors].present?
             errors << result[:errors]
           else
@@ -35,6 +32,7 @@
         end
         { teamMembers: teamMembers, errors: errors }
       end
+
       def check_team_member(member_id)
         member = ::Member.find_by(id: member_id, active: true)
         if member.nil? 
@@ -46,7 +44,11 @@
         end
         member_in_another_team = ::TeamMember.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
         if !member_in_another_team.nil?
-          return { errors: ["This member #{member.users.first.email} is already part of another team."] }
+          if !member.users.length.zero?
+            return { errors: ["This member #{member.users.first.email} is already part of another team."] }
+          else
+            return { errors: ["This member is already part of another team."] }
+          end
         end
         {member: member}
       end
