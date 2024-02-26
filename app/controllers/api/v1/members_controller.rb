@@ -10,6 +10,7 @@ module Api
           render 'score_cards/home'
         end
         def login
+          @recomedorService.fetching_data()
           result=@loginLogout_service.login
           message={}
           if result[:user].present?
@@ -76,6 +77,7 @@ module Api
           end
         end
         def events_by_member_id
+         
           @member= Member.includes(:teams,:judges,:users,:editors).find(params[:id])
          
           if  @member
@@ -117,6 +119,7 @@ module Api
           @update_service = Member::UpdateService.new(member_params)
           @create_service = Member::CreateService.new(member_params)
           @loginLogout_service = Member::LoginLogoutService.new(member_params)
+        
         end 
 
 

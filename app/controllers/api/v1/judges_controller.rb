@@ -8,6 +8,7 @@ module Api
           @judges = Judge.where(active: true)
           message={}
           message[:judges]=@judges
+         
           render json: {success: true,message: message}
         end
         # def events_by_member_id
@@ -62,6 +63,8 @@ module Api
         end
         def set_service
           @service = Judge::CreateService.new(judge_params)
+       
+         
         end
 
       end

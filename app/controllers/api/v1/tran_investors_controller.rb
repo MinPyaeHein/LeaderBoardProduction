@@ -10,15 +10,27 @@ module Api
           render json:{success: true,message: message}, status: :ok
         end   
         
-        def get_tran_invest_amount_by_team
-          tranInvestByTeams = TranInvestor.group(:team_event_id, 'teams.id', 'teams.name')
-          .select('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
-          .joins(team_event: :team)
-          .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
-
-          message={}
-          message[:tranInvestByTeams]=tranInvestByTeams
-          render json: {success: true,message: message}, status: :ok
+        def invest_amounts_by_team()
+          event_id = params[:event_id]
+          teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
+                                          .select('teams.id AS team_id, team_events.event_id, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
+                                          .joins(team_event: :team)
+                                          .where(team_events: { event_id: event_id })
+                                          .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount, team_events.event_id')
+        
+          # Modify each object in tranInvestByTeams to include "name" and "value" attributes
+          teamInvestScores.map! do |team|
+            {
+              name: team[1],
+              value: team[3],
+              team_id: team[0],
+              team_event_id: team[2],
+              event_id: team[4]
+            }
+          end
+        
+          message = { teamInvestScores: teamInvestScores }
+          render json: { success: true, message: message }, status: :ok
         end
         def create
           result=@service.create()

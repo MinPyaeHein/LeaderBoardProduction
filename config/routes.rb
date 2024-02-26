@@ -17,7 +17,7 @@ Rails.application.routes.draw do
      
       resources :tran_investors, only: [:index, :create]
       resources :tran_investors do
-        get 'get_tran_invest_amount_by_team', on: :collection
+        post 'invest_amounts_by_team', on: :collection
         
       end
 
