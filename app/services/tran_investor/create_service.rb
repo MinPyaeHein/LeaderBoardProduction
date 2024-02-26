@@ -32,7 +32,7 @@
                 else
                   { errors: ["Judge not exist in the database"] }
                 end
-                {tranInvestor:tranInvestor}
+                {tranInvestor:tranInvestor, judge:judge}
               else
                 { errors: tranInvestor.errors.full_messages }
               end

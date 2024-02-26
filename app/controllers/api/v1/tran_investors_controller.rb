@@ -37,6 +37,7 @@ module Api
           if result[:tranInvestor].present?
             message={}
             message[:tranInvestor]=result[:tranInvestor]
+            message[:judge]=result[:judge]
             render json: {success: true,message: message}, status: :created
           else
             render json: { errors: result[:errors] }, status: :unprocessable_entity
