@@ -10,9 +10,11 @@
       def create
             invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id])
             team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
+            judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id])
             puts "invest_matrix: #{invest_matrix}"
             puts "team_event: #{team_event}"
-            if !team_event.nil? && !invest_matrix.nil?
+            print "before update judge: ::::#{judge}"
+            if !team_event.nil? && !invest_matrix.nil? && !judge.nil?
               tranInvestor= ::TranInvestor.create(
               amount: invest_matrix.one_time_pay,
               investor_matrix_id: invest_matrix.id,
@@ -20,9 +22,10 @@
               team_event_id: team_event.id,
               event_id: @params[:event_id])
               if tranInvestor.save
-                judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id])
-
-                if judge
+                
+                # judge=Judge.find_by_id(@params[:judge_id])
+               
+                if !judge.nil? &&judge.present?
                   if (judge.current_amount - invest_matrix.one_time_pay)<=0
                     { errors: ["Insuficient Judge Acc Balance"] }
                   else
@@ -32,7 +35,7 @@
                 else
                   { errors: ["Judge not exist in the database"] }
                 end
-                judge=Judge.find_by_id(@params[:judge_id])
+                
                 {tranInvestor:tranInvestor, judge:judge}
               else
                 { errors: tranInvestor.errors.full_messages }
