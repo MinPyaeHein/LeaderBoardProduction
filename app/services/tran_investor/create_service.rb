@@ -32,6 +32,7 @@
                 else
                   { errors: ["Judge not exist in the database"] }
                 end
+                judge=Judge.find_by_id(@params[:judge_id])
                 {tranInvestor:tranInvestor, judge:judge}
               else
                 { errors: tranInvestor.errors.full_messages }
