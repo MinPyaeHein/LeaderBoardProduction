@@ -4,7 +4,7 @@
     class TeamEvent::CreateService
       def initialize(params)
         @params = params
-       
+        @tranInvestorsService=TranInvestor::CreateService.new(@params)     
       end
   
       def create
@@ -15,7 +15,7 @@
             event_id: @params[:event_id],
             team_id: @params[:team_id])
             if teamEvent.save
-              
+              tranInvestors=@tranInvestorsService.create_initailal_tran
               {teamEvent:teamEvent}
             else
               { errors: teamEvent.errors.full_messages }

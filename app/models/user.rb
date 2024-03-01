@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  enum role: { member: 1, admin: 2, editor: 3 }
+  enum role: { member: 1, admin: 2, editor: 3, judge: 4 }
   belongs_to :member, dependent: :destroy
   has_secure_password
  
