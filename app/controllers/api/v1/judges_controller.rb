@@ -37,15 +37,18 @@ module Api
           message = {}
           message[:judge] = judge
           message[:member] = member
-            teams_under_event.each do |team|              
-                unless teamInvestScores.any? { |score|  score[:team_id] == team.id }
-                  teamInvestScores << {
-                    team_id: team.id,
-                    team_name: team.name,
-                    total_amount: nil
-                  }
-                end
+          teams_under_event.each do |team|
+            unless teamInvestScores.any? { |score| score.is_a?(Hash) && score[:team_id].to_i == team.id.to_i }
+              puts "teamInvestScores: #{teamInvestScores.inspect}"
+              puts "team.id: #{team.id.inspect}"
+          
+              teamInvestScores << {
+                team_id: team.id,
+                team_name: team.name,
+                total_amount: nil
+              }
             end
+          end
            
             message[:teamInvestScores] = teamInvestScores
             render json: {success: true,message: message}
