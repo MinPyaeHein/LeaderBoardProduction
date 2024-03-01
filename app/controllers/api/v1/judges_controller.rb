@@ -22,10 +22,7 @@ module Api
           end
         end
         def get_judge_by_id
-          puts "teamInvestScores ====>"
-          puts "teamInvestScores ====>"
-          puts "teamInvestScores ====>"
-          puts "teamInvestScores ====>"
+          
           params=judge_params
           teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
           .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, SUM(tran_investors.amount) AS total_amount')
@@ -41,7 +38,7 @@ module Api
           message[:judge] = judge
           message[:member] = member
             teams_under_event.each do |team|              
-                unless teamInvestScores.any? { |score|  score["team_id"] == team.id }
+                unless teamInvestScores.any? { |score|  score[:team_id] == team.id }
                   teamInvestScores << {
                     team_id: team.id,
                     team_name: team.name,
