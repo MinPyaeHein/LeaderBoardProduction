@@ -11,31 +11,7 @@ module Api
          
           render json: {success: true,message: message}
         end
-        # def events_by_member_id
-          
-        #   # Find the judge and associated member by member_id
-        #   judge = Judge.includes(:member).find_by(member_id: params[:member_id])
-
-        #   if judge
-        #     # Get ongoing, past, and future events
-        #     ongoing_events = Event.where(status: :ongoing)
-        #     past_events = Event.where(status: :past)
-        #     future_events = Event.where(status: :future)
-        #     # Filter events with active=true
-        #     ongoing_events = ongoing_events.where(active: true)
-        #     past_events = past_events.where(active: true)
-        #     future_events = future_events.where(active: true)
-        #     message={}
-        #     message[:judge]=judge
-        #     message[:member]=judge.member
-        #     message[:ongoing_events]=ongoing_events
-        #     message[:past_events]=past_events
-        #     message[:future_events]=future_events
-        #     render json: {message: message, success: true}, status: :ok
-        #   else
-        #     render json: { error: 'Judge not found for the provided member_id' }, status: :not_found
-        #   end
-        # end
+      
         def create 
           result=@service.create()
           message={}
@@ -45,7 +21,21 @@ module Api
             render json:{success: true,message: message}, status: :created
           end
         end
-
+        def get_judge_by_id
+          params=judge_params
+          teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
+              .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
+              .joins(team_event: :team)
+              .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
+              .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount, team_events.event_id')
+          judge = Judge.find(params[:judge_id])
+          member = Member.find(params[:judge_id])
+          message={}
+          message[:judge] = judge
+          message[:member] = member
+          message[:teamInvestScores]=teamInvestScores
+          render json: {success: true,message: message}
+          end
         def get_judges_by_event_id
           event_id = params[:event_id] # Assuming you're passing event_id as a parameter         
           # Fetching judges associated with the given event for the specified team
@@ -59,8 +49,9 @@ module Api
         end
         private
         def judge_params
-          params.require(:judge).permit(:event_id ,:active, :current_amount, member_ids: [])
+          params.require(:judge).permit(:event_id ,:judge_id,:active, :current_amount, member_ids: [])
         end
+        
         def set_service
           @service = Judge::CreateService.new(judge_params)
        

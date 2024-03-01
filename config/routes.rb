@@ -37,6 +37,8 @@ Rails.application.routes.draw do
       end
       resources :judges do
         get 'get_judges_by_event_id', on: :collection 
+        post 'get_judge_by_id', on: :collection
+   
       end
       resources :editors, only: [:index, :create]
       resources :editors do
