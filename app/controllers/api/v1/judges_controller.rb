@@ -45,11 +45,11 @@ module Api
                   teamInvestScores << {
                     team_id: team.id,
                     team_name: team.name,
-                    total_amount: 0.0  
+                    total_amount: nil
                   }
                 end
             end
-            puts "teamInvestScores ====>#{teamInvestScores}"
+           
             message[:teamInvestScores] = teamInvestScores
             render json: {success: true,message: message}
          
