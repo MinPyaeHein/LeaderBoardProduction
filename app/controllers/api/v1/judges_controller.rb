@@ -37,26 +37,21 @@ module Api
             teamInvestScores_old.map! do |team|
             {
               name: team[1],
-              value: team[3],
+              amount: team[3],
               team_id: team[0],
               team_event_id: team[2],
               event_id: team[4]
             }
           end
 
-        #  teamInvestScores_old = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
-        #   .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, SUM(tran_investors.amount) AS total_amount')
-        #   .joins(team_event: :team)
-        #   .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
-        #   .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount, team_events.event_id')
                 
           judge = Judge.find(params[:judge_id])
           member = Member.find(params[:judge_id])
-         # Get teams that exist in the specified event
+      
            existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
 
       
-          teamInvestScores = teamInvestScores_old + existing_teams.map { |team_id, team_name| { team_id: team_id, team_name: team_name, total_amount: 0, team_event_id: nil, event_id: params[:event_id] } }
+          teamInvestScores = teamInvestScores_old + existing_teams.map { |team_id, team_name| { team_id: team_id, name: team_name, amount: 0, team_event_id: nil, event_id: params[:event_id] } }
 
       
           message = {}
