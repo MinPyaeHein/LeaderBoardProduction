@@ -45,6 +45,7 @@ module Api
                   }
                 end
             end
+            puts "teamInvestScores ====>#{teamInvestScores}"
             message[:teamInvestScores] = teamInvestScores
             render json: {success: true,message: message}
          
