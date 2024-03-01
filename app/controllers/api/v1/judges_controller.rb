@@ -34,7 +34,7 @@ module Api
               tran_investors.team_event_id AS team_event_id, 
               SUM(tran_investors.amount) AS total_amount, 
               team_events.event_id')
-          teamInvestScores.map! do |team|
+            teamInvestScores_old.map! do |team|
             {
               name: team[1],
               value: team[3],
@@ -56,20 +56,13 @@ module Api
            existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
 
       
-          teamInvestScores = teamInvestScores_old + existing_teams.map 
-          { |team_id, team_name| 
-              { 
-              team_id: team_id, 
-              team_name: team_name, 
-              total_amount: 0, 
-              team_event_id: nil, 
-              event_id: params[:event_id] 
-              } }  
+          teamInvestScores = teamInvestScores_old + existing_teams.map { |team_id, team_name| { team_id: team_id, team_name: team_name, total_amount: 0, team_event_id: nil, event_id: params[:event_id] } }
+
       
           message = {}
           message[:judge] = judge
           message[:member] = member
-          message[:teamInvestScores_old] = teamInvestScores_old 
+          message[:teamInvestScores] = teamInvestScores
           
            
             # message[:teamInvestScores] = teamInvestScores
