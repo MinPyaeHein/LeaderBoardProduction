@@ -22,6 +22,10 @@ module Api
           end
         end
         def get_judge_by_id
+          puts "teamInvestScores ====>"
+          puts "teamInvestScores ====>"
+          puts "teamInvestScores ====>"
+          puts "teamInvestScores ====>"
           params=judge_params
           teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
           .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, SUM(tran_investors.amount) AS total_amount')
