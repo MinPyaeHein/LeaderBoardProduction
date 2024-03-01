@@ -10,7 +10,7 @@ module Api
           render 'score_cards/home'
         end
         def login
-          @recomedorService.fetching_data()
+         
           result=@loginLogout_service.login
           message={}
           if result[:user].present?

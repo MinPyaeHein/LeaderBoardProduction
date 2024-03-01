@@ -9,13 +9,14 @@ module Api
           message[:teams]=Team.all
           render json:{success: true,message: message}
         end
-
-       
+  
         def create  
           result=@service.create()
           message={}
-          if result[:team].present?
-            message = result[:team]
+          if !result[:errors].present?
+            message[:team] = result[:team]
+            message[:teamLeader]= result[:teamLeader]
+            message[:teamEvent]= result[:teamEvent]
             render json:{success: true,message: message}, status: :created
           else
             message[:errors] = result[:errors]
@@ -28,22 +29,16 @@ module Api
           message[:teams] = result[:teams]
           message[:teamLeaders]= result[:teamLeaders]
           message[:teamEvents]= result[:teamEvents]
-          
           message[:errors]=result[:errors]
           render json:{success: true,message: message}, status: :created
-          # if result[:teams].present?
-          #   message = result[:team]
-          #   render json:{success: true,message: message}, status: :created
-          # else
-          #   message[:errors] = result[:errors]
-          #   render json: {success: false ,message: message }, status: :unprocessable_entity
-          # end
+        
         end
+        
 
         private
         def team_params
 
-          params.require(:team).permit(:name, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
+          params.require(:team).permit(:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
         end
         def set_service
         
