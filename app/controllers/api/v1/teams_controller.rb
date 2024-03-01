@@ -17,6 +17,7 @@ module Api
             message[:team] = result[:team]
             message[:teamLeader]= result[:teamLeader]
             message[:teamEvent]= result[:teamEvent]
+            message[:tranInvestor]= result[:tranInvestor]
             render json:{success: true,message: message}, status: :created
           else
             message[:errors] = result[:errors]

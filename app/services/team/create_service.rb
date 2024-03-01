@@ -88,7 +88,7 @@
           end
         end
         if errors.empty?
-          { team: team, teamLeader: resultTeamMember[:teamMembers].first, teamEvent: resultTeamEvent[:teamEvent]}
+          { team: team, teamLeader: resultTeamMember[:teamMembers].first, teamEvent: resultTeamEvent[:teamEvent], tran_investor: resultTeamEvent[:tranInvestor] }
         else
           { errors: errors }
         end

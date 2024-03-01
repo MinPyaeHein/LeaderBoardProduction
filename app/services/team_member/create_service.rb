@@ -13,7 +13,7 @@
           if result[:errors].present?
             errors << result[:errors]
           else
-            puts "param teamMember#{@params}"
+           
             teamMember = ::TeamMember.create(
               team_id:  @params[:team_id],
               member_id: member_id,  

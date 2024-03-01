@@ -15,7 +15,8 @@
             event_id: @params[:event_id],
             team_id: @params[:team_id])
             if teamEvent.save
-              tranInvestors=@tranInvestorsService.create_initailal_tran
+             
+              
               {teamEvent:teamEvent}
             else
               { errors: teamEvent.errors.full_messages }
@@ -33,8 +34,12 @@
             event_id: event_id,
             team_id: team_id)
             if teamEvent.save
-              
-              {teamEvent:teamEvent}
+              puts "Team Event reg"
+              puts "Team Event reg"
+              puts "Team Event reg"
+              puts "Team Event reg"
+              tranInvestor=@tranInvestorsService.create_initailal_tran
+              {teamEvent:teamEvent,tranInvestor:tranInvestor}
             else
               { errors: teamEvent.errors.full_messages }
             end
