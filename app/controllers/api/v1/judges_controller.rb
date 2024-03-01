@@ -24,33 +24,55 @@ module Api
         def get_judge_by_id
           
           params=judge_params
-          teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
-          .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, SUM(tran_investors.amount) AS total_amount')
-          .joins(team_event: :team)
-          .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
-          .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount, team_events.event_id') 
-         
+          teamInvestScores_old = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
+              .select('teams.id AS team_id, team_events.event_id, 
+              tran_investors.team_event_id AS team_event_id, 
+              SUM(tran_investors.amount) AS total_amount')
+              .joins(team_event: :team)
+              .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
+              .pluck('teams.id AS team_id, teams.name AS team_name,
+              tran_investors.team_event_id AS team_event_id, 
+              SUM(tran_investors.amount) AS total_amount, 
+              team_events.event_id')
+          teamInvestScores.map! do |team|
+            {
+              name: team[1],
+              value: team[3],
+              team_id: team[0],
+              team_event_id: team[2],
+              event_id: team[4]
+            }
+          end
+
+        #  teamInvestScores_old = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
+        #   .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, SUM(tran_investors.amount) AS total_amount')
+        #   .joins(team_event: :team)
+        #   .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
+        #   .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount, team_events.event_id')
+                
           judge = Judge.find(params[:judge_id])
           member = Member.find(params[:judge_id])
-          teams_under_event = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] })
+         # Get teams that exist in the specified event
+           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
+
+      
+          teamInvestScores = teamInvestScores_old + existing_teams.map 
+          { |team_id, team_name| 
+              { 
+              team_id: team_id, 
+              team_name: team_name, 
+              total_amount: 0, 
+              team_event_id: nil, 
+              event_id: params[:event_id] 
+              } }  
       
           message = {}
           message[:judge] = judge
           message[:member] = member
-          teams_under_event.each do |team|
-            unless teamInvestScores.any? { |score| score.is_a?(Hash) && score[:team_id].to_i == team.id.to_i }
-              puts "teamInvestScores: #{teamInvestScores.inspect}"
-              puts "team.id: #{team.id.inspect}"
+          message[:teamInvestScores_old] = teamInvestScores_old 
           
-              teamInvestScores << {
-                team_id: team.id,
-                team_name: team.name,
-                total_amount: nil
-              }
-            end
-          end
            
-            message[:teamInvestScores] = teamInvestScores
+            # message[:teamInvestScores] = teamInvestScores
             render json: {success: true,message: message}
          
 
