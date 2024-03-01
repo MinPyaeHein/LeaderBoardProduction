@@ -31,16 +31,12 @@ module Api
          
           judge = Judge.find(params[:judge_id])
           member = Member.find(params[:judge_id])
-          
           teams_under_event = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] })
           puts "teams_under_event #{teams_under_event.first.name}"
           message = {}
           message[:judge] = judge
           message[:member] = member
-        
-            teams_under_event.each do |team|
-              puts "team #{team.name}"
-             
+            teams_under_event.each do |team|              
                 unless teamInvestScores.any? { |score|  score[:team_id] == team.id }
                   teamInvestScores << {
                     team_id: team.id,
@@ -48,9 +44,7 @@ module Api
                     total_amount: 0.0  
                   }
                 end
-             
             end
-         
             message[:teamInvestScores] = teamInvestScores
             render json: {success: true,message: message}
          
