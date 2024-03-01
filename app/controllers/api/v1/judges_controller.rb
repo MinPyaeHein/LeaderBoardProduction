@@ -24,28 +24,39 @@ module Api
         def get_judge_by_id
           params=judge_params
           teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
-          .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount')
+          .select('teams.id AS team_id, teams.name AS team_name, team_events.event_id, SUM(tran_investors.amount) AS total_amount')
           .joins(team_event: :team)
           .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
           .pluck('teams.id AS team_id, teams.name AS team_name, tran_investors.team_event_id AS team_event_id, SUM(tran_investors.amount) AS total_amount, team_events.event_id') 
+         
           judge = Judge.find(params[:judge_id])
           member = Member.find(params[:judge_id])
+          
           teams_under_event = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] })
+          puts "teams_under_event #{teams_under_event.first.name}"
           message = {}
           message[:judge] = judge
           message[:member] = member
-          message[:teamInvestScores] = teamInvestScores
-          teams_data = teams_under_event.pluck(:id, :name)
-          teams_data.each do |team_id, team_name|
-          unless teamInvestScores.any? { |team| team[:team_id] == team_id }
-          message[:teamInvestScores] << {
-            team_id: team_id,
-            team_name: team_name,
-            team_event_id: nil, 
-            total_amount: nil  
-          }
+        
+            teams_under_event.each do |team|
+              puts "team #{team.name}"
+             
+                unless teamInvestScores.any? { |score|  score[:team_id] == team.id }
+                  teamInvestScores << {
+                    team_id: team.id,
+                    team_name: team.name,
+                    total_amount: 0.0  
+                  }
+                end
+             
+            end
+         
+            message[:teamInvestScores] = teamInvestScores
+            render json: {success: true,message: message}
+         
+
           end
-        end       
+         
          def get_judges_by_event_id
           event_id = params[:event_id] # Assuming you're passing event_id as a parameter         
           # Fetching judges associated with the given event for the specified team
