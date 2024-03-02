@@ -38,6 +38,7 @@ module Api
           render json: { success: true, message: message }, status: :ok
         end
         def create
+
           result=@service.create()
           if result[:tranInvestor].present?
             message={}
@@ -54,6 +55,7 @@ module Api
           params.require(:tran_investor).permit(:desc,:team_id,:event_id,:judge_id)
         end
         def set_service
+          puts "set_service----member_params ==#{member_params}"
           @service = TranInvestor::CreateService.new(member_params)
         end
         

@@ -22,8 +22,11 @@ module Api
           end
         end
         def get_judge_by_id
-          
-          params=judge_params
+          event_id = params[:event_id] 
+          team_id = params[:team_id] 
+          judge_id = params[:judge_id] 
+          puts "event_id ==#{event_id} team_id ==#{team_id} judge_id ==#{judge_id}"
+         
           teamInvestScores_old = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
               .select('teams.id AS team_id, team_events.event_id, 
               tran_investors.team_event_id AS team_event_id, 
@@ -45,8 +48,8 @@ module Api
           end
 
                 
-          judge = Judge.find(params[:judge_id])
-          member = Member.find(params[:judge_id])
+          judge = Judge.find(judge_id)
+          member = Member.find(judge_id)
       
            existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
 
