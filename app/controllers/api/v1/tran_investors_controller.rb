@@ -50,10 +50,9 @@ module Api
 
         private
         def member_params
-          params.require(:tran_investor).permit(:desc,:team_id,:event_id,:judge_id)
+          params.require(:tran_investor).permit(:desc,:team_id,:event_id,:judge_id,:tran_type)
         end
         def set_service
-          puts "set_service----member_params ==#{member_params}"
           @service = TranInvestor::CreateService.new(member_params)
         end
         
