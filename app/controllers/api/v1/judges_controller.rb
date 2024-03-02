@@ -52,12 +52,8 @@ module Api
           member = Member.find(judge_id)
       
           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
-
-        
           existing_teams_hash = teamInvestScores_old.index_by { |team| team[:team_id] }
-         
           new_teams = existing_teams.reject { |team_id, _team_name| existing_teams_hash.key?(team_id) }
-        
           combined_teams = teamInvestScores_old + new_teams.map do |team_id, team_name|
             {
               team_id: team_id,
@@ -72,20 +68,17 @@ module Api
           message[:judge] = judge
           message[:member] = member
           message[:teamInvestScores] = combined_teams
-          
-           
-            # message[:teamInvestScores] = teamInvestScores
+
             render json: {success: true,message: message}
          
 
           end
          
          def get_judges_by_event_id
-          event_id = params[:event_id] # Assuming you're passing event_id as a parameter         
-          # Fetching judges associated with the given event for the specified team
+          event_id = params[:event_id]     
           members = Member.joins(:judges)
                          .where('judges.event_id = ?', event_id)
-                         .select('judges.*') # Selecting only judge attributes
+                         .select('judges.*') 
          
           message={}   
           message[:judges]=members

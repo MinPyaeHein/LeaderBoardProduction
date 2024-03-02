@@ -11,10 +11,8 @@ Rails.application.routes.draw do
       resources :judges, only: [:index, :create]
       resources :score_infos, only: [:index, :create]
       resources :score_matrices, only: [:index, :create]
-      resources :investor_matrices, only: [:index, :create]
-      
+      resources :investor_matrices, only: [:index, :create] 
       resources :team_events, only: [:index]
-     
       resources :tran_investors, only: [:index, :create]
       resources :tran_investors do
         post 'invest_amounts_by_team', on: :collection
@@ -38,17 +36,15 @@ Rails.application.routes.draw do
       resources :judges do
         get 'get_judges_by_event_id', on: :collection 
         post 'get_judge_by_id', on: :collection
-   
       end
       resources :editors, only: [:index, :create]
       resources :editors do
         get 'get_editors_by_event_id', on: :collection 
       end
-
       resources :events, only: [:index, :create]
       resources :events do
         get 'get_events_by_id', on: :collection
-      
+        get 'get_events_by_judge_id', on: :collection
       end
 
       resources :teams, only: [:index, :create]

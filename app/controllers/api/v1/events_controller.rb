@@ -13,7 +13,6 @@ module Api
 
         def get_events_by_id
           begin
-
             @event = Event.includes(:teams, :organizer, :judges, :editors).find(params[:id])
             message = {
               event: @event,
@@ -29,20 +28,21 @@ module Api
           end
         end
 
-       
-        def create
-        
+        def get_events_by_judge_id
+          events = Event.joins(:judges).where(judges: { member_id: params[:judge_id] })
+          message={}   
+          message[:events]=events
+          render json: {success: true,message: message}
+        end      
+        def create     
           result=@service.create()
           message={}
-          if result[:event]
-          
+          if result[:event]       
             message[:event] = result[:event]
             render json: {success: true ,message: message}, status: :created
           else
-           
             message[:errors] = result[:errors]
             render json: {success: false, message: message }, status: :unprocessable_entity
-  
           end
         end
 

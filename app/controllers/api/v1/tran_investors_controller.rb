@@ -23,7 +23,7 @@ module Api
                                            SUM(tran_investors.amount) AS total_amount, 
                                            team_events.event_id')
         
-          # Modify each object in tranInvestByTeams to include "name" and "value" attributes
+         
           teamInvestScores.map! do |team|
             {
               name: team[1],
@@ -42,8 +42,6 @@ module Api
           result=@service.create()
           if result[:tranInvestor].present?
             message={}
-            # message[:tranInvestor]=result[:tranInvestor]
-            # message[:judge]=result[:judge]
             render json: {success: true, errors: message}, status: :created
           else
             render json: {success: false, errors: result[:errors] }, status: :ok
