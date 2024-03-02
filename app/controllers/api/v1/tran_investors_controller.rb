@@ -42,9 +42,9 @@ module Api
           result=@service.create()
           if result[:tranInvestor].present?
             message={}
-            message[:tranInvestor]=result[:tranInvestor]
-            message[:judge]=result[:judge]
-            render json: {success: true,message: message}, status: :created
+            # message[:tranInvestor]=result[:tranInvestor]
+            # message[:judge]=result[:judge]
+            render json: {success: true, errors: message}, status: :created
           else
             render json: {success: false, errors: result[:errors] }, status: :ok
           end
