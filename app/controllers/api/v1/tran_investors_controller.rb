@@ -46,7 +46,7 @@ module Api
             message[:judge]=result[:judge]
             render json: {success: true,message: message}, status: :created
           else
-            render json: { errors: result[:errors] }, status: :unprocessable_entity
+            render json: {success: false, errors: result[:errors] }, status: :ok
           end
         end
 
