@@ -44,7 +44,7 @@ Rails.application.routes.draw do
       resources :events, only: [:index, :create]
       resources :events do
         get 'get_events_by_id', on: :collection
-        get 'get_events_by_judge_id', on: :collection
+        post 'get_events_by_judge_id', on: :collection
       end
 
       resources :teams, only: [:index, :create]
