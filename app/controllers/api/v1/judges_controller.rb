@@ -63,11 +63,12 @@ module Api
               event_id: params[:event_id]
             }
           end
-      
+          sorted_teams = combined_teams.sort_by { |team| team[:name] }
+
           message = {}
           message[:judge] = judge
           message[:member] = member
-          message[:teamInvestScores] = combined_teams
+          message[:teamInvestScores] = sorted_teams
 
             render json: {success: true,message: message}
          
