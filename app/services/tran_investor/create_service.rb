@@ -22,8 +22,11 @@
                     team_event_id: team_event.id,
                     event_id: @params[:event_id])
                     if tranInvestor.save
+                          puts "success to save tranInvestor"
                           new_amount = judge.current_amount - invest_matrix.one_time_pay
+                          puts "new_amount: #{new_amount}"
                           judge.update(current_amount: new_amount)
+                          puts "success to update judge amount: #{judge.current_amount}"
                       {tranInvestor:tranInvestor, judge:judge}
                     else
                       { errors: tranInvestor.errors.full_messages }
