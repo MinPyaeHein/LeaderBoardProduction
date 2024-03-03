@@ -10,8 +10,9 @@
             invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id])
             team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
             judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id])
+            puts "judge:::: #{judge}"
             if @params[:tran_type] == "add"
-              if (judge.current_amount - invest_matrix.one_time_pay)<0
+              if judge.nil? &&  (judge.current_amount - invest_matrix.one_time_pay)<0
                 { errors: ["Insuficient Judge Acc Balance"] }
               else
                   if !team_event.nil? && !invest_matrix.nil? && !judge.nil?

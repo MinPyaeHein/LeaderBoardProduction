@@ -48,7 +48,7 @@ module Api
           end
 
                 
-          judge = Judge.find(judge_id)
+          judge = Judge.find_by(member_id: judge_id, event_id: event_id)
           member = Member.find(judge_id)
       
           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
