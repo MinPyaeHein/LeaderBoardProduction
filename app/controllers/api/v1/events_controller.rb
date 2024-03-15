@@ -13,13 +13,15 @@ module Api
 
         def get_events_by_id
           begin
-            @event = Event.includes(:teams, :organizer, :judges, :editors).find(params[:id])
+            @event = Event.includes(:teams, :organizer, :judges, :editors,:event_type,:score_type).find(params[:id])
             message = {
               event: @event,
               organizer: @event.organizer,
               judges: @event.judges,
               teams: @event.teams,
-              editors: @event.editors
+              editors: @event.editors,
+              event_type: @event.event_type,
+              score_type: @event.score_type
             }
             render json: { success: true, message: message }, status: :ok
           rescue ActiveRecord::RecordNotFound

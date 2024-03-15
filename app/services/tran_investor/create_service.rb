@@ -79,7 +79,7 @@
               else
                 { errors: tranInvestor.errors.full_messages }
               end
-            # end
+         
         
         end
       

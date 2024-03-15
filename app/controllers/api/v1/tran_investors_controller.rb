@@ -9,6 +9,13 @@ module Api
           message[:tranInvestors]=TranInvestor.all
           render json:{success: true,message: message}, status: :ok
         end   
+        def get_all_tran_investors_by_event
+          event_id = params[:event_id]
+         
+          tranInvestors = TranInvestor.includes(:judge).find(event_id: event_id)
+          message = { tranInvestors: tranInvestors }
+          render json: { success: true, message: message }, status: :ok
+        end
         
         def invest_amounts_by_team()
           event_id = params[:event_id]
