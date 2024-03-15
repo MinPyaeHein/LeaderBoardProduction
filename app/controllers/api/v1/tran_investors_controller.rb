@@ -14,14 +14,14 @@ module Api
           event_id=params[:event_id]
           judges_origin=Judge.includes(:member).where(event_id:event_id)
           judges= []
-
           judges_origin.each do |judge|
-            tran_investors = TranInvestor.where(event_id:event_id,judge_id:judge.member_id)
+            tran_investors = TranInvestor.includes(:team_event).where(event_id:event_id,judge_id:judge.member_id)
+            serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tran_investors, each_serializer: TranInvestorSerializer)
             judge = {
               id: judge.id,
               name: judge.member.name, 
               event_id: judge.event_id,
-              tran_investors: tran_investors
+              tran_investors: serialized_tran_investors
             }
             judges << judge
           end
