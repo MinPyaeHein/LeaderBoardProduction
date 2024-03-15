@@ -50,7 +50,6 @@ module Api
                 
           judge = Judge.find_by(member_id: judge_id, event_id: event_id)
           member = Member.find(judge_id)
-      
           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
           existing_teams_hash = teamInvestScores_old.index_by { |team| team[:team_id] }
           new_teams = existing_teams.reject { |team_id, _team_name| existing_teams_hash.key?(team_id) }

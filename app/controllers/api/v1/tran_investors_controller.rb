@@ -16,7 +16,7 @@ module Api
           judges= []
 
           judges_origin.each do |judge|
-            tran_investors = TranInvestor.where(event_id:event_id,judge_id:judge.id)
+            tran_investors = TranInvestor.where(event_id:event_id,judge_id:judge.member_id)
             judge = {
               id: judge.id,
               name: judge.member.name, 
