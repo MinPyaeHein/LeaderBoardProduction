@@ -9,14 +9,26 @@ module Api
           message[:tranInvestors]=TranInvestor.all
           render json:{success: true,message: message}, status: :ok
         end   
+
         def get_all_tran_investors_by_event
-          event_id = params[:event_id]        
-          tranInvestors = TranInvestor.includes(:judge).where(event_id: event_id)
-          serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tranInvestors, each_serializer: TranInvestorSerializer)
-          message = { tranInvestors: serialized_tran_investors}
+          event_id=params[:event_id]
+          judges_origin=Judge.includes(:member).where(event_id:event_id)
+          judges= []
+
+          judges_origin.each do |judge|
+            tran_investors = TranInvestor.where(event_id:event_id,judge_id:judge.id)
+            judge = {
+              id: judge.id,
+              name: judge.member.name, 
+              event_id: judge.event_id,
+              tran_investors: tran_investors
+            }
+            judges << judge
+          end
+          message = { judges: judges}
           render json: { success: true, message: message }, status: :ok
         end
-        
+
         def invest_amounts_by_team()
           event_id = params[:event_id]
           teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
