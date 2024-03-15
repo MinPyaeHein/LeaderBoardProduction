@@ -1,5 +1,5 @@
 # app/controllers/api/v1/members_controller.rb
-
+require 'active_model_serializers'
 module Api
     module V1
       class TranInvestorsController < ApplicationController
@@ -12,7 +12,8 @@ module Api
         def get_all_tran_investors_by_event
           event_id = params[:event_id]        
           tranInvestors = TranInvestor.includes(:judge).where(event_id: event_id)
-          message = { tranInvestors: tranInvestors }
+          serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tranInvestors, each_serializer: TranInvestorSerializer)
+          message = { tranInvestors: serialized_tran_investors}
           render json: { success: true, message: message }, status: :ok
         end
         

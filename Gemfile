@@ -11,6 +11,7 @@ gem "sqlite3", "~> 1.4"
 gem "puma", ">= 5.0"
 gem 'jwt'
 gem 'pg', group: :production
+gem 'active_model_serializers'
 
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
@@ -40,6 +41,7 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem 'pg'
+  gem 'active_model_serializers'
  
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
