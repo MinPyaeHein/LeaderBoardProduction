@@ -12,7 +12,9 @@
             judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id])
             puts "judge:::: #{judge}"
             if @params[:tran_type] == "add"
-              if judge.nil? &&  (judge.current_amount - invest_matrix.one_time_pay)<0
+              puts "judge::::Amount #{judge.current_amount - invest_matrix.one_time_pay}"
+              if  judge != nil &&  (judge.current_amount - invest_matrix.one_time_pay)<0
+                puts "insuficient amount"
                 { errors: ["Insuficient Judge Acc Balance"] }
               else
                   if !team_event.nil? && !invest_matrix.nil? && !judge.nil?
