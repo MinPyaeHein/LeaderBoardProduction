@@ -47,7 +47,7 @@
       private
       def judge_acc_amount_to_judge
        
-        judges = Judge.where(event_id: @params[:event_id], active: true)
+        judges = Judge.where(event_id: @params[:event_id], active: true,judge_type: @params[:investor_type])
       
         if !judges.nil? && judges.present?
           judges.each do |judge|
