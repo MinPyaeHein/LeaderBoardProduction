@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_18_172743) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_19_160924) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,6 +140,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_18_172743) do
     t.datetime "updated_at", null: false
     t.integer "event_id"
     t.float "total_score"
+    t.integer "pitching_order", default: 1
   end
 
   create_table "tran_investors", force: :cascade do |t|
