@@ -21,6 +21,7 @@
               member_id:  member_id,  
               event_id: @params[:event_id],
               active:  @params[:active],
+              judge_type: @params[:judge_type],
               current_amount:  @params[:current_amount]
             ) 
             if judge.save

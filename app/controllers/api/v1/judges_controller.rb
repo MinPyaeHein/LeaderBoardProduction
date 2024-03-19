@@ -85,7 +85,7 @@ module Api
         end
         private
         def judge_params
-          params.require(:judge).permit(:event_id ,:judge_id,:active, :current_amount, member_ids: [])
+          params.require(:judge).permit(:judge_type,:event_id ,:judge_id,:active, :current_amount, member_ids: [])
         end
         
         def set_service

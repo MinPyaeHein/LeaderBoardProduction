@@ -7,14 +7,16 @@
       end
       def create
             
-            invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id])
+            invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id],investor_type: @params[:investor_type])
             team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
-            judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id])
-            puts "judge:::: #{judge}"
+            judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id],judge_type: @params[:investor_type])
+            puts "invest_matrix: #{invest_matrix} team_event: #{team_event} judge: #{judge}"
+            puts "invest_matrix: #{invest_matrix} team_event: #{team_event} judge: #{judge}"
+            puts "invest_matrix: #{invest_matrix} team_event: #{team_event} judge: #{judge}"
             if @params[:tran_type] == "add"
-              puts "judge::::Amount #{judge.current_amount - invest_matrix.one_time_pay}"
+             
               if  judge != nil &&  (judge.current_amount - invest_matrix.one_time_pay)<0
-                puts "insuficient amount"
+              
                 { errors: ["Insuficient Judge Acc Balance"] }
               else
                   if !team_event.nil? && !invest_matrix.nil? && !judge.nil?
@@ -64,10 +66,12 @@
             end
       
         end
-        def create_initailal_tran
+        def create_initailal_tran(event_id,team_id)
        
           invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id])
-          team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
+          puts "invest_matrix:-----------------#{invest_matrix}"
+          puts "event_id:-----------------#{@params[:event_id]} team_id: #{team_id}"
+          team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: team_id)
          
             # if !team_event.nil? && !invest_matrix.nil? 
               tranInvestor= ::TranInvestor.create(

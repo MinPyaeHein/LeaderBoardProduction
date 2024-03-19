@@ -9,29 +9,31 @@
   
       def create
         errors=[]
-        result=check_investor_matrix
-        puts "result: :::::#{result}"
-        if result[:errors].nil?
-          puts "Arrive Create Investor Matrix"
+        result_check_investor=check_investor_matrix
+    
+        if result_check_investor[:errors].nil?
+         
             investorMatrix= ::InvestorMatrix.create(
             total_amount: @params[:total_amount],
             judge_acc_amount: @params[:judge_acc_amount],
             one_time_pay: @params[:one_time_pay],
+            investor_type: @params[:investor_type],
             event_id: @params[:event_id])
             if @params[:judge_acc_amount].present?
               judge_acc_amount_to_judge
             end              
-            if investorMatrix.save && result[:errors].nil?   
+            if investorMatrix.save   
+                result_team_event=nil
                 teams=Team.where(event_id: @params[:event_id])
                 if teams.present?
                   teams.each do |team|
-                    result=@teamEventService.create(@params[:event_id],team.id)
-                    if result[:errors].nil? &&result[:errors].present?
-                      errors << result[:errors]
+                    result_team_event=@teamEventService.create(@params[:event_id],team.id)
+                    if result_team_event[:errors].nil? &&result_team_event[:errors].present?
+                      errors << result_team_event[:errors]
                     end
                   end
                 end
-                {investorMatrix:investorMatrix, team_event:result[:team_event]}
+                {investorMatrix:investorMatrix, team_event:result_team_event[:team_event]}
             else
               if investorMatrix.errors.present?
                 errors << investorMatrix.errors.full_messages
@@ -39,7 +41,7 @@
               { errors: errors}
             end
         else
-          result
+          result_investor_matrix
         end     
       end
       private
@@ -55,10 +57,10 @@
         end
       end
       def check_investor_matrix
-        score_matrix = ::InvestorMatrix.find_by(event_id: @params[:event_id])
-        if !score_matrix.nil? 
-          return { errors: ["This Investor Matrix is already exist in the event."] }
-        end
+        # score_matrix = ::InvestorMatrix.find_by(event_id: @params[:event_id])
+        # if !score_matrix.nil? 
+        #   return { errors: ["This Investor Matrix is already exist in the event."] }
+        # end
         
         {}
       end
