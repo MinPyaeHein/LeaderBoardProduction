@@ -23,7 +23,7 @@
                     tranInvestor= ::TranInvestor.create(
                     amount: invest_matrix.one_time_pay,
                     investor_matrix_id: invest_matrix.id,
-                    judge_id: @params[:judge_id],
+                    judge_id: judge.id,
                     team_event_id: team_event.id,
                     event_id: @params[:event_id])
                     if tranInvestor.save
@@ -34,6 +34,7 @@
                           puts "success to update judge amount: #{judge.current_amount}"
                       {tranInvestor:tranInvestor, judge:judge}
                     else
+                      puts "failed to add tranInvestor"
                       { errors: tranInvestor.errors.full_messages }
                     end
                   else

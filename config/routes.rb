@@ -51,6 +51,7 @@ Rails.application.routes.draw do
       resources :teams, only: [:index, :create]
       resources :teams do
         post 'create_team_with_leaders', on: :collection
+        get 'get_teams_by_event_id', on: :collection
       end
 
     end

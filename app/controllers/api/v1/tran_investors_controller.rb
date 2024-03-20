@@ -33,23 +33,26 @@ module Api
           event_id = params[:event_id]
           teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
                                           .select('teams.id AS team_id, team_events.event_id, 
-                                          tran_investors.team_event_id AS team_event_id, 
+                                          tran_investors.team_event_id AS team_event_id,teams.pitching_order
                                           SUM(tran_investors.amount) AS total_amount')
                                           .joins(team_event: :team)
                                           .where(team_events: { event_id: event_id })
                                           .pluck('teams.id AS team_id, teams.name AS team_name,
                                            tran_investors.team_event_id AS team_event_id, 
                                            SUM(tran_investors.amount) AS total_amount, 
-                                           team_events.event_id')
+                                           team_events.event_id,teams.pitching_order')
         
          
           teamInvestScores.map! do |team|
+            print "team: #{team[0]} #{team[1]} #{team[2]} #{team[3]} #{team[4]} #{team[5]}"
             {
               name: team[1],
               value: team[3],
               team_id: team[0],
               team_event_id: team[2],
+              team_pitching_order: team[5],
               event_id: team[4]
+
             }
           end
         

@@ -34,6 +34,11 @@ module Api
           render json:{success: true,message: message}, status: :created
         
         end
+        def get_teams_by_event_id
+          message={}
+          message[:teams]=Team.where(event_id: params[:event_id])
+          render json:{success: true,message: message}
+        end
         
 
         private
