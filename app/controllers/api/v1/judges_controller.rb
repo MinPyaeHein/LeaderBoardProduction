@@ -37,7 +37,7 @@ module Api
               .pluck('teams.id AS team_id, teams.name AS team_name,
               tran_investors.team_event_id AS team_event_id, 
               SUM(tran_investors.amount) AS total_amount, 
-              team_events.event_id')
+              team_events.event_id,teams.pitching_order')
             teamInvestScores_old.map! do |team|
             {
               name: team[1],
