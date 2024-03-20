@@ -1,5 +1,5 @@
 # app/controllers/api/v1/members_controller.rb
-
+require 'active_model_serializers'
 module Api
     module V1
       class JudgesController < ApplicationController
@@ -81,25 +81,18 @@ module Api
         
         def get_judges_by_event_id
           event_id = params[:event_id]     
-          members = Member.joins(judges: :team_events)
-                          .where('team_events.event_id = ?', event_id)
-                          .select('judges.*, teams.pitching_order') 
-                 
-          message = {}   
-          message[:judges] = members
+          judges=Judge.where(event_id: event_id)
+          puts "judges ---#{judges}"
+          serialized_judges = ActiveModelSerializers::SerializableResource.new(judges, each_serializer: JudgeSerializer)
+          puts "serialized_judges ---#{serialized_judges}"
+          message = {
+            judges: serialized_judges
+          }
+         
           render json: { success: true, message: message }
+
         end
                 
-        def get_judges_by_event_id
-          event_id = params[:event_id]     
-          members = Member.joins(judges: :team_events)
-                          .where('team_events.event_id = ?', event_id)
-                          .select('judges.*, teams.pitching_order') 
-                 
-          message = {}   
-          message[:judges] = members
-          render json: { success: true, message: message }
-        end
         
         private
         def judge_params

@@ -69,7 +69,6 @@
           team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: team_id)
               tranInvestor= ::TranInvestor.create(
               amount: 0.0,
-              investor_matrix_id: invest_matrix.id,
               judge_id: 4,
               team_event_id: team_event.id,
               event_id: @params[:event_id])
