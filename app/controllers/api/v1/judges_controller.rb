@@ -44,7 +44,8 @@ module Api
               amount: team[3],
               team_id: team[0],
               team_event_id: team[2],
-              event_id: team[4]
+              event_id: team[4],
+              pitching_order: team[5]
             }
           end
 
@@ -54,13 +55,15 @@ module Api
           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
           existing_teams_hash = teamInvestScores_old.index_by { |team| team[:team_id] }
           new_teams = existing_teams.reject { |team_id, _team_name| existing_teams_hash.key?(team_id) }
-          combined_teams = teamInvestScores_old + new_teams.map do |team_id, team_name|
+          combined_teams = teamInvestScores_old + new_teams.map do |team_id, team_name, pitching_order|
             {
               team_id: team_id,
               name: team_name,
               amount: 0,
               team_event_id: nil,
-              event_id: params[:event_id]
+              event_id: params[:event_id],
+              pitching_order: pitching_order
+
             }
           end
           sorted_teams = combined_teams.sort_by { |team| team[:name] }
