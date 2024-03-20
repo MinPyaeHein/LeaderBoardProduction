@@ -19,6 +19,7 @@ module Api
             serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tran_investors, each_serializer: TranInvestorSerializer)
             judge = {
               id: judge.id,
+              member_id: judge.member_id,
               name: judge.member.name, 
               event_id: judge.event_id,
               tran_investors: serialized_tran_investors
@@ -33,7 +34,7 @@ module Api
           event_id = params[:event_id]
           teamInvestScores = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
                                           .select('teams.id AS team_id, team_events.event_id, 
-                                          tran_investors.team_event_id AS team_event_id,teams.pitching_order
+                                          tran_investors.team_event_id AS team_event_id,
                                           SUM(tran_investors.amount) AS total_amount')
                                           .joins(team_event: :team)
                                           .where(team_events: { event_id: event_id })

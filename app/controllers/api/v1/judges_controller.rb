@@ -25,6 +25,7 @@ module Api
           event_id = params[:event_id] 
           team_id = params[:team_id] 
           judge_id = params[:judge_id] 
+          judge = Judge.find_by(member_id: judge_id, event_id: event_id)
           puts "event_id ==#{event_id} team_id ==#{team_id} judge_id ==#{judge_id}"
          
           teamInvestScores_old = TranInvestor.group(:team_event_id, 'teams.id', 'team_events.event_id')
@@ -32,7 +33,7 @@ module Api
               tran_investors.team_event_id AS team_event_id, 
               SUM(tran_investors.amount) AS total_amount')
               .joins(team_event: :team)
-              .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: params[:judge_id] })
+              .where(team_events: { event_id: params[:event_id] }, tran_investors: { judge_id: judge.id})
               .pluck('teams.id AS team_id, teams.name AS team_name,
               tran_investors.team_event_id AS team_event_id, 
               SUM(tran_investors.amount) AS total_amount, 
@@ -48,7 +49,7 @@ module Api
           end
 
                 
-          judge = Judge.find_by(member_id: judge_id, event_id: event_id)
+         
           member = Member.find(judge_id)
           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name)
           existing_teams_hash = teamInvestScores_old.index_by { |team| team[:team_id] }
