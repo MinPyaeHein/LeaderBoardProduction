@@ -45,7 +45,7 @@ module Api
         
          
           teamInvestScores.map! do |team|
-            print "team: #{team[0]} #{team[1]} #{team[2]} #{team[3]} #{team[4]} #{team[5]}"
+            
             {
               name: team[1],
               value: team[3],

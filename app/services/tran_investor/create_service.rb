@@ -39,7 +39,7 @@
                   end
               end
             elsif @params[:tran_type] == "sub"
-              tran_record=TranInvestor.where(event_id: @params[:event_id], judge_id: @params[:judge_id], team_event_id: team_event.id)
+              tran_record=TranInvestor.where(event_id: @params[:event_id], judge_id: judge.id, team_event_id: team_event.id)
               if (tran_record.sum(:amount) - invest_matrix.one_time_pay)<0
                 { errors: ["You should not subtract investment amount more than you invested!!"] }
               else
