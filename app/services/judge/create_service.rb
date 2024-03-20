@@ -16,7 +16,11 @@
             puts "result_error: #{result[:errors]}"
             errors << result[:errors]
           else
-            puts "success to save"
+          investor_matrix=InvestorMatrix.where(event_id: @params[:event_id],investor_type: @params[:judge_type])
+          if investor_matrix.present?
+            @params[:current_amount]=investor_matrix.first.judge_acc_amount
+          end
+            
             judge = ::Judge.create(
               member_id:  member_id,  
               event_id: @params[:event_id],

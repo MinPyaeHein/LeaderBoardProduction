@@ -37,14 +37,18 @@ module Api
                     tran_investors.team_event_id AS team_event_id, 
                     SUM(tran_investors.amount) AS total_amount, 
                     team_events.event_id, teams.pitching_order')
+
+
           
           teamInvestScores_old.map! do |team|
+           
             {
               name: team[1],
               amount: team[3],
               team_id: team[0],
               team_event_id: team[2],
               event_id: team[4],
+
               pitching_order: team[5]
             }
           end
