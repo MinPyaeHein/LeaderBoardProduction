@@ -12,7 +12,7 @@ class Member::LoginLogoutService
       
       if user.present?
         provided_password = @params[:password].downcase # Convert provided password to lowercase
-        stored_password = user.password.downcase # Assuming user's password is stored in lowercase
+        stored_password = user.password_digest.downcase # Assuming user's password is stored in lowercase
         
         if provided_password == stored_password
           token = user.generate_jwt
