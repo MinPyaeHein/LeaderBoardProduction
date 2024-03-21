@@ -16,7 +16,7 @@
           faculty_id: @params[:faculty_id],
           org_name: @params[:org_name],
           profile_url: @params[:profile_url],
-          active: @params[:active]
+          active: true
         )
       
         if @member.save
