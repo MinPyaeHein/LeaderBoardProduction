@@ -16,7 +16,7 @@ module Api
           judges= []
           judges_origin.each do |judge|
             tran_investors = TranInvestor.includes(:team_event).where(event_id:event_id,judge_id:judge.id)
-            serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tran_investors, each_serializer: TranInvestorSerializer)
+            serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tran_investors.sort_by(&:created_at), each_serializer: TranInvestorSerializer)
             judge = {
               id: judge.id,
               member_id: judge.member_id,
