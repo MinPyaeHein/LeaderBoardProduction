@@ -1,5 +1,5 @@
 class TranInvestorSerializer < ActiveModel::Serializer
-    attributes :id, :amount, :investor_matrix_id, :judge_id, :team_event_id, :event_id
+    attributes :id, :amount, :judge_id, :team_event_id, :event_id
     # has_one :judge
     # has_one :team_event
     attribute :judge_member_name, if: -> { object.judge.present? } do
