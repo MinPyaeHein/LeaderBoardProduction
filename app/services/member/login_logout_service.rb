@@ -8,7 +8,8 @@ class Member::LoginLogoutService
     end
 
     def login
-      user = User.find_by(email: @params[:email])
+      user = User.find_by(email: @params[:email].downcase) || User.find_by(email: @params[:email].upcase)
+      
       if user.present?
         provided_password = @params[:password].downcase # Convert provided password to lowercase
         stored_password = user.password.downcase # Assuming user's password is stored in lowercase
