@@ -8,24 +8,24 @@ class Member::LoginLogoutService
     end
 
     def login
-      user = User.find_by(email: @params[:email].downcase) || User.find_by(email: @params[:email].upcase)
-      
-      if user.present?
-        provided_password = @params[:password].downcase # Convert provided password to lowercase
-        stored_password = user.password_digest.downcase # Assuming user's password is stored in lowercase
-        
-        if provided_password == stored_password
-          token = user.generate_jwt
-          member = user.member
-          return { token: token, user: user, member: member }
+        user = User.find_by(email:@params[:email])
+        if !user.nil?
+          bool=user.authenticate(@params[:password])
+          puts "bool: #{bool}"
+          puts "user: #{user}"
+          member = user.member if user
+          if user.present? && bool
+            token = user.generate_jwt
+            puts "token: #{token}"
+            return  { token: token, user: user, member: member }
+          else
+            return  { errors: 'Invalid email or password' }
+          end
         else
-          return { errors: 'Invalid email or password' }
+          return  { errors: "User #{@params[:email]} not found" }
         end
-      else
-        return { errors: "User #{@params[:email]} not found" }
-      end
+      
     end
-    
 
     def logout
        

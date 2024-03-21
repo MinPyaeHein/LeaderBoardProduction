@@ -45,7 +45,7 @@
             email: @params[:email], 
             role: @params[:role],
             encrypted_password: bcPassword, 
-            password_digest: @params[:password], 
+            password_digest: bcPassword, 
             member_id: member.id
             )
             
