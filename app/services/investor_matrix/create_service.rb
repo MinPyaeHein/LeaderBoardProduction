@@ -1,18 +1,18 @@
 # app/services/member_service.rb
 
 
-    class InvestorMatrix::CreateService 
+    class InvestorMatrix::CreateService
       def initialize(params)
         @params = params
         @teamEventService = TeamEvent::CreateService.new(@params)
       end
-  
+
       def create
         errors=[]
         result_check_investor=check_investor_matrix
-    
+
         if result_check_investor[:errors].nil?
-         
+
             investorMatrix= ::InvestorMatrix.create(
             total_amount: @params[:total_amount],
             judge_acc_amount: @params[:judge_acc_amount],
@@ -21,8 +21,8 @@
             event_id: @params[:event_id])
             if @params[:judge_acc_amount].present?
               judge_acc_amount_to_judge
-            end              
-            if investorMatrix.save   
+            end
+            if investorMatrix.save
                 result_team_event=nil
                 teams=Team.where(event_id: @params[:event_id])
                 if teams.present?
@@ -37,34 +37,29 @@
             else
               if investorMatrix.errors.present?
                 errors << investorMatrix.errors.full_messages
-              end         
+              end
               { errors: errors}
             end
         else
           result_investor_matrix
-        end     
+        end
       end
       private
       def judge_acc_amount_to_judge
-       
+
         judges = Judge.where(event_id: @params[:event_id], active: true,judge_type: @params[:investor_type])
-      
+
         if !judges.nil? && judges.present?
           judges.each do |judge|
             Judge.update(judge.id, current_amount: @params[:judge_acc_amount])
-           
+
           end
         end
       end
       def check_investor_matrix
-        # score_matrix = ::InvestorMatrix.find_by(event_id: @params[:event_id])
-        # if !score_matrix.nil? 
-        #   return { errors: ["This Investor Matrix is already exist in the event."] }
-        # end
-        
+       
+
         {}
       end
-    
-    end
 
-  
+    end

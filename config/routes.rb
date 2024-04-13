@@ -11,13 +11,13 @@ Rails.application.routes.draw do
       resources :judges, only: [:index, :create]
       resources :score_infos, only: [:index, :create]
       resources :score_matrices, only: [:index, :create]
-      resources :investor_matrices, only: [:index, :create] 
+      resources :investor_matrices, only: [:index, :create]
       resources :team_events, only: [:index]
       resources :tran_investors, only: [:index, :create]
       resources :tran_investors do
         post 'invest_amounts_by_team', on: :collection
         post 'get_all_tran_investors_by_event', on: :collection
-        
+
       end
 
       resources :members, only: [:index, :create, :update]
@@ -32,15 +32,15 @@ Rails.application.routes.draw do
 
       resources :team_members, only: [:index, :create]
       resources :team_members do
-        get 'get_members_by_team_id', on: :collection 
+        get 'get_members_by_team_id', on: :collection
       end
       resources :judges do
-        get 'get_judges_by_event_id', on: :collection 
+        get 'get_judges_by_event_id', on: :collection
         post 'get_judge_by_id', on: :collection
       end
       resources :editors, only: [:index, :create]
       resources :editors do
-        get 'get_editors_by_event_id', on: :collection 
+        get 'get_editors_by_event_id', on: :collection
       end
       resources :events, only: [:index, :create]
       resources :events do
@@ -53,6 +53,49 @@ Rails.application.routes.draw do
         post 'create_team_with_leaders', on: :collection
         get 'get_teams_by_event_id', on: :collection
       end
+
+    end
+  end
+  namespace :api do
+    namespace :v2 do
+
+      resources :member do
+        post 'signUp', on: :collection, to: 'members#create'
+        post 'login', on: :collection, to: 'members#login'
+        post 'signIn', on: :collection, to: 'members#login'
+        patch '',on: :collection, to: 'members#update'
+      end
+
+      #judge
+        post 'transcation',  to: 'tran_investors#create'
+        get ':id/transcation', to: 'tran_investors#get_all_tran_investors_by_event'
+
+
+      #organizer
+        post 'event', to: 'events#create'
+        post 'scoreMatrix',  to: 'score_matrices#create'
+        post 'investMatrix', to: 'investor_matrices#create'
+        post 'event/judge',  to: 'judges#create'
+        post 'event/teamLeader',  to: 'team_members#create'
+
+      #Add Team member
+       post 'team/member', to: 'team_members#create'
+
+      #Event
+
+       get 'events', to: 'events#index'
+       get 'event/:id', to: 'events#get_events_by_id'
+
+      #Team
+       get 'teams/event/:id', to: 'teams#get_teams_by_event_id'
+       get 'team/event/:event_id/judge/:judge_id', to: 'judges#get_judge_by_id'
+
+      #Transcation Log
+       get 'transcation/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'
+       get 'transcation/event/:event_id/judge/:judge_id', to: 'tran_investors#get_all_tran_investors_by_event_and_judge'
+
+
+
 
     end
   end

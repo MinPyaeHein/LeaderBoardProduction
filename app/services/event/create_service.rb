@@ -6,12 +6,11 @@
         @current_user = current_user
         @params = params
       end
-  
+
       def create
-        puts "current user ID: #{@current_user.id}"
-        puts "ScoreType ID: #{@params[:score_type_id]}"
+
         event= ::Event.create(
-                name: @params[:name], 
+                name: @params[:name],
                 desc: @params[:desc],
                 active: @params[:active],
                 start_date: @params[:start_date],
@@ -20,19 +19,17 @@
                 end_time: @params[:end_time],
                 all_day: @params[:all_day],
                 location: @params[:location],
-                organizer_id: @current_user.id, 
+                organizer_id: @current_user.id,
                 status: @params[:status],
                 event_type_id: @params[:event_type_id],
                 score_type_id: @params[:score_type_id])
-        if event.save     
+        if event.save
           { event: event}
         else
           { errors: event.errors.full_messages }
         end
-       
-      
-      end
-    
-    end
 
-  
+
+      end
+
+    end

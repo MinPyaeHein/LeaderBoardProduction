@@ -1,7 +1,7 @@
 # app/controllers/api/v1/members_controller.rb
 require 'active_model_serializers'
 module Api
-    module V1
+    module V2
       class TranInvestorsController < ApplicationController
         before_action :set_service, only: [:create]
         def index
@@ -11,7 +11,7 @@ module Api
         end
 
         def get_all_tran_investors_by_event
-          event_id=params[:event_id]
+          event_id=params[:id]
           judges_origin=Judge.includes(:member).where(event_id:event_id)
           judges= []
           judges_origin.each do |judge|
@@ -27,6 +27,25 @@ module Api
             judges << judge
           end
           message = { judges: judges}
+          render json: { success: true, message: message }, status: :ok
+        end
+
+        def get_all_tran_investors_by_event_and_judge
+          event_id=params[:event_id]
+          judge_id=params[:judge_id]
+            judge=Judge.find_by(member_id:judge_id)
+            puts("judge_id=",judge.id)
+            tran_investors = TranInvestor.includes(:team_event).where(event_id:event_id,judge_id:judge.id)
+            serialized_tran_investors = ActiveModelSerializers::SerializableResource.new(tran_investors.sort_by(&:created_at), each_serializer: TranInvestorSerializer)
+            judge = {
+              id: judge.id,
+              member_id: judge.member_id,
+              name: judge.member.name,
+              event_id: judge.event_id,
+              tran_investors: serialized_tran_investors
+            }
+
+          message = { judge: judge}
           render json: { success: true, message: message }, status: :ok
         end
 

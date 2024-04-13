@@ -1,7 +1,7 @@
 # app/controllers/api/v1/members_controller.rb
 
 module Api
-    module V1
+    module V2
       class MembersController < ApplicationController
         skip_before_action :authenticate_request, only: [:create, :login]
         before_action :set_service, only: [:create, :login, :update]
@@ -9,6 +9,7 @@ module Api
           render 'score_cards/home'
         end
         def login
+          print("Arrive login controller");
 
           result=@loginLogout_service.login
           message={}
@@ -72,6 +73,7 @@ module Api
           render json: result[:errors], status: :unprocessable_entity
         end
       end
+
         def events_by_member_id
 
           @member= Member.includes(:teams,:judges,:users,:editors).find(params[:id])
