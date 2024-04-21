@@ -1,9 +1,6 @@
 # app/services/member_service.rb
-
-
     class Team::CreateService
       def initialize(params,current_user)
-
         @params = params
         @current_user = current_user
         @teamMemberService = TeamMember::CreateService.new(params)
@@ -33,10 +30,10 @@
 
             if resultTeam
               @params[:team_id]=team.id
-              resultTeamMember=@teamMemberService.create()
-              if resultTeamMember[:teamMembers].present?
+              resultTeamMember=@teamMemberService.create(team.id,member_id,@params[:event_id])
+              if resultTeamMember[:teamMember].present?
                   resultTeamEvent=@teamEventService.create(@params[:event_id],team.id)
-                  teamLeaders << resultTeamMember[:teamMembers]
+                  teamLeaders << resultTeamMember[:teamMember]
                   teamEvents << resultTeamEvent[:teamEvent]
                   teams << team
               else
