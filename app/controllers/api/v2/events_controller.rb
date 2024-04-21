@@ -6,7 +6,7 @@ module Api
         before_action :set_service, only: [:create,:update]
         def index
           message={}
-          message[:events]=Event.where(active: true)
+          message[:events]=Event.all
           render json: {success: true,message: message}, status: :ok
 
         end
