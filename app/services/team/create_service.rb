@@ -3,14 +3,14 @@
 
     class Team::CreateService
       def initialize(params,current_user)
-        
+
         @params = params
         @current_user = current_user
         @teamMemberService = TeamMember::CreateService.new(params)
         @teamEventService = TeamEvent::CreateService.new(params)
       end
 
-      def createTeamWithLeaders  
+      def createTeamWithLeaders
         errors=[]
         teams=[]
         teamEvents=[]
@@ -30,30 +30,30 @@
               event_id: @params[:event_id]
             )
             resultTeam=team.save
-            
-            if resultTeam 
+
+            if resultTeam
               @params[:team_id]=team.id
               resultTeamMember=@teamMemberService.create()
               if resultTeamMember[:teamMembers].present?
                   resultTeamEvent=@teamEventService.create(@params[:event_id],team.id)
                   teamLeaders << resultTeamMember[:teamMembers]
                   teamEvents << resultTeamEvent[:teamEvent]
-                  teams << team 
+                  teams << team
               else
                 errors << resultTeamMember[:errors]
               end
-            else 
+            else
               errors << team.errors.full_messages
-             
-           
+
+
             end
           end
         end
         { teams: teams,teamEvents: teamEvents, teamLeaders: teamLeaders ,errors: errors}
       end
-  
-      def create  
-        puts "params first:::: #{@params[:member_ids].first}"
+
+      def create
+
         errors=[]
         team=nil
         resultTeamEvent=nil
@@ -78,12 +78,9 @@
             resultTeamMember=@teamMemberService.create()
             resultTeamEvent=@teamEventService.create(@params[:event_id],team.id)
             if !(teamStatus && resultTeamMember[:teamMembers].present? && resultTeamEvent[:teamEvent].present?)
-          
               errors << resultTeamEvent[:errors] if team.errors.full_messages.present?
               errors << resultTeamEvent[:errors] if resultTeamEvent[:errors].present?
-              raise ActiveRecord::Rollback  
-           
-             
+              raise ActiveRecord::Rollback
             end
           end
         end
@@ -95,12 +92,10 @@
       end
 
       private
-     
 
-       
-      
-  
-    
+
+
+
+
+
     end
-
-  

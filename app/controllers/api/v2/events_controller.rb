@@ -3,7 +3,7 @@
 module Api
     module V2
       class EventsController < ApplicationController
-        before_action :set_service, only: [:create]
+        before_action :set_service, only: [:create,:update]
         def index
           message={}
           message[:events]=Event.where(active: true)
@@ -30,12 +30,21 @@ module Api
           end
         end
 
+        def update
+          puts("update event controller")
+          result=@update_service.update
+          message={}
+          message[:event] = result[:event]
+          render json: {success: true,message: message}, status: :ok
+        end
+
         def get_events_by_judge_id
           events = Event.joins(:judges).where(judges: { member_id: params[:judge_id] })
           message={}
           message[:events]=events
           render json: {success: true,message: message}
         end
+
         def create
           result=@service.create()
           message={}
@@ -50,10 +59,12 @@ module Api
 
         private
         def event_params
-          params.require(:event).permit(:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id,:status )
+          params.require(:event).permit(:event_id,:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id,:status )
         end
         def set_service
           @service = Event::CreateService.new(event_params,current_user)
+          @update_service= Event::UpdateService.new(event_params,current_user)
+
         end
 
       end

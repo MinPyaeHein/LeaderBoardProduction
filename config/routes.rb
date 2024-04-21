@@ -64,7 +64,9 @@ Rails.application.routes.draw do
         post 'login', on: :collection, to: 'members#login'
         post 'signIn', on: :collection, to: 'members#login'
         patch '',on: :collection, to: 'members#update'
+        get '',on: :collection, to: 'members#get_member_by_id'
       end
+        get 'members', to: 'members#index'
 
       #judge
         post 'transcation',  to: 'tran_investors#create'
@@ -77,6 +79,8 @@ Rails.application.routes.draw do
         post 'investMatrix', to: 'investor_matrices#create'
         post 'event/judge',  to: 'judges#create'
         post 'event/teamLeader',  to: 'team_members#create'
+        post 'event/team', to: 'teams#create'
+        post 'event/teams', to: 'teams#create_team_with_leaders'
 
       #Add Team member
        post 'team/member', to: 'team_members#create'
@@ -85,6 +89,7 @@ Rails.application.routes.draw do
 
        get 'events', to: 'events#index'
        get 'event/:id', to: 'events#get_events_by_id'
+       put 'event', to: 'events#update'
 
       #Team
        get 'teams/event/:id', to: 'teams#get_teams_by_event_id'

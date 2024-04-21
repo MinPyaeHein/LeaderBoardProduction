@@ -8,9 +8,9 @@ default: &default
 
 development:
   <<: *default
-  database: leader_board_new_db
+  database: leader_board_db
 
 test:
   <<: *default
-  database: leader_board_new_db
+  database: leader_board_db
 # production: <%= ENV['DATABASE_URL'] %>

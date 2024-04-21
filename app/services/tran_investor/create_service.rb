@@ -6,7 +6,6 @@
         @params = params
       end
       def create
-
             invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id],investor_type: @params[:investor_type])
             team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
             judge = Judge.find_by(member_id: @params[:judge_id],event_id: @params[:event_id],judge_type: @params[:investor_type])
@@ -28,7 +27,7 @@
                           judge.update(current_amount: new_amount)
                       {tranInvestor:tranInvestor, judge:judge}
                     else
-                     
+
                       { errors: tranInvestor.errors.full_messages }
                     end
                   else
