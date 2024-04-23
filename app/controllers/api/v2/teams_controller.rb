@@ -3,11 +3,18 @@
 module Api
     module V2
       class TeamsController < ApplicationController
-        before_action :set_service, only: [:create,:create_team_with_leaders]
+
+        before_action :set_service, only: [:create,:create_team_with_leaders,:update]
         def index
           message={}
           message[:teams]=Team.all
           render json:{success: true,message: message}
+        end
+        def update
+          result=@update_service.update
+          message={}
+          message[:team] = result[:team]
+          render json: {success: true,message: message}, status: :ok
         end
 
         def create
@@ -47,7 +54,7 @@ module Api
           params.require(:team).permit(:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
         end
         def set_service
-
+          @update_service = Member::UpdateService.new(member_params)
           @service = Team::CreateService.new(team_params,current_user)
         end
 

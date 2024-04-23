@@ -69,8 +69,8 @@ Rails.application.routes.draw do
         get 'members', to: 'members#index'
 
       #judge
-        post 'transcation',  to: 'tran_investors#create'
-        get ':id/transcation', to: 'tran_investors#get_all_tran_investors_by_event'
+        post 'transaction',  to: 'tran_investors#create'
+        get ':id/transaction', to: 'tran_investors#get_all_tran_investors_by_event'
 
 
       #organizer
@@ -95,8 +95,8 @@ Rails.application.routes.draw do
        get 'team/event/:event_id/judge/:judge_id', to: 'judges#get_judge_by_id'
 
       #Transcation Log
-       get 'transcation/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'
-       get 'transcation/event/:event_id/judge/:judge_id', to: 'tran_investors#get_all_tran_investors_by_event_and_judge'
+       get 'transaction/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'
+       get 'transaction/event/:event_id/judge/:judge_id', to: 'tran_investors#get_all_tran_investors_by_event_and_judge'
 
     end
   end
