@@ -33,7 +33,11 @@
                     end
                   end
                 end
-                {investorMatrix:investorMatrix, team_event:result_team_event[:team_event]}
+                if result_team_event.nil?
+                  { investorMatrix: investorMatrix, team_event: nil }
+                else
+                  { investorMatrix: investorMatrix, team_event: result_team_event[:team_event] }
+                end
             else
               if investorMatrix.errors.present?
                 errors << investorMatrix.errors.full_messages
@@ -57,7 +61,7 @@
         end
       end
       def check_investor_matrix
-       
+
 
         {}
       end
