@@ -68,7 +68,8 @@
               website_link:  @params[:website_link],
               organizer_id: @current_user.id,
               total_score: @params[:total_score],
-              event_id: @params[:event_id]
+              event_id: @params[:event_id],
+              pitching_order: @params[:pitching_order]
             )
             teamStatus=team.save
             @params[:team_id]=team.id

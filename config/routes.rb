@@ -64,7 +64,7 @@ Rails.application.routes.draw do
         post 'login', on: :collection, to: 'members#login'
         post 'signIn', on: :collection, to: 'members#login'
         patch '',on: :collection, to: 'members#update'
-        get '',on: :collection, to: 'members#get_member_by_id'
+        get ':member_id',on: :collection, to: 'members#get_member_by_id'
       end
         get 'members', to: 'members#index'
 
@@ -86,7 +86,6 @@ Rails.application.routes.draw do
        post 'team/member', to: 'team_members#create'
 
       #Event
-
        get 'events', to: 'events#index'
        get 'event/:id', to: 'events#get_events_by_id'
        put 'event', to: 'events#update'
@@ -98,9 +97,6 @@ Rails.application.routes.draw do
       #Transcation Log
        get 'transcation/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'
        get 'transcation/event/:event_id/judge/:judge_id', to: 'tran_investors#get_all_tran_investors_by_event_and_judge'
-
-
-
 
     end
   end
