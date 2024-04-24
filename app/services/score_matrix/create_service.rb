@@ -32,7 +32,7 @@
             min: score_matrix["min"],
             max: score_matrix["max"],
             event_id: score_matrix["event_id"],
-            name: score_matric["name"],
+            name: score_matrix["name"],
             score_info_id: score_info.id)
             if scoreMatrix.save
               {scoreMatrix:scoreMatrix,scoreInfo:score_info}
