@@ -83,6 +83,7 @@ Rails.application.routes.draw do
         post 'event/team', to: 'teams#create'
         post 'event/teams', to: 'teams#create_team_with_leaders'
         get 'event/scoreTypes', to: 'score_types#index'
+        post 'event/scoreMatrix', to: 'score_matrices#create'
 
       #Add Team member
        post 'team/member', to: 'team_members#create'

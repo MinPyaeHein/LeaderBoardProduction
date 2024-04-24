@@ -12,19 +12,16 @@ module Api
 
         end
         def create
-          result=@service.create()
-          if result[:scoreMatrix].present?
-            message={}
-            message[:scoreMatrix]=result[:scoreMatrix]
-            render json: {success: true,message: message}, status: :created
-          else
-            render json: { errors: result[:errors] }, status: :unprocessable_entity
-          end
+          result=@service.createScoreMatrics
+          puts("result=",result)
+          message={}
+          message[:scoreMatrics]=result
+          render json: {success: true,message: message}, status: :created
         end
 
         private
         def member_params
-          params.require(:score_matrix).permit(:weight, :max,:min,:event_id,:score_info_id)
+          params[:score_matrics]
         end
         def set_service
           @service = ScoreMatrix::CreateService.new(member_params)

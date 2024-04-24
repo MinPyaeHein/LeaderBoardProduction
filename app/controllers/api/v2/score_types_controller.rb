@@ -8,17 +8,13 @@ module Api
           message={}
           message[:scoreTypes]=ScoreType.all
           render json: {success: true,message: message}, status: :ok
-
-
         end
 
-
         def create
-
-
           result =@service.create()
           message={}
           if result[:scoreType].present?
+            
             message[:scoreType]=result[:scoreType]
             render json: { success: true,message: message}, status: :created
           else
