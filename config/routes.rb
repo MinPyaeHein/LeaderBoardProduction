@@ -71,6 +71,8 @@ Rails.application.routes.draw do
       #judge
         post 'transaction',  to: 'tran_investors#create'
         get ':id/transaction', to: 'tran_investors#get_all_tran_investors_by_event'
+        
+        post 'score',  to: 'tran_scores#create'
 
 
       #organizer

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_090926) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_27_170942) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -157,6 +157,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_090926) do
     t.bigint "judge_id"
   end
 
+  create_table "tran_scores", force: :cascade do |t|
+    t.float "score"
+    t.string "desc"
+    t.bigint "score_matrix_id"
+    t.bigint "team_event_id"
+    t.bigint "event_id"
+    t.bigint "judge_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -194,5 +205,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_090926) do
   add_foreign_key "tran_investors", "events"
   add_foreign_key "tran_investors", "judges"
   add_foreign_key "tran_investors", "team_events"
+  add_foreign_key "tran_scores", "events"
+  add_foreign_key "tran_scores", "judges"
+  add_foreign_key "tran_scores", "score_matrices"
+  add_foreign_key "tran_scores", "team_events"
   add_foreign_key "users", "members"
 end
