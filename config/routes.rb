@@ -74,6 +74,7 @@ Rails.application.routes.draw do
         get 'scoreCategory/event/:event_id', to: 'score_matrices#get_score_matrix_by_event_id'
         post 'score',  to: 'tran_scores#create'
         get 'judges/event/:event_id', to: 'judges#get_judges_by_event_id'
+        get 'events/judge/:judge_id', to: 'events#get_events_by_judge_id'
 
 
       #organizer
