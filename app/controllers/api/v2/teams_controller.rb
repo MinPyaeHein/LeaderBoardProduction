@@ -13,8 +13,13 @@ module Api
         def update
           result=@update_service.update
           message={}
-          message[:team] = result[:team]
-          render json: {success: true,message: message}, status: :ok
+          if result[:team].present?
+            message[:team] = result[:team]
+            render json:{success: true,message: message}
+         else
+           message[:error] = result[:error]
+           render json:{success: false,message: message}
+         end
         end
 
         def create
@@ -42,16 +47,20 @@ module Api
 
         end
         def get_teams_by_event_id
-          message={}
-          message[:teams]=Team.where(event_id: params[:id])
-          render json:{success: true,message: message}
+          message = {}
+          teams = Team.where(event_id: params[:event_id])
+          if teams.present?
+            message[:teams] = teams
+            render json: { success: true, message: message }
+          else
+            message[:errors] = "No teams found for the event"
+            render json: { success: false, message: message }
+          end
         end
-
 
         private
         def team_params
-
-          params.require(:team).permit(:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
+          params.require(:team).permit(:team_id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
         end
         def set_service
           @update_service = Team::UpdateService.new(team_params)

@@ -34,7 +34,7 @@
         { teamMembers: teamMembers, errors: errors }
       end
 
-      def create(team_id,member_id,event_id)
+      def create_one(team_id,member_id,event_id)
             result=check_team_member(member_id)
             return result[:errors] if result[:errors].present?
             teamMember = ::TeamMember.create(

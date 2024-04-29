@@ -30,7 +30,7 @@
 
             if resultTeam
               @params[:team_id]=team.id
-              resultTeamMember=@teamMemberService.create(team.id,member_id,@params[:event_id])
+              resultTeamMember=@teamMemberService.create_one(team.id,member_id,@params[:event_id])
               if resultTeamMember[:teamMember].present?
                   resultTeamEvent=@teamEventService.create(@params[:event_id],team.id)
                   teamLeaders << resultTeamMember[:teamMember]
@@ -73,7 +73,7 @@
             )
             teamStatus=team.save
             @params[:team_id]=team.id
-            resultTeamMember=@teamMemberService.create()
+            resultTeamMember=@teamMemberService.create
             resultTeamEvent=@teamEventService.create(@params[:event_id],team.id)
             if !(teamStatus && resultTeamMember[:teamMembers].present? && resultTeamEvent[:teamEvent].present?)
               errors << resultTeamEvent[:errors] if team.errors.full_messages.present?

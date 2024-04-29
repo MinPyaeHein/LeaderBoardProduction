@@ -17,12 +17,70 @@ module Api
           render json: {success: true, message: message}, status: :ok
         end
 
+        def get_teams_total_score
+          teams = Team.where(event_id: params[:event_id])
+          score_categories = []
+
+          ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
+            teams.each do |team|
+              team_event = team.team_events.first
+              next unless team_event
+
+              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id)
+              next unless tran_scores.any?
+
+              weighted_score = tran_scores.last.score * score_matrix.weight
+              team_event.total_score ||= 0
+              team_event.total_score += weighted_score
+              score_categories << { category: score_matrix.name, score: weighted_score }
+
+            end
+          end
+
+
+
+          render json: teams, each_serializer: TeamSerializer
+        end
+
+        def get_teams_score_by_category
+          teams = Team.where(event_id: params[:event_id])
+         
+          teams_data = {}
+          ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
+            teams.each do |team|
+              team_event = team.team_events.first
+              next unless team_event
+
+              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id)
+              next unless tran_scores.any?
+
+              weighted_score = tran_scores.last.score * score_matrix.weight
+              team_event.total_score ||= 0
+              team_event.total_score += weighted_score
+              teams_data[team.id] ||= team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
+              teams_data[team.id][:score_category] ||= []
+              teams_data[team.id][:score_category] << { category: score_matrix.name, score: weighted_score }
+            end
+          end
+          render json: teams_data.values
+        end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         def create
-
           result=@service.create()
-
           if result[:tranScore]
             message={}
             message[:tranScore] = result[:tranScore]

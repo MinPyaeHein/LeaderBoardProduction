@@ -4,13 +4,11 @@
     class ScoreMatrix::CreateService
       def initialize(score_matrics)
         @score_matrics = score_matrics
-
       end
 
       def createScoreMatrics
         score_matrics=[]
           for score_matric in @score_matrics
-
             score_matric=create(score_matric)
             score_matrics << score_matric
           end

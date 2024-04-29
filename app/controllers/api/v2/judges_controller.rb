@@ -23,7 +23,6 @@ module Api
         end
         def get_judge_by_id
           event_id = params[:event_id]
-          team_id = params[:team_id]
           judge_id = params[:judge_id]
           judge = Judge.find_by(member_id: judge_id, event_id: event_id)
 
@@ -48,7 +47,6 @@ module Api
               team_id: team[0],
               team_event_id: team[2],
               event_id: team[4],
-
               pitching_order: team[5]
             }
           end

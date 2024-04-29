@@ -31,7 +31,6 @@ module Api
         end
 
         def update
-          puts("update event controller")
           result=@update_service.update
           message={}
           message[:event] = result[:event]
