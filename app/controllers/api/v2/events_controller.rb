@@ -3,7 +3,7 @@
 module Api
     module V2
       class EventsController < ApplicationController
-        before_action :set_service, only: [:create,:update]
+        before_action :set_service, only: [:create,:update,:update_event_score_type]
         def index
           message={}
           message[:events]=Event.all
@@ -34,6 +34,13 @@ module Api
           result=@update_service.update
           message={}
           message[:event] = result[:event]
+          render json: {success: true,message: message}, status: :ok
+        end
+
+        def update_event_score_type
+          result=@update_service.update_event_score_type(params[:event_id],params[:score_type_id])
+          message={}
+          message[:event]=result[:event]
           render json: {success: true,message: message}, status: :ok
         end
 

@@ -33,5 +33,19 @@
         end
       end
 
+      def update_event_score_type(event_id,score_type_id)
+
+        @event = ::Event.find(@params[:event_id]) # Assuming you're updating an existing member
+
+        @event.assign_attributes(
+          score_type_id: score_type_id
+        )
+        if @event.save
+          { event: @event.reload } 
+        else
+          { errors: @event.errors.full_messages }
+        end
+      end
+
 
     end
