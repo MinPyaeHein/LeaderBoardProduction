@@ -24,9 +24,23 @@ module Api
           result=@service.create()
           message={success: true, message: result}
           render json: message, status: :ok
-
-
         end
+
+        def remove_team_member
+          member_id = params[:member_id]
+          team_member = TeamMember.find_by(member_id: member_id)
+          if team_member
+            if team_member.destroy
+              render json:{ message: "Team member with ID #{member_id} successfully removed." },status: :ok
+            else
+              render json:{ error: "Failed to remove team member with ID #{member_id}." },status: :ok
+            end
+          else
+            render json:{ error: "Team member with ID #{member_id} not found." },status: :ok
+          end
+        end
+
+
 
         private
         def team_params

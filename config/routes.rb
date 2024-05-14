@@ -94,6 +94,7 @@ Rails.application.routes.draw do
       #Team Leader
        post 'team/member', to: 'team_members#create'
        patch 'team', to: 'teams#update'
+       delete 'team/:team_id/member/:member_id', to: 'team_members#remove_team_member'
 
       #Event
        get 'events', to: 'events#index'
@@ -103,8 +104,8 @@ Rails.application.routes.draw do
       #Team
        get 'teams/event/:event_id', to: 'teams#get_teams_by_event_id'
        get 'team/event/:event_id/judge/:judge_id', to: 'judges#get_judge_by_id'
-       get 'team/event/:event_id/totalScore', to: 'tran_scores#get_teams_total_score'
-       get 'team/event/:event_id/categoriesScore', to: 'tran_scores#get_teams_score_by_category'
+       get 'teams/event/:event_id/totalScore', to: 'tran_scores#get_teams_total_score'
+       get 'teams/event/:event_id/categoriesScore', to: 'tran_scores#get_teams_score_by_category'
 
       #Transcation Log
        get 'transaction/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'

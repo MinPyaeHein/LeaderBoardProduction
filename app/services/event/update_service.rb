@@ -11,7 +11,6 @@
         puts("event_id=", @params[:event_id])
         @event = ::Event.find(@params[:event_id])
 
-        # Copy old values
         old_values = {
           name: @event.name,
           desc: @event.desc,
@@ -28,7 +27,6 @@
           score_type_id: @event.score_type_id
         }
 
-        # Update attributes if new value is not nil
         new_values = {
           name: @params[:name] || old_values[:name],
           desc: @params[:desc] || old_values[:desc],
@@ -48,15 +46,13 @@
         @event.assign_attributes(new_values)
 
         if @event.save
-          { event: @event.reload } # Reload to get the latest data
+          { event: @event.reload }
         else
           { errors: @event.errors.full_messages }
         end
       end
       def update_event_score_type(event_id,score_type_id)
-
-        @event = ::Event.find(@params[:event_id]) # Assuming you're updating an existing member
-
+        @event = ::Event.find(@params[:event_id])
         @event.assign_attributes(
           score_type_id: score_type_id
         )
