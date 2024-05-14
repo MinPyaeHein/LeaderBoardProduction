@@ -12,11 +12,14 @@
         judge = Judge.find_by(member_id: @params[:judge_id], event_id: @params[:event_id])
         return { errors: "Judge does not exist in this event" } unless judge
 
+        scoreMatrix = ScoreMatrix.find_by(event_id: @params[:event_id], id: @params[:score_matrix_id])
+        return { errors: "This Score Matrix does not exist in this event" } unless scoreMatrix
+
 
         tran_score= ::TranScore.create(
           score:  @params[:score],
           desc:  @params[:desc],
-          score_matrix_id:  @params[:score_matrix_id],
+          score_matrix_id:  scoreMatrix.id,
           judge_id:  judge.id,
           team_event_id: team_event.id,
           event_id: @params[:event_id]

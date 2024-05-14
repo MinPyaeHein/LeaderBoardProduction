@@ -20,24 +20,20 @@ module Api
         def get_teams_total_score
           teams = Team.where(event_id: params[:event_id])
           judges= Judge.where(event_id: params[:event_id])
-          ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
-            teams.each do |team|
+          teams.each do |team|
               total_score=0
               team_event = team.team_events.first
               next unless team_event
-                judges.each do |judge|
-                    tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.id)
-                    next unless tran_scores.any?
-                    total_score+= tran_scores.last.score * score_matrix.weight
+               ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
+                    judges.each do |judge|
+                        tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.id)
+                        next unless tran_scores.any?
+                        total_score+= tran_scores.last.score * score_matrix.weight
+                    end
                 end
-              team_event.total_score=total_score/judges.length
-              team_event.save
-
-            end
+                team_event.total_score=total_score/judges.length
+                team_event.save
           end
-
-
-
           render json: teams, each_serializer: TeamSerializer
         end
 
