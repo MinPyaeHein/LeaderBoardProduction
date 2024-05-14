@@ -18,23 +18,23 @@ module Api
         end
 
         def get_teams_total_score
-          total_score=0;
+
           teams = Team.where(event_id: params[:event_id])
           judges= Judge.where(event_id: params[:event_id])
-          score_categories = []
+          # score_categories = []
           ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
             teams.each do |team|
               team_event = team.team_events.first
               next unless team_event
-              judges.each do |judge|
-                  tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.member_id)
-                  next unless tran_scores.any?
-                  weighted_score = tran_scores.last.score * score_matrix.weight
-                  total_score ||= 0
-                  total_score += weighted_score
-              end
-              team_event.total_score=total_score/judges.length
-              score_categories << { category: score_matrix.name, score: weighted_score }
+                judges.each do |judge|
+                    tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.member_id)
+                    next unless tran_scores.any?
+                    weighted_score = tran_scores.last.score * score_matrix.weight
+                    team_event.total_score ||= 0
+                    team_event.total_score += weighted_score
+                end
+              team_event.total_score=team_event.total_score/judges.length
+              # score_categories << { category: score_matrix.name, score: weighted_score }
             end
           end
 
