@@ -55,6 +55,8 @@ module Api
       end
 
       def create
+        Rails.logger.debug "Create Action-->>> Received params: #{params.inspect}"
+        Rails.logger.debug "Create Action-->>> Member params: #{member_params.inspect}"
         result=@create_service.create_member
         message={}
         if result[:token]
@@ -109,12 +111,15 @@ module Api
 
         private
         def member_params
+
           params.require(:member).permit(:member_id,:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name, :desc)
+
         end
 
         def set_service
-          @update_service = Member::UpdateService.new(member_params)
+
           @create_service = Member::CreateService.new(member_params)
+          @update_service = Member::UpdateService.new(member_params)
           @loginLogout_service = Member::LoginLogoutService.new(member_params)
 
         end

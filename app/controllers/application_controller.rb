@@ -4,7 +4,7 @@ class ApplicationController < ActionController::API
     private
 
     def authenticate_request
-   
+
       unless current_user
         render json: { error: 'Unauthorized' }, status: :unauthorized
       end
@@ -12,7 +12,8 @@ class ApplicationController < ActionController::API
 
 
     def current_user
-      @current_user ||= User.decode_jwt(request.headers['Authorization'])
+      puts("token==",request.headers['Authorization']&.split(' ')&.last)
+      @current_user ||= User.decode_jwt(request.headers['Authorization']&.split(' ')&.last)
 
     end
     def nothing

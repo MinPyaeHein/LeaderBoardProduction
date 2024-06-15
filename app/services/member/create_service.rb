@@ -4,10 +4,14 @@
     class Member::CreateService
       def initialize(params)
         @params = params
+        puts("email Test0 ==",@params[:email])
+        puts("name Test0 ==",@params[:name])
       end
-      
-  
+
+
       def create_member
+        puts("email Test1 ==",@params[:email])
+        puts("name Test1 ==",@params[:name])
         result=check_team_member
         if result[:errors].present?
           return result
@@ -26,9 +30,9 @@
             bcPassword = BCrypt::Password.create(@params[:password])
           end
           member = ::Member.new(
-          name: username, 
+          name: username,
           phone: @params[:phone],
-          address: @params[:address], 
+          address: @params[:address],
           desc: @params[:desc],
           faculty_id: @params[:faculty_id],
           org_name: @params[:org_name],
@@ -41,16 +45,18 @@
             { errors: @member.errors.full_messages }
           end
 
+          puts("email==",@params[:email])
+          puts("name==",@params[:name])
           user = User.new(
-            email: @params[:email], 
+            email: @params[:email],
             role: @params[:role],
-            encrypted_password: bcPassword, 
-            password_digest: bcPassword, 
+            encrypted_password: bcPassword,
+            password_digest: bcPassword,
             member_id: member.id
             )
-            
-         
-          if user.save 
+
+
+          if user.save
             token = user.generate_jwt
             user.update(reset_password_token: token)
             { user: user, member: member, token: token, password: password }
@@ -62,10 +68,10 @@
           { errors: ["Email address is already taken"] }
         end
       end
-      
+
       def destroy_member(member_id)
         member = ::Member.find_by(id: member_id)
-  
+
         if member.present?
           member.update(active: false)
           member.users.update_all(active: false)
@@ -88,5 +94,3 @@
         {}
       end
     end
-
-  

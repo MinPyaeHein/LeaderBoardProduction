@@ -1,0 +1,305 @@
+openapi: 3.0.0
+info:
+  title: Member API
+  version: 1.0.0
+paths:
+  /member/signUp:
+    post:
+      tags:
+        - Members
+      summary: Create a new member
+      operationId: createMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                member:
+                  $ref: '#/components/schemas/CreateMemberRequest'
+      responses:
+        '201':
+          description: Member created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  member:
+                    $ref: '#/components/schemas/CreateMemberRequest'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /member:
+      patch:
+        tags:
+          - Members
+        summary: Update member Profile
+        operationId: updateMember
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  member:
+                    $ref: '#/components/schemas/UpdateMemberRequest'
+        responses:
+          '200':
+            description: Member updated successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/MemberResponse'
+          '422':
+            description: Unprocessable Entity
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+
+  /member/login:
+    post:
+      tags:
+        - Members
+      summary: Login a member
+      operationId: loginMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             type: object
+             properties:
+                member:
+                  $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Member logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /member/{member_id}:
+    get:
+      tags:
+        - Members
+      summary: Get member by ID
+      operationId: getMemberById
+      parameters:
+        - name: member_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Member retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponse'
+        '404':
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+ 
+  /members:
+    get:
+      tags:
+        - Members
+      summary: Get all active members
+      operationId: getAllActiveMembers
+      responses:
+        '200':
+          description: List of active members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: object
+                    properties:
+                      members:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Member'
+        '404':
+          description: Members not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateMemberRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        active:
+          type: boolean
+        profile_url:
+          type: string
+        address:
+          type: string
+        role:
+          type: string
+        faculty_id:
+          type: integer
+        org_name:
+          type: string
+        desc:
+          type: string
+
+    UpdateMemberRequest:
+      type: object
+      properties:
+        member_id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        phone:
+          type: string
+        active:
+          type: boolean
+        profile_url:
+          type: string
+        address:
+          type: string
+        role:
+          type: string
+        faculty_id:
+          type: integer
+        org_name:
+          type: string
+        desc:
+          type: string
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    MemberResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+            member:
+              $ref: '#/components/schemas/Member'
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+            member:
+              $ref: '#/components/schemas/Member'
+            errors:
+              type: array
+              items:
+                type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+    Member:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        active:
+          type: boolean
+        profile_url:
+          type: string
+        address:
+          type: string
+        role:
+          type: string
+        faculty_id:
+          type: integer
+        org_name:
+          type: string
+        desc:
+          type: string

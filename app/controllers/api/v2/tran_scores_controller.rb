@@ -55,10 +55,11 @@ module Api
           teams_data[team.id] ||= team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
           teams_data[team.id][:score_category] ||= []
           teams_data[team.id][:score_category] << { category: score_matrix.name, score: weighted_score }
-
           end
           render json: teams_data.values
         end
+
+        
 
         def create
           result=@service.create()

@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+  description: API documentation for the application.
+servers:
+  # - url: http://localhost:3000/api/v2
+  #   description: Local server
+
+  - url: https://stormy-hamlet-97616-f066246815d5.herokuapp.com/api/v2
+    description: Heroku Server
+
+paths:
+#member
+  /members:
+    $ref: 'members.yaml#/paths/~1members'
+  /member:
+    $ref: 'members.yaml#/paths/~1member'
+  /member/signUp:
+    $ref: 'members.yaml#/paths/~1member~1signUp'
+  /member/login:
+    $ref: 'members.yaml#/paths/~1member~1login'
+  /member/{member_id}:
+    $ref: 'members.yaml#/paths/~1member~1{member_id}'
+#judge
+  /judges/event/{event_id}:
+    $ref: 'judges.yaml#/paths/~1judges~1event~1{event_id}'
+
+  /transaction:
+    $ref: 'judges.yaml#/paths/~1transaction'
+
+  /{id}/transaction:
+    $ref: 'judges.yaml#/paths/~1{id}~1transaction'
+  
+  /score:
+    $ref: 'judges.yaml#/paths/~1score'
+
+  /events/judge/{judge_id}:
+    $ref: 'judges.yaml#paths/~1events~1judge~1{judge_id}'
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateMemberRequest:
+      $ref: 'members.yaml#/components/schemas/CreateMemberRequest'
+    UpdateMemberRequest:
+      $ref: 'members.yaml#/components/schemas/UpdateMemberRequest'
+    LoginRequest:
+      $ref: 'members.yaml#/components/schemas/LoginRequest'
+    MemberResponse:
+      $ref: 'members.yaml#/components/schemas/MemberResponse'
+    LoginResponse:
+      $ref: 'members.yaml#/components/schemas/LoginResponse'
+    ErrorResponse:
+      $ref: 'members.yaml#/components/schemas/ErrorResponse'
+    User:
+      $ref: 'members.yaml#/components/schemas/User'
+    Member:
+      $ref: 'members.yaml#/components/schemas/Member'
+security:
+  - bearerAuth: []

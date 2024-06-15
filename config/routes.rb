@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   root 'score_boards#home'
   resources :score_boards do
     get 'score_boards', to: 'score_boards#home'
@@ -66,7 +68,8 @@ Rails.application.routes.draw do
         patch '',on: :collection, to: 'members#update'
         get ':member_id',on: :collection, to: 'members#get_member_by_id'
       end
-        get 'members', to: 'members#index'
+      get 'members', to: 'members#index'
+
 
       #judge
         post 'transaction',  to: 'tran_investors#create'
@@ -114,4 +117,5 @@ Rails.application.routes.draw do
     end
   end
   match "/favicon.ico", to: "application#nothing", via: :all
+
 end

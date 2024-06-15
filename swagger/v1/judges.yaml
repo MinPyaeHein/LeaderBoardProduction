@@ -1,0 +1,312 @@
+openapi: 3.0.0
+info:
+  title: Judge API
+  version: 1.0.0
+paths:
+  /transaction:
+    post:
+      tags:
+        - Judges
+      summary: judge invest to team
+      operationId: createTransaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tran_investor:
+                  $ref: '#/components/schemas/CreateTranInvestorRequest'
+      responses:
+        '201':
+          description: Transaction created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTranInvestorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /{id}/transaction:
+    get:
+      tags:
+        - Judges
+      summary: Check invest logs
+      operationId: getAllTranInvestorsByEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllTranInvestorsByEventResponse'
+        '404':
+          description: Transactions not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /score:
+    post:
+      tags:
+        - Judges
+      summary: Score To team
+      operationId: createScore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  tran_score:
+                    $ref: '#/components/schemas/CreateTranScoreRequest'
+      responses:
+        '201':
+          description: Score created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTranScoreResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /judges/event/{event_id}:
+    get:
+      tags:
+        - Judges
+      summary: Get judges by event ID
+      operationId: getJudgesByEventId
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Judges retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetJudgesByEventIdResponse'
+        '404':
+          description: Judges not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /events/judge/{judge_id}:
+    get:
+      tags:
+        - Judges
+      summary: Get events by judge ID
+      operationId: getEventsByJudgeId
+      parameters:
+        - name: judge_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventsByJudgeIdResponse'
+        '404':
+          description: Events not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateTranInvestorRequest:
+      type: object
+      properties:
+        desc:
+          type: string
+        team_id:
+          type: integer
+        event_id:
+          type: integer
+        judge_id:
+          type: integer
+        tran_type:
+          type: string
+        investor_type:
+          type: string
+      required:
+        - team_id
+        - event_id
+        - judge_id
+        - tran_type
+        - investor_type
+
+    CreateTranInvestorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+
+    CreateTranScoreRequest:
+      type: object
+      properties:
+        desc:
+          type: string
+        team_id:
+          type: integer
+        event_id:
+          type: integer
+        judge_id:
+          type: integer
+        score_matrix_id:
+          type: integer
+        score:
+          type: number
+          format: float
+      required:
+        - team_id
+        - event_id
+        - judge_id
+        - score_matrix_id
+        - score
+
+    CreateTranScoreResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+
+    GetAllTranInvestorsByEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            judges:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  member_id:
+                    type: integer
+                  name:
+                    type: string
+                  event_id:
+                    type: integer
+                  tran_investors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TranInvestor'
+
+    GetJudgesByEventIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            judges:
+              type: array
+              items:
+                $ref: '#/components/schemas/Judge'
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+
+    TranInvestor:
+      type: object
+      properties:
+        id:
+          type: integer
+        desc:
+          type: string
+        team_id:
+          type: integer
+        event_id:
+          type: integer
+        judge_id:
+          type: integer
+        tran_type:
+          type: string
+        investor_type:
+          type: string
+
+    Judge:
+      type: object
+      properties:
+        id:
+          type: integer
+        member_id:
+          type: integer
+        event_id:
+          type: integer
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+    
+    GetEventsByJudgeIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
