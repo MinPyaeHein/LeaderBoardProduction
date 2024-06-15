@@ -37,7 +37,18 @@ paths:
 
   /events/judge/{judge_id}:
     $ref: 'judges.yaml#paths/~1events~1judge~1{judge_id}'
-
+#organizers
+  /event:
+    $ref: 'organizers.yaml#/paths/~1event'
+  /event/scoreMatrix:
+    $ref: 'organizers.yaml#/paths/~1event~1scoreMatrix'
+  /event/investMatrix:
+    $ref: 'organizers.yaml#/paths/~1event~1investMatrix'
+  /event/judges:
+    $ref: 'organizers.yaml#/paths/~1event~1judges'
+  /event/editors:
+    $ref: 'organizers.yaml#/paths/~1event~1editors'
+  
 
 components:
   securitySchemes:

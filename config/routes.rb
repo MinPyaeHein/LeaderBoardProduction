@@ -81,8 +81,8 @@ Rails.application.routes.draw do
 
       #organizer
         post 'event', to: 'events#create'
-        post 'scoreMatrix',  to: 'score_matrices#create'
-        post 'investMatrix', to: 'investor_matrices#create'
+        post 'event/scoreMatrix',  to: 'score_matrices#create'
+        post 'event/investMatrix', to: 'investor_matrices#create'
         post 'event/judges',  to: 'judges#create'
         post 'event/editors',  to: 'editors#create'
         post 'event/teamLeader',  to: 'team_members#create'

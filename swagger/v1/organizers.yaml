@@ -1,0 +1,423 @@
+openapi: 3.0.0
+info:
+  title: Organizer API
+  version: 1.0.0
+
+paths:
+  /event:
+    post:
+      tags:
+        - Organizers
+      summary: Create a new event
+      operationId: createEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEventResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /event/scoreMatrix:
+    post:
+      tags:
+        - Organizers
+      summary: Create score matrices for an event
+      operationId: createScoreMatrix
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScoreMatrixRequest'
+      responses:
+        '201':
+          description: Score matrices created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateScoreMatrixResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /event/investMatrix:
+    post:
+      tags:
+        - Organizers
+      summary: Create an investor matrix for an event
+      operationId: createInvestMatrix
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvestMatrixRequest'
+      responses:
+        '201':
+          description: Investor matrix created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateInvestMatrixResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /event/judges:
+    post:
+      tags:
+        - Organizers
+      summary: Add judges to an event
+      operationId: addJudgesToEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddJudgesToEventRequest'
+      responses:
+        '201':
+          description: Judges added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddJudgesToEventResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'     
+  /event/editors:
+    post:
+      tags:
+        - Organizers
+      summary: Add editors to an event
+      operationId: addEditorsToEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddEditorsToEventRequest'
+      responses:
+        '201':
+          description: Editors added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddEditorsToEventResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    CreateEventRequest:
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            name:
+              type: string
+            status:
+              type: string
+              enum:
+                - future
+                - ongoing
+                - past
+            desc:
+              type: string
+            active:
+              type: boolean
+            start_date:
+              type: string
+              format: date
+            end_date:
+              type: string
+              format: date
+            start_time:
+              type: string
+              format: time
+            end_time:
+              type: string
+              format: time
+            all_day:
+              type: boolean
+            location:
+              type: string
+            event_type_id:
+              type: integer
+            score_type_id:
+              type: integer
+      required:
+        - event
+    CreateEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        event:
+          $ref: '#/components/schemas/Event'
+    
+    CreateScoreMatrixRequest:
+        type: object
+        properties:
+          score_matrics:
+            type: array
+            items:
+              type: object
+              properties:
+                weight:
+                  type: number
+                  format: float
+                max:
+                  type: integer
+                min:
+                  type: integer
+                event_id:
+                  type: integer
+                name:
+                  type: string
+        required:
+          - score_matrics
+    CreateScoreMatrixResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        score_matrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreMatrix'
+    
+    CreateInvestMatrixRequest:
+      type: object
+      properties:
+        investor_matrix:
+          type: object
+          properties:
+            total_amount:
+              type: number
+              format: float
+            one_time_pay:
+              type: number
+              format: float
+            judge_acc_amount:
+              type: number
+              format: float
+            investor_type:
+              type: string
+            event_id:
+              type: integer
+      required:
+        - investor_matrix
+    CreateInvestMatrixResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        investor_matrix:
+          $ref: '#/components/schemas/InvestorMatrix'
+        
+    AddJudgesToEventRequest:
+      type: object
+      properties:
+        judge:
+          type: object
+          properties:
+            member_ids:
+              type: array
+              items:
+                type: integer
+            event_id:
+              type: integer
+            active:
+              type: boolean
+            current_amount:
+              type: number
+              format: float
+      required:
+        - judge    
+    AddJudgesToEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        judges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Judge'
+
+    AddEditorsToEventRequest:
+      type: object
+      properties:
+        editor:
+          type: object
+          properties:
+            member_ids:
+              type: array
+              items:
+                type: integer
+            event_id:
+              type: integer
+            active:
+              type: boolean
+      required:
+        - editor
+    AddEditorsToEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        editors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Editor'
+
+    Judge:
+      type: object
+      properties:
+        id:
+          type: integer
+        member_id:
+          type: integer
+        event_id:
+          type: integer
+        active:
+          type: boolean
+        current_amount:
+          type: number
+          format: float   
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        desc:
+          type: string
+        active:
+          type: boolean
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        all_day:
+          type: boolean
+        location:
+          type: string
+        event_type_id:
+          type: integer
+        score_type_id:
+          type: integer
+    ScoreMatrix:
+          type: object
+          properties:
+            weight:
+              type: number
+              format: float
+            max:
+              type: integer
+            min:
+              type: integer
+            event_id:
+              type: integer
+            name:
+              type: string
+    InvestorMatrix:
+      type: object
+      properties:
+        total_amount:
+          type: number
+          format: float
+        one_time_pay:
+          type: number
+          format: float
+        judge_acc_amount:
+          type: number
+          format: float
+        investor_type:
+          type: string
+        event_id:
+          type: integer
+    Editor:
+      type: object
+      properties:
+        id:
+          type: integer
+        member_id:
+          type: integer
+        event_id:
+          type: integer
+        active:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
