@@ -1,0 +1,399 @@
+openapi: 3.0.0
+info:
+  title: Events API
+  version: 1.0.0
+
+paths:
+  /events:
+    get:
+      tags:
+        - Events
+      summary: Get all events
+      operationId: getAllEvents
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllEventsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Events not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /events/judge/{judge_id}:
+    get:
+      tags:
+        - Events
+      summary: Get events by judge ID
+      operationId: getEventsByJudgeId
+      parameters:
+        - name: judge_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventsByJudgeIdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Events not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /event/{id}:
+    get:
+      tags:
+        - Events
+      summary: Get event by ID
+      operationId: getEventById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventByIdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /scoreCategory/event/{event_id}:
+    get:
+      tags:
+        - Events
+      summary: Get score categories by event ID
+      operationId: getScoreCategoriesByEventId
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetScoreCategoriesByEventIdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Score categories not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    GetAllEventsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/EventDetails'
+    GetEventsByJudgeIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/EventDetails'
+    GetEventByIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            event:
+              $ref: '#/components/schemas/EventDetails'
+            organizer:
+              $ref: '#/components/schemas/Organizer'
+            judges:
+              type: array
+              items:
+                $ref: '#/components/schemas/Judge'
+            teams:
+              type: array
+              items:
+                $ref: '#/components/schemas/Team'
+            editors:
+              type: array
+              items:
+                $ref: '#/components/schemas/Editor'
+            event_type:
+              $ref: '#/components/schemas/EventType'
+            score_type:
+              $ref: '#/components/schemas/ScoreType'
+    GetScoreCategoriesByEventIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            scoreMatrics:
+              type: array
+              items:
+                $ref: '#/components/schemas/ScoreMatrix'
+    
+    ScoreMatrix:
+      type: object
+      properties:
+        id:
+          type: integer
+        weight:
+          type: number
+          format: float
+        max:
+          type: number
+          format: float
+        min:
+          type: number
+          format: float
+        event_id:
+          type: integer
+        score_info_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        name:
+          type: string
+    EventDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        desc:
+          type: string
+        active:
+          type: boolean
+        event_type_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        all_day:
+          type: boolean
+        location:
+          type: string
+        organizer_id:
+          type: integer
+        score_type_id:
+          type: integer
+        status:
+          type: string
+    Organizer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        active:
+          type: boolean
+        address:
+          type: string
+        desc:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        org_name:
+          type: string
+        profile_url:
+          type: string
+          nullable: true
+        faculty_id:
+          type: integer
+        phone:
+          type: string
+          nullable: true
+    Judge:
+      type: object
+      properties:
+        id:
+          type: integer
+        member_id:
+          type: integer
+        event_id:
+          type: integer
+        current_amount:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        judge_type:
+          type: string
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        desc:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+        website_link:
+          type: string
+          nullable: true
+        organizer_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        event_id:
+          type: integer
+        total_score:
+          type: number
+          format: float
+          nullable: true
+        pitching_order:
+          type: integer
+          nullable: true
+    Editor:
+      type: object
+      properties:
+        id:
+          type: integer
+        member_id:
+          type: integer
+        event_id:
+          type: integer
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    EventType:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        desc:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ScoreType:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        desc:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string

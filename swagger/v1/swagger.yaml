@@ -4,11 +4,11 @@ info:
   version: 1.0.0
   description: API documentation for the application.
 servers:
-  # - url: http://localhost:3000/api/v2
-  #   description: Local server
+  - url: http://localhost:3000/api/v2
+    description: Local server
 
-  - url: https://stormy-hamlet-97616-f066246815d5.herokuapp.com/api/v2
-    description: Heroku Server
+  # - url: https://stormy-hamlet-97616-f066246815d5.herokuapp.com/api/v2
+  #   description: Heroku Server
 
 paths:
 #member
@@ -56,7 +56,27 @@ paths:
   /event/scoreTypes:
     $ref: 'organizers.yaml#/paths/~1event~1scoreTypes'
   
+#events
+  /events:
+    $ref: 'events.yaml#/paths/~1events'
+  /events/judge/{judge_id}:
+    $ref: 'events.yaml#/paths/~1events~1judge~1{judge_id}'
+  /event/{id}:
+    $ref: 'events.yaml#/paths/~1event~1{id}'
+  /scoreCategory/event/{event_id}:
+    $ref: 'events.yaml#/paths/~1scoreCategory~1event~1{event_id}'
 
+#teams
+  /teams/event/{event_id}:
+    $ref: 'teams.yaml#/paths/~1teams~1event~1{event_id}'
+  /teams/event/{event_id}/totalScore:
+    $ref: 'teams.yaml#/paths/~1teams~1event~1{event_id}~1totalScore'
+  /team/event/{event_id}/judge/{judge_id}:
+    $ref: 'teams.yaml#/paths/~1team~1event~1{event_id}~1judge~1{judge_id}'
+
+#teamLeaders
+  /team:
+    $ref: 'teamLeaders.yaml#/paths/~1team'
 components:
   securitySchemes:
     bearerAuth:
