@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Teams API
+  version: 1.0.0
+
+paths:
+  /transaction/event/{event_id}:
+      get:
+        tags:
+          - TransactionLog
+        summary: Get all transactions by event ID
+        operationId: getAllTransactionsByEventId
+        parameters:
+          - name: event_id
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/GetAllTransactionsByEventIdResponse'
+          '400':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+          '404':
+            description: Data not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /transaction/event/{event_id}/judge/{judge_id}:
+    get:
+      tags:
+        - TransactionLog
+      summary: Get all transactions of a specific judge by event ID
+      operationId: getAllTransactionsOfJudgeByEventId
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: judge_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllTransactionsOfJudgeByEventIdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+components:
+  schemas:
+   GetAllTransactionsByEventIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            judges:
+              type: array
+              items:
+                $ref: '#/components/schemas/JudgeWithTransactions'
+   GetAllTransactionsOfJudgeByEventIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            judge:
+              $ref: '#/components/schemas/JudgeWithTransactions'
+   JudgeWithTransactions:
+    type: object
+    properties:
+      id:
+        type: integer
+      member_id:
+        type: integer
+      name:
+        type: string
+      event_id:
+        type: integer
+      tran_investors:
+        type: array
+        items:
+          $ref: '#/components/schemas/Transaction'
+   Transaction:
+    type: object
+    properties:
+      id:
+        type: integer
+      amount:
+        type: number
+        format: float
+      judge_id:
+        type: integer
+      team_event_id:
+        type: integer
+      event_id:
+        type: integer
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      judge_member_name:
+        type: string
+      team_name:
+        type: string
+   ErrorResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      errors:
+        type: array
+        items:
+          type: string

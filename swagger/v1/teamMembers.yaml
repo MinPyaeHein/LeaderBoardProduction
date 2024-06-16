@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: Teams API
+  version: 1.0.0
+
+paths:
+
+   /team/member:
+    post:
+      tags:
+        - TeamMembers
+      summary: Add team members
+      operationId: addTeamMembers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddTeamMembersRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddTeamMembersSuccessResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddTeamMembersErrorResponse'
+   /team/{team_id}/member/{member_id}:
+    delete:
+      tags:
+        - TeamMembers
+      summary: Remove a team member
+      operationId: removeTeamMember
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: member_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Team member removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveTeamMemberSuccessResponse'
+        '404':
+          description: Team member not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveTeamMemberNotFoundResponse'
+components:
+  schemas:
+    AddTeamMembersRequest:
+      type: object
+      properties:
+        team_member:
+          type: object
+          properties:
+            team_id:
+              type: integer
+            member_ids:
+              type: array
+              items:
+                type: integer
+            event_id:
+              type: integer
+            active:
+              type: boolean
+            leader:
+              type: boolean
+    AddTeamMembersSuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            teamMembers:
+              type: array
+              items:
+                $ref: '#/components/schemas/TeamMember'
+            errors:
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+    AddTeamMembersErrorResponse:
+          type: object
+          properties:
+            success:
+              type: boolean
+            message:
+              type: object
+              properties:
+                errors:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: string
+    TeamMember:
+      type: object
+      properties:
+        id:
+          type: integer
+        team_id:
+          type: integer
+        member_id:
+          type: integer
+        event_id:
+          type: integer
+        active:
+          type: boolean
+        leader:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    RemoveTeamMemberSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: "Team member with ID 22 successfully removed."
+    RemoveTeamMemberNotFoundResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: "Team member with ID 12 not found."
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string 
