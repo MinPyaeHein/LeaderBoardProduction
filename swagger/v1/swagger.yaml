@@ -37,6 +37,7 @@ paths:
 
   /events/judge/{judge_id}:
     $ref: 'judges.yaml#paths/~1events~1judge~1{judge_id}'
+
 #organizers
   /event:
     $ref: 'organizers.yaml#/paths/~1event'
@@ -48,6 +49,12 @@ paths:
     $ref: 'organizers.yaml#/paths/~1event~1judges'
   /event/editors:
     $ref: 'organizers.yaml#/paths/~1event~1editors'
+  /event/team:
+    $ref: 'organizers.yaml#/paths/~1event~1team'
+  /event/teams:
+    $ref: 'organizers.yaml#/paths/~1event~1teams'
+  /event/scoreTypes:
+    $ref: 'organizers.yaml#/paths/~1event~1scoreTypes'
   
 
 components:
@@ -73,5 +80,6 @@ components:
       $ref: 'members.yaml#/components/schemas/User'
     Member:
       $ref: 'members.yaml#/components/schemas/Member'
+    
 security:
   - bearerAuth: []

@@ -35,6 +35,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Organizers
+      summary: Update an existing event
+      operationId: updateEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEventResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /event/scoreMatrix:
     post:
       tags:
@@ -159,6 +189,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /event/team:
+    post:
+      tags:
+        - Organizers
+      summary: Create a new team for an event
+      operationId: createTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeamRequest'
+      responses:
+        '201':
+          description: Team created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTeamResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /event/teams:
+    post:
+      tags:
+        - Organizers
+      summary: Add a teams with leader to an event
+      operationId: addTeamWithLeader
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddTeamWithLeaderRequest'
+      responses:
+        '201':
+          description: Team with leader added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddTeamWithLeaderResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /event/scoreTypes:
+    get:
+      tags:
+        - Organizers
+      summary: Get all score types
+      operationId: getScoreTypes
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetScoreTypesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Score types not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'  
 components:
   schemas:
     CreateEventRequest:
@@ -209,6 +326,60 @@ components:
         event:
           $ref: '#/components/schemas/Event'
     
+    UpdateEventRequest:
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            event_id:
+              type: integer
+            name:
+              type: string
+            desc:
+              type: string
+            active:
+              type: boolean
+            event_type_id:
+              type: integer
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            start_date:
+              type: string
+              format: date
+            end_date:
+              type: string
+              format: date
+            start_time:
+              type: string
+              format: time
+            end_time:
+              type: string
+              format: time
+            all_day:
+              type: boolean
+            location:
+              type: string
+            organizer_id:
+              type: integer
+            score_type_id:
+              type: integer
+            status:
+              type: string
+      required:
+        - event
+    UpdateEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        event:
+          $ref: '#/components/schemas/Event'
+
     CreateScoreMatrixRequest:
         type: object
         properties:
@@ -323,7 +494,118 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Editor'
+    
+    CreateTeamRequest:
+      type: object
+      properties:
+        team:
+          type: object
+          properties:
+            event_id:
+              type: integer
+            name:
+              type: string
+            member_ids:
+              type: array
+              items:
+                type: integer
+            active:
+              type: boolean
+            desc:
+              type: string
+            pitching_order:
+              type: integer
+            website_link:
+              type: string
+      required:
+        - team
+    CreateTeamResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            team:
+              $ref: '#/components/schemas/Team'
+            teamLeader:
+              $ref: '#/components/schemas/TeamLeader'
+            teamEvent:
+              $ref: '#/components/schemas/TeamEvent'
+            tranInvestor:
+              type: object
+              nullable: true
 
+    AddTeamWithLeaderRequest:
+      type: object
+      properties:
+        team:
+          type: object
+          properties:
+            event_id:
+              type: integer
+            member_ids:
+              type: array
+              items:
+                type: integer
+            active:
+              type: boolean
+      required:
+        - team
+    AddTeamWithLeaderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            teams:
+              type: array
+              items:
+                $ref: '#/components/schemas/Team'
+            teamLeaders:
+              type: array
+              items:
+                $ref: '#/components/schemas/TeamLeader'
+            teamEvents:
+              type: array
+              items:
+                $ref: '#/components/schemas/TeamEvent'
+            errors:
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+
+    GetScoreTypesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: object
+          properties:
+            scoreTypes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  desc:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+              
     Judge:
       type: object
       properties:
@@ -412,6 +694,75 @@ components:
           type: integer
         active:
           type: boolean
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        desc:
+          type: string
+        active:
+          type: boolean
+        website_link:
+          type: string
+        organizer_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        event_id:
+          type: integer
+        total_score:
+          type: number
+          nullable: true
+        pitching_order:
+          type: integer
+          nullable: true
+    TeamLeader:
+      type: object
+      properties:
+        id:
+          type: integer
+        member_id:
+          type: integer
+        team_id:
+          type: integer
+        leader:
+          type: boolean
+          nullable: true
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        event_id:
+          type: integer
+    TeamEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+        team_id:
+          type: integer
+        event_id:
+          type: integer
+        total_score:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     ErrorResponse:
       type: object
       properties:
