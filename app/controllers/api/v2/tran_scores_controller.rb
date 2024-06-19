@@ -41,17 +41,15 @@ module Api
           teams = Team.where(event_id: params[:event_id])
           teams_data = {}
           ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
-
           teams.each do |team|
             weighted_score=0;
             team_event = team.team_events.first
               Judge.where(event_id: params[:event_id]).each do |judge|
-                    next unless team_event
-                    tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.member.id )
+                    tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.id )
                     next unless tran_scores.any?
-                    weighted_score = tran_scores.last.score * score_matrix.weight
-                    team_event.total_score ||= 0
-                    team_event.total_score += weighted_score
+                    last_tran_score = tran_scores.last
+                    next unless last_tran_score
+                    weighted_score += last_tran_score.score * score_matrix.weight
               end
               teams_data[team.id] ||= team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
               teams_data[team.id][:score_category] ||= []
