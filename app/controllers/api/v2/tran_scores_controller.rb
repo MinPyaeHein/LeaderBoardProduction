@@ -41,25 +41,27 @@ module Api
           teams = Team.where(event_id: params[:event_id])
           teams_data = {}
           ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
-          Judge.where(event_id: params[:event_id]).each do |judge|
-            teams.each do |team|
-              team_event = team.team_events.first
-              next unless team_event
-                tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.member.id )
-                next unless tran_scores.any?
-                weighted_score = tran_scores.last.score * score_matrix.weight
-                team_event.total_score ||= 0
-                team_event.total_score += weighted_score
+
+          teams.each do |team|
+            weighted_score=0;
+            team_event = team.team_events.first
+              Judge.where(event_id: params[:event_id]).each do |judge|
+                  next unless team_event
+                    tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.member.id )
+                    next unless tran_scores.any?
+                    weighted_score = tran_scores.last.score * score_matrix.weight
+                    team_event.total_score ||= 0
+                    team_event.total_score += weighted_score
+              end
+              teams_data[team.id] ||= team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
+              teams_data[team.id][:score_category] ||= []
+              teams_data[team.id][:score_category] << { category: score_matrix.name, score: weighted_score }
             end
-          end
-          teams_data[team.id] ||= team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
-          teams_data[team.id][:score_category] ||= []
-          teams_data[team.id][:score_category] << { category: score_matrix.name, score: weighted_score }
           end
           render json: teams_data.values
         end
 
-        
+
 
         def create
           result=@service.create()
