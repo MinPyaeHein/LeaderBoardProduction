@@ -46,7 +46,7 @@ module Api
             weighted_score=0;
             team_event = team.team_events.first
               Judge.where(event_id: params[:event_id]).each do |judge|
-                  next unless team_event
+                    next unless team_event
                     tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.member.id )
                     next unless tran_scores.any?
                     weighted_score = tran_scores.last.score * score_matrix.weight
