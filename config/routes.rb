@@ -70,14 +70,13 @@ Rails.application.routes.draw do
       end
       get 'members', to: 'members#index'
 
-
       #judge
         post 'transaction',  to: 'tran_investors#create'
         get ':id/transaction', to: 'tran_investors#get_all_tran_investors_by_event'
         post 'score',  to: 'tran_scores#create'
         get 'judges/event/:event_id', to: 'judges#get_judges_by_event_id'
         get 'events/judge/:judge_id', to: 'events#get_events_by_judge_id'
-
+        get 'score/team/categories', to: 'tran_score#score_team_by_all_categories'
 
       #organizer
         post 'event', to: 'events#create'
@@ -110,6 +109,8 @@ Rails.application.routes.draw do
        get 'teams/event/:event_id/totalScore', to: 'tran_scores#get_teams_total_score'
        get 'teams/event/:event_id/categoriesScore', to: 'tran_scores#get_teams_score_by_category'
        get 'scoreCategory/event/:event_id', to: 'score_matrices#get_score_matrix_by_event_id'
+       get 'teams/event/:event_id/categoriesScore/judge/:member_id', to: 'tran_scores#get_all_teams_score_categories_by_judge'
+       get 'team/:team_id/event/:event_id/categoriesScores/judges', to: "tran_scores#get_one_team_score_categories_by_all_judges"
 
       #Transcation Log
        get 'transaction/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'

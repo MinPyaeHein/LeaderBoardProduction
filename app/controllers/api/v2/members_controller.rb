@@ -45,7 +45,9 @@ module Api
         @member = Member.find(params[:member_id])
         message={}
         message[:member] = @member
+
         render json: { success: true,message: message }
+
       end
       def update
         result=@update_service.update
@@ -55,8 +57,7 @@ module Api
       end
 
       def create
-        Rails.logger.debug "Create Action-->>> Received params: #{params.inspect}"
-        Rails.logger.debug "Create Action-->>> Member params: #{member_params.inspect}"
+       
         result=@create_service.create_member
         message={}
         if result[:token]

@@ -27,8 +27,6 @@ module Api
           members = Member.joins(:editors)
                          .where('editors.event_id = ?', event_id)
                          .select('editors.*') # Selecting only judge attributes
-          puts "members #{members}"
-          # members = judges.map(&:member)
           message={}
 
           message[:editors]=members
