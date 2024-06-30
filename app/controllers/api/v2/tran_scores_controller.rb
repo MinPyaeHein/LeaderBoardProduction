@@ -93,7 +93,7 @@ module Api
 
           teams.each do |team|
             weighted_scores = Hash.new(0)  # Initialize scores for all categories to 0
-
+            scores = Hash.new(0)
             team_event = team.team_events.first
             score_matrices.each do |score_matrix|
               tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.last.id)
@@ -101,12 +101,13 @@ module Api
               if tran_scores.any?
                 last_tran_score = tran_scores.last
                 weighted_scores[score_matrix.name] = last_tran_score.score * score_matrix.weight
+                scores[score_matrix.name] = last_tran_score.score
               end
             end
 
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
             team_data[:score_category] = score_matrices.map do |score_matrix|
-              { category: score_matrix.name, score: weighted_scores[score_matrix.name] }
+              { category: score_matrix.name, weighted_scores: weighted_scores[score_matrix.name],scores: scores[score_matrix.name]  }
             end
 
             teams_data << team_data
