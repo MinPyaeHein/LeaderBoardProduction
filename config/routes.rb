@@ -110,7 +110,9 @@ Rails.application.routes.draw do
        get 'teams/event/:event_id/categoriesScore', to: 'tran_scores#get_teams_score_by_category'
        get 'scoreCategory/event/:event_id', to: 'score_matrices#get_score_matrix_by_event_id'
        get 'teams/event/:event_id/categoriesScore/judge/:member_id', to: 'tran_scores#get_all_teams_score_categories_by_judge'
+       get '/team/:team_id/event/:event_id/categoriesScore/judge', to: 'tran_scores#get_one_team_score_category_by_individual_judge'
        get 'team/:team_id/event/:event_id/categoriesScores/judges', to: "tran_scores#get_one_team_score_categories_by_all_judges"
+
 
       #Transcation Log
        get 'transaction/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'
