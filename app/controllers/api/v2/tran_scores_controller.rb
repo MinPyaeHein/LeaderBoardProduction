@@ -66,7 +66,10 @@ module Api
 
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
             team_data[:score_category] = score_matrices.map do |score_matrix|
-              { category: score_matrix.name, score: weighted_scores[score_matrix.name]/judges.length }
+              {
+                category: score_matrix.name,
+                score: sprintf('%.2f', weighted_scores[score_matrix.name] / judges.length.to_f)  # Ensure at least two decimal places
+              }
             end
 
             teams_data << team_data
