@@ -23,6 +23,7 @@
               { errors: score_info.errors.full_messages }
             end
         end
+        
         result=check_score_matrix(score_matrix,score_info)
         if result[:errors].nil?
             scoreMatrix= ::ScoreMatrix.create(

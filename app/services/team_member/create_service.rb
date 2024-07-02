@@ -13,7 +13,6 @@
           if result[:errors].present?
             errors << result[:errors]
           else
-
             teamMember = ::TeamMember.create(
               team_id:  @params[:team_id],
               member_id: member_id,
@@ -23,13 +22,10 @@
             )
             if teamMember.save
               teamMembers << teamMember
-
             else
               errors << teamMember.errors.full_messages
-
             end
           end
-
         end
         { teamMembers: teamMembers, errors: errors }
       end
@@ -54,7 +50,7 @@
         end
         existing_team_member = ::TeamMember.find_by(team_id: @params[:team_id], member_id: member_id, active: true)
         if !existing_team_member.nil?
-          return { errors: ["This member is already part of the team."] }
+          return { errors: ["This member "+member.users.first.email+"is already part of the team."] }
         end
         member_in_another_team = ::TeamMember.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
         if !member_in_another_team.nil?
