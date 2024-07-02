@@ -63,10 +63,10 @@ module Api
                 end
               end
             end
-
+            
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
             team_data[:score_category] = score_matrices.map do |score_matrix|
-              score = weighted_scores[score_matrix.name] / judges.length.to_f
+              score = weighted_scores[score_matrix.name] / judges.length
               formatted_score = score.zero? ? 0 : score.round(2)
               {
                 category: score_matrix.name,
