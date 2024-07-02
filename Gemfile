@@ -35,8 +35,6 @@ gem "bootsnap", require: false
 
 # RSpec for testing
 group :development, :test do
-  gem 'rspec-rails', '~> 5.0'
-  gem 'rswag', '~> 2.5'
 
   # PostgreSQL database adapter for Active Record
   gem 'pg'
@@ -52,3 +50,5 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+gem 'rspec-rails', '~> 5.0'
+gem 'rswag', '~> 2.5'
