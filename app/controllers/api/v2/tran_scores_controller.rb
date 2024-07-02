@@ -63,7 +63,7 @@ module Api
                 end
               end
             end
-            
+
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
             team_data[:score_category] = score_matrices.map do |score_matrix|
               score = weighted_scores[score_matrix.name] / judges.length
@@ -161,23 +161,23 @@ module Api
 
           team = teams.last
           team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
-          team_data[:score_category] = []
+          team_data[:score_categories] = []
           team_data[:judges]=[]
 
-          ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
-            weighted_score = 0
+          Judge.where(event_id: params[:event_id]).each do |judge|
+            score_category=[]
+            ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
             team_event = team.team_events.last
-
-            Judge.where(event_id: params[:event_id]).each do |judge|
-              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
-
+            tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
               if tran_scores.any?
                 last_tran_score = tran_scores.last
-                team_data[:judges]<<{id: judge.id, member_id: judge.member_id, score: last_tran_score.score, score_category: }
+                score_category << { category: score_matrix.name, score: last_tran_score.score }
+              else
+                score_category << { category: score_matrix.name, score: 0 }
               end
             end
+            team_data[:judges]<<{id: judge.id, member_id: judge.member_id, score_categories: score_category}
 
-            team_data[:score_category] << { category: score_matrix.name, score: weighted_score }
           end
 
           render json: { success: true, message: { team: team_data } }, status: :ok
@@ -185,47 +185,6 @@ module Api
         end
 
 
-        # def create
-        #   result=@service.create()
-        #   if result[:tranScore]
-        #     message={}
-        #     message[:tranScore] = result[:tranScore]
-        #     render json: {success: true, errors: message}, status: :created
-        #   else
-        #     render json: {success: false, errors: result[:errors] }, status: :ok
-        #   end
-        # end
-        # def score_team_by_all_categories
-        #   event_id = params[:event_id]
-        #   judge_id = params[:judge_id]
-        #   team_id = params[:team_id]
-        #   tran_scores = params[:tran_score]
-
-        #   # Validate the presence of the required parameters
-        #   if event_id.nil? || judge_id.nil? || team_id.nil? || tran_scores.nil? || !tran_scores.is_a?(Array)
-        #     render json: { success: false, errors: "Missing or invalid parameters" }, status: :unprocessable_entity and return
-        #   end
-
-        #   # Prepare the data for the service
-        #   tran_scores_data = tran_scores.map do |tran_score|
-        #     {
-        #       score: tran_score[:score],
-        #       score_matrix_id: tran_score[:score_matrix_id],
-        #       desc: tran_score[:desc]
-        #     }
-        #   end
-
-        #   result=@service.create_with_categories()
-        #   if result[:tranScore]
-        #     message={}
-        #     message[:tranScore] = result[:tranScore]
-        #     render json: {success: true, errors: message}, status: :created
-        #   else
-        #     render json: {success: false, errors: result[:errors] }, status: :ok
-        #   end
-
-        # end
-        #
         def create
           result = @service.create()
           if result[:tranScores]
