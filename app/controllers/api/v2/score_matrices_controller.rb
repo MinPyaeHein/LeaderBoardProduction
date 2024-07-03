@@ -14,10 +14,12 @@ module Api
 
         def get_score_matrix_by_event_id
           message={}
-          message[:scoreMatrics]=ScoreMatrix.where(event_id: params[:event_id])
+          scoreMatrics=ScoreMatrix.where(event_id: params[:event_id])
+          serialized_scoreMatrcs = ActiveModelSerializers::SerializableResource.new(scoreMatrics, each_serializer: ScoreMatrixSerializer)
+          message[:scoreMatrics]=serialized_scoreMatrcs
           render json:{success: true,message: message}, status: :ok
         end
-        
+
         def create
           result=@service.createScoreMatrics
           message={}

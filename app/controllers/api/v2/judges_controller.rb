@@ -55,7 +55,6 @@ module Api
           existing_teams = Team.joins(:team_events).where(team_events: { event_id: params[:event_id] }).pluck(:id, :name, :pitching_order)
           existing_teams_hash = teamInvestScores_old.index_by { |team| team[:team_id] }
           new_teams = existing_teams.reject { |team_id, _team_name| existing_teams_hash.key?(team_id) }
-
           combined_teams = teamInvestScores_old + new_teams.map do |team_id, team_name, pitching_order|
             {
               team_id: team_id,
@@ -84,12 +83,8 @@ module Api
           message = {
             judges: serialized_judges
           }
-
           render json: { success: true, message: message }
-
         end
-
-
         private
         def judge_params
           params.require(:judge).permit(:judge_type,:event_id ,:judge_id,:active, :current_amount, member_ids: [])

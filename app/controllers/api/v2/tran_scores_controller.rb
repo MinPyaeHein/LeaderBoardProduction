@@ -50,13 +50,14 @@ module Api
           end
 
           teams_data = []
+          scoreMatrics=ScoreMatrix.where(event_id: params[:event_id])
+          serialized_scoreMatrcs = ActiveModelSerializers::SerializableResource.new(scoreMatrics, each_serializer: ScoreMatrixSerializer)
           score_matrices = ScoreMatrix.where(event_id: params[:event_id])
           judges = Judge.where(event_id: params[:event_id])
           teams.each do |team|
             weighted_scores = Hash.new(0)  # Initialize scores for all categories to 0
             team_event = team.team_events.first
-
-            score_matrices.each do |score_matrix|
+            serialized_scoreMatrcs.each do |score_matrix|
               judges.each do |judge|
                 tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
 
@@ -75,6 +76,7 @@ module Api
               total_score += formatted_score
               {
                 category: score_matrix.name,
+                shortTerm: score_matrix.shortTerm,
                 score: formatted_score
               }
             end
@@ -106,7 +108,9 @@ module Api
             weighted_scores = Hash.new(0)  # Initialize scores for all categories to 0
             scores = Hash.new(0)
             team_event = team.team_events.first
-            score_matrices.each do |score_matrix|
+            scoreMatrics=ScoreMatrix.where(event_id: params[:event_id])
+            serialized_scoreMatrcs = ActiveModelSerializers::SerializableResource.new(scoreMatrics, each_serializer: ScoreMatrixSerializer)
+            serialized_scoreMatrcs.each do |score_matrix|
               tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.last.id)
 
               if tran_scores.any?
@@ -118,7 +122,7 @@ module Api
 
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
             team_data[:score_category] = score_matrices.map do |score_matrix|
-              { category: score_matrix.name, weighted_scores: weighted_scores[score_matrix.name],scores: scores[score_matrix.name]  }
+              { category: score_matrix.name,shortTerm: score_matrix.shortTerm, weighted_scores: weighted_scores[score_matrix.name],scores: scores[score_matrix.name]  }
             end
 
             teams_data << team_data
@@ -139,23 +143,21 @@ module Api
           team = teams.last
           team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
           team_data[:score_category] = []
-
-          ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
+          scoreMatrics=ScoreMatrix.where(event_id: params[:event_id])
+          serialized_scoreMatrcs = ActiveModelSerializers::SerializableResource.new(scoreMatrics, each_serializer: ScoreMatrixSerializer)
+          serialized_scoreMatrcs.where(event_id: params[:event_id]).each do |score_matrix|
             weighted_score = 0
             team_event = team.team_events.last
 
             Judge.where(event_id: params[:event_id]).each do |judge|
               tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
-
               if tran_scores.any?
                 last_tran_score = tran_scores.last
                 weighted_score += last_tran_score.score * score_matrix.weight if last_tran_score
               end
             end
-
-            team_data[:score_category] << { category: score_matrix.name, score: weighted_score }
+            team_data[:score_category] << { category: score_matrix.name,shortTerm: score_matrix.shoerTerm, score: weighted_score }
           end
-
           render json: { success: true, message: { team: team_data } }, status: :ok
         end
 
@@ -173,14 +175,16 @@ module Api
 
           Judge.where(event_id: params[:event_id]).each do |judge|
             score_category=[]
-            ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
+            scoreMatrics=ScoreMatrix.where(event_id: params[:event_id])
+            serialized_scoreMatrcs = ActiveModelSerializers::SerializableResource.new(scoreMatrics, each_serializer: ScoreMatrixSerializer)
+            serialized_scoreMatrcs.where(event_id: params[:event_id]).each do |score_matrix|
             team_event = team.team_events.last
             tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
               if tran_scores.any?
                 last_tran_score = tran_scores.last
-                score_category << { category: score_matrix.name, score: last_tran_score.score }
+                score_category << { category: score_matrix.name,shortTerm: score_matrix.shortTerm, score: last_tran_score.score }
               else
-                score_category << { category: score_matrix.name, score: 0 }
+                score_category << { category: score_matrix.name,shortTerm: score_matrix.shortTerm, score: 0 }
               end
             end
             team_data[:judges]<<{id: judge.id, member_id: judge.member_id, name: judge.member.name, score_categories: score_category}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_27_170942) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_03_144712) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -96,6 +96,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_170942) do
     t.string "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "shortTerm"
   end
 
   create_table "score_matrices", force: :cascade do |t|

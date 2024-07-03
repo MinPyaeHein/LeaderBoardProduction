@@ -16,14 +16,14 @@
       end
 
       def create(score_matrix)
-        score_info = ::ScoreInfo.find_by(name: score_matrix["name"])
+        score_info = ::ScoreInfo.find_by(name: score_matrix["name"],shortTerm: score_matrix["shortTerm"])
         if !score_info
-            score_info = ::ScoreInfo.create(name: score_matrix["name"], desc: score_matrix["desc"])
+            score_info = ::ScoreInfo.create(name: score_matrix["name"], desc: score_matrix["desc"],shortTerm: score_matrix["shortTerm"])
             if !score_info.save
               { errors: score_info.errors.full_messages }
             end
         end
-        
+
         result=check_score_matrix(score_matrix,score_info)
         if result[:errors].nil?
             scoreMatrix= ::ScoreMatrix.create(
