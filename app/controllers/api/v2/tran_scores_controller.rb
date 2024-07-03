@@ -27,15 +27,16 @@ module Api
                ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
                     judges.each do |judge|
                         tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id,judge_id: judge.id)
-                        next unless tran_scores.any?
-                        total_score+= tran_scores.last.score * score_matrix.weight
+                        if tran_scores.any?
+                         total_score+= tran_scores.last.score * score_matrix.weight
+                        end
                     end
                 end
                 team_event.total_score=total_score/judges.length
                 team_event.save
 
           end
-          
+
           message={}
           message[:teams]=teams
           render json: {success: true,message:message}, each_serializer: TeamSerializer
@@ -67,19 +68,23 @@ module Api
             end
 
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
+            total_score = 0
             team_data[:score_category] = score_matrices.map do |score_matrix|
               score = weighted_scores[score_matrix.name] / judges.length
               formatted_score = score.zero? ? 0 : score.round(2)
+              total_score += formatted_score
               {
                 category: score_matrix.name,
                 score: formatted_score
               }
             end
+            team_data[:total_score] = total_score.round(2)
             teams_data << team_data
           end
 
           render json: { success: true, message: { teams: teams_data } }, status: :ok
         end
+
 
 
         def get_all_teams_score_categories_by_judge
