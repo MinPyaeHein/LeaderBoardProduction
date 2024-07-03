@@ -139,12 +139,12 @@ module Api
           team = teams.last
           team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
           team_data[:score_category] = []
-
+          judges=Judge.where(event_id: params[:event_id])
           ScoreMatrix.where(event_id: params[:event_id]).each do |score_matrix|
             weighted_score = 0
             team_event = team.team_events.last
 
-            Judge.where(event_id: params[:event_id]).each do |judge|
+            judges.each do |judge|
               tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
 
               if tran_scores.any?
@@ -152,8 +152,9 @@ module Api
                 weighted_score += last_tran_score.score * score_matrix.weight if last_tran_score
               end
             end
-
-            team_data[:score_category] << { category: score_matrix.name, score: weighted_score }
+            score=weighted_score/judges.length
+            formatted_score = score.zero? ? 0 : score.round(2)
+            team_data[:score_category] << { category: score_matrix.name, score: formatted_score }
           end
 
           render json: { success: true, message: { team: team_data } }, status: :ok
