@@ -33,7 +33,9 @@ module Api
                 end
                 team_event.total_score=total_score/judges.length
                 team_event.save
+
           end
+          teams.save
           message={}
           message[:teams]=teams
           render json: {success: true,message:message}, each_serializer: TeamSerializer
