@@ -176,7 +176,7 @@ module Api
                 score_category << { category: score_matrix.name, score: 0 }
               end
             end
-            team_data[:judges]<<{id: judge.id, member_id: judge.member_id, score_categories: score_category}
+            team_data[:judges]<<{id: judge.id, member_id: judge.member_id, name: judge.member.name, score_categories: score_category}
 
           end
 
