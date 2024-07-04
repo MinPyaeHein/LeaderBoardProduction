@@ -113,11 +113,12 @@ Rails.application.routes.draw do
        get '/team/:team_id/event/:event_id/categoriesScore/judge', to: 'tran_scores#get_one_team_score_category_by_individual_judge'
        get 'team/:team_id/event/:event_id/categoriesScores/judges', to: "tran_scores#get_one_team_score_categories_by_all_judges"
        get '/teams/event/:event_id/categoriesScore/judge', to: 'tran_scores#get_all_teams_score_category_by_individual_judges'
-      
 
       #Transcation Log
        get 'transaction/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'
        get 'transaction/event/:event_id/judge/:judge_id', to: 'tran_investors#get_all_tran_investors_by_event_and_judge'
+       get 'transactionScore/event/:event_id', to: 'tran_scores#get_all_tran_score_by_all_judges'
+
 
     end
   end

@@ -219,6 +219,28 @@ module Api
               render json: { success: true, message: { teams: all_teams_data } }, status: :ok
         end
 
+        def get_all_tran_score_by_all_judges
+          judges = Judge.includes(:member).where(event_id: params[:event_id])
+          if judges.empty?
+            render json: { success: false, error: "No Judge found" }, status: :not_found and return
+          end
+
+          judges_data = judges.map do |judge|
+            member_data = judge.member.as_json
+            tran_scores = TranScore.includes(:score_matrix)
+                                   .where(judge_id: judge.id, event_id: params[:event_id])
+            serialized_tran_scores = ActiveModelSerializers::SerializableResource.new(tran_scores, each_serializer: TranScoreSerializer)
+            member_data[:tran_scores] = serialized_tran_scores.as_json
+            member_data
+          end
+
+          render json: { success: true, message: { judges_data: judges_data } }, status: :ok
+        end
+
+
+
+
+
 
 
         def create
