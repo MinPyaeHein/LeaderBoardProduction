@@ -191,29 +191,30 @@ module Api
               end
               all_teams_data = []
               score_matrics = ScoreMatrix.includes(:score_info).where(event_id: params[:event_id])
-              Judge.where(event_id: params[:event_id]).each do |judge|
-                teams.each do |team|
-                  team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
-                  team_data[:judges] = []
+              judges=Judge.where(event_id: params[:event_id])
+              teams.each do |team|
+                team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
+                team_data[:judges] = []
+                score_category = []
+                 judges.each do |judge|
+                    score_matrics.each do |score_matrix|
+                      team_event = team.team_events.last
+                      tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
 
-                  score_category = []
-                  score_matrics.each do |score_matrix|
-                    team_event = team.team_events.last
-                    tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
-                    if tran_scores.any?
-                      if tran_scores.any?
-                        last_tran_score = tran_scores.last
-                        score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm ,weight: score_matrix.weight}
-                      else
-                        score_category << { category: score_matrix.weight, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
-                      end
+                        if tran_scores.any?
+                          last_tran_score = tran_scores.last
+                          score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm ,weight: score_matrix.weight}
+                        else
+                          score_category << { category: score_matrix.weight, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
+                        end
+
                     end
-
-                  team_data[:judges] << { id: judge.id, member_id: judge.member_id, name: judge.member.name, score_categories: score_category }
-                  all_teams_data << team_data
+                    team_data[:judges] << { id: judge.id, member_id: judge.member_id, name: judge.member.name, score_categories: score_category }
                 end
+
+                all_teams_data << team_data
               end
-            end
+              
               render json: { success: true, message: { teams: all_teams_data } }, status: :ok
         end
 
