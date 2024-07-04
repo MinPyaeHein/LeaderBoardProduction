@@ -24,7 +24,7 @@
             next
           end
 
-          tran_score = ::TranScore.new(
+          tran_score = TranScore.new(
             score: score_params[:score],
             desc: score_params[:desc],
             score_matrix_id: score_matrix.id,
@@ -34,7 +34,9 @@
           )
 
           if tran_score.save
-            tran_scores << tran_score
+            tran_score_data = tran_score.as_json
+            tran_score_data[:team_id] = @params[:team_id]
+            tran_scores << tran_score_data
           else
             errors.concat(tran_score.errors.full_messages)
           end
@@ -46,6 +48,7 @@
           { errors: errors }
         end
       end
+
 
 
 
