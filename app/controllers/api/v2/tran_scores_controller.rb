@@ -195,8 +195,9 @@ module Api
               teams.each do |team|
                 team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
                 team_data[:judges] = []
-                score_category = []
+
                  judges.each do |judge|
+                    score_category = []
                     score_matrics.each do |score_matrix|
                       team_event = team.team_events.last
                       tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
@@ -205,7 +206,7 @@ module Api
                           last_tran_score = tran_scores.last
                           score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm ,weight: score_matrix.weight}
                         else
-                          score_category << { category: score_matrix.weight, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
+                          score_category << { category: score_matrix.name, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
                         end
 
                     end
@@ -214,7 +215,9 @@ module Api
 
                 all_teams_data << team_data
               end
-              
+              puts("judges==",judges.length)
+              puts("team,.length==", teams.length)
+              puts("All team data length==",all_teams_data.length)
               render json: { success: true, message: { teams: all_teams_data } }, status: :ok
         end
 
