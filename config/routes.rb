@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       resources :member do
         post 'signUp', on: :collection, to: 'members#create'
         post 'login', on: :collection, to: 'members#login'
+        post 'gestSignIn', on: :collection, to: 'members#gest_login'
         post 'signIn', on: :collection, to: 'members#login'
         patch '',on: :collection, to: 'members#update'
         get ':member_id',on: :collection, to: 'members#get_member_by_id'

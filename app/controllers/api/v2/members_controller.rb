@@ -3,13 +3,12 @@
 module Api
     module V2
       class MembersController < ApplicationController
-        skip_before_action :authenticate_request, only: [:create, :login]
-        before_action :set_service, only: [:create, :login, :update]
+        skip_before_action :authenticate_request, only: [:create, :login,:gest_login ]
+        before_action :set_service, only: [:create, :login, :update, :gest_login]
         def score_boards
           render 'score_cards/home'
         end
         def login
-          print("Arrive login controller");
 
           result=@loginLogout_service.login
           message={}
@@ -23,8 +22,24 @@ module Api
             message[:errors]=result[:errors]
             render json: message, status: :unprocessable_entity
           end
+        end
+
+          def gest_login
+            result=@loginLogout_service.gest_login
+            message={}
+            if result[:user].present?
+              message[:user]=result[:user]
+              message[:token]=result[:token]
+              message[:member]=result[:member]
+              render json: {success: true,message:message}, status: :ok
+            else
+              message[:success]=false
+              message[:errors]=result[:errors]
+              render json: message, status: :unprocessable_entity
+            end
 
         end
+
         def logout
           render json: { message: 'Logged out successfully' }
         end
@@ -57,7 +72,7 @@ module Api
       end
 
       def create
-       
+
         result=@create_service.create_member
         message={}
         if result[:token]
