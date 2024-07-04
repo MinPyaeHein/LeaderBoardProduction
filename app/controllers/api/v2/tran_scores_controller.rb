@@ -76,7 +76,7 @@ module Api
               total_score += formatted_score
               {
                 category: score_matrix.name,
-                shortTerm: score_matrix.score_info.shortTerm,
+                short_term: score_matrix.score_info.shortTerm,
                 score: formatted_score
               }
             end
@@ -119,7 +119,7 @@ module Api
 
               team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
               team_data[:score_category] = score_matrics.map do |score_matrix|
-                { category: score_matrix.name, weighted_scores: weighted_scores[score_matrix.name],scores: scores[score_matrix.name], shortTerm: score_matrix.score_info.shortTerm }
+                { category: score_matrix.name, weighted_scores: weighted_scores[score_matrix.name],scores: scores[score_matrix.name], short_term: score_matrix.score_info.shortTerm }
               end
               teams_data << team_data
             end
@@ -150,7 +150,7 @@ module Api
             end
             score=weighted_score/judges.length
             formatted_score = score.zero? ? 0 : score.round(2)
-            team_data[:score_category] << { category: score_matrix.name, score: formatted_score, shortTerm:  score_matrix.score_info.shortTerm}
+            team_data[:score_category] << { category: score_matrix.name, score: formatted_score, short_term:  score_matrix.score_info.shortTerm}
           end
           render json: { success: true, message: { team: team_data } }, status: :ok
         end
@@ -173,9 +173,9 @@ module Api
 
               if tran_scores.any?
                 last_tran_score = tran_scores.last
-                score_category << { category: score_matrix.name, score: last_tran_score.score, shortTerm: score_matrix.score_info.shortTerm , weight: score_matrix.weight}
+                score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm , weight: score_matrix.weight}
               else
-                score_category << { category: score_matrix.name, score: 0, shortTerm: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
+                score_category << { category: score_matrix.name, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
               end
             end
             team_data[:judges] << { id: judge.id, member_id: judge.member_id, name: judge.member.name, score_categories: score_category }
@@ -203,9 +203,9 @@ module Api
                     if tran_scores.any?
                       if tran_scores.any?
                         last_tran_score = tran_scores.last
-                        score_category << { category: score_matrix.name, score: last_tran_score.score, shortTerm: score_matrix.score_info.shortTerm ,weight: score_matrix.weight}
+                        score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm ,weight: score_matrix.weight}
                       else
-                        score_category << { category: score_matrix.weight, score: 0, shortTerm: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
+                        score_category << { category: score_matrix.weight, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
                       end
                     end
 
