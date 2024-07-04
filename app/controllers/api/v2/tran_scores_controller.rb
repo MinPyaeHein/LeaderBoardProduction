@@ -101,8 +101,6 @@ module Api
 
           teams_data = []
           score_matrics = ScoreMatrix.includes(:score_info).where(event_id: params[:event_id])
-          score_matrics.each do |score_matrix|
-
             teams.each do |team|
               weighted_scores = Hash.new(0)
               scores = Hash.new(0)
@@ -123,7 +121,7 @@ module Api
               end
               teams_data << team_data
             end
-          end
+
           render json: { success: true, message: { teams: teams_data } }, status: :ok
         end
 
