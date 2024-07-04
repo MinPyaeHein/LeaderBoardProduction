@@ -4,11 +4,13 @@
 class Member::LoginLogoutService
     def initialize(params)
       @params = params
-   
+
     end
 
     def login
-        user = User.find_by(email:@params[:email])
+        # user = User.find_by(email:@params[:email])
+        active_members = Member.includes(:user).where(active: true,name:@param[:name])
+        user = User.find_by(email:active_members.first.email)
         if !user.nil?
           bool=user.authenticate(@params[:password])
           puts "bool: #{bool}"
@@ -24,17 +26,16 @@ class Member::LoginLogoutService
         else
           return  { errors: "User #{@params[:email]} not found" }
         end
-      
+
     end
 
     def logout
-       
+
          { message: 'Logged out successfully' }
     end
 
 
-    
 
-   
+
+
   end
-

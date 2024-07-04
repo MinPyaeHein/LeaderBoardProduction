@@ -73,12 +73,10 @@ module Api
                 end
             end
 
-
             team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
             total_score = 0
             team_data[:score_category] = score_matrics.map do |score_matrix|
               score = (judges.length-judge_count) >0 ? (weighted_scores[score_matrix.name] / (judges.length-judge_count)) : 0
-
               formatted_score = score.zero? ? 0 : score.round(2)
               total_score += formatted_score
               {
@@ -248,7 +246,7 @@ module Api
           if result[:tranScores]
             message = {}
             message[:tranScores] = result[:tranScores]
-            render json: { success: true, errors: message }, status: :created
+            render json: { success: true, message: message }, status: :created
           else
             render json: { success: false, errors: result[:errors] }, status: :ok
           end
