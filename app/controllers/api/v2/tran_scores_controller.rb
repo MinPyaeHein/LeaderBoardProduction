@@ -106,29 +106,34 @@ module Api
 
           teams_data = []
           score_matrics = ScoreMatrix.includes(:score_info).where(event_id: params[:event_id])
-            teams.each do |team|
-              weighted_scores = Hash.new(0)
-              scores = Hash.new(0)
-              team_event = team.team_events.first
-              score_matrics.each do |score_matrix|
-                tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.last.id)
 
-                if tran_scores.any?
-                  last_tran_score = tran_scores.last
-                  weighted_scores[score_matrix.name] = last_tran_score.score * score_matrix.weight
-                  scores[score_matrix.name] = last_tran_score.score
-                end
-              end
+          teams.each do |team|
+            team_event = team.team_events.first
+            next if team_event.nil?
 
-              team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
-              team_data[:score_category] = score_matrics.map do |score_matrix|
-                { category: score_matrix.name, weighted_scores: weighted_scores[score_matrix.name],scores: scores[score_matrix.name], short_term: score_matrix.score_info.shortTerm }
+            weighted_scores = Hash.new(0)
+            scores = Hash.new(0)
+
+            score_matrics.each do |score_matrix|
+              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.last.id)
+
+              if tran_scores.any?
+                last_tran_score = tran_scores.last
+                weighted_scores[score_matrix.name] = last_tran_score.score * score_matrix.weight
+                scores[score_matrix.name] = last_tran_score.score
               end
-              teams_data << team_data
             end
+
+            team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link, :team_event])
+            team_data[:score_category] = score_matrics.map do |score_matrix|
+              { category: score_matrix.name, weighted_scores: weighted_scores[score_matrix.name], scores: scores[score_matrix.name], short_term: score_matrix.score_info.shortTerm }
+            end
+            teams_data << team_data
+          end
 
           render json: { success: true, message: { teams: teams_data } }, status: :ok
         end
+
 
         def get_one_team_score_categories_by_all_judges
           teams = Team.where(event_id: params[:event_id], id: params[:team_id])
