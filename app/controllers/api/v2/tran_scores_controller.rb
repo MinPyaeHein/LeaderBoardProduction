@@ -168,6 +168,7 @@ module Api
           if teams.empty?
             render json: { success: false, error: "Team not found" }, status: :not_found and return
           end
+
           team = teams.last
           team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
           team_data[:judges] = []
@@ -177,20 +178,27 @@ module Api
             score_category = []
             score_matrics.each do |score_matrix|
               team_event = team.team_events.last
-              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
+              if team_event.nil?
+                score_category << { category: score_matrix.name, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight }
+                next
+              end
 
+              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
               if tran_scores.any?
                 last_tran_score = tran_scores.last
-                score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm , weight: score_matrix.weight}
+                score_category << { category: score_matrix.name, score: last_tran_score.score, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight }
               else
-                score_category << { category: score_matrix.name, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight}
+                score_category << { category: score_matrix.name, score: 0, short_term: score_matrix.score_info.shortTerm, weight: score_matrix.weight }
               end
             end
-            team_data[:judges] << { id: judge.id, member_id: judge.member_id, name: judge.member.name, score_categories: score_category }
+
+            judge_name = judge.member&.name || "Unknown Judge"
+            team_data[:judges] << { id: judge.id, member_id: judge.member_id, name: judge_name, score_categories: score_category }
           end
 
           render json: { success: true, message: { team: team_data } }, status: :ok
         end
+
 
         def get_all_teams_score_category_by_individual_judges
           teams = Team.where(event_id: params[:event_id])
