@@ -135,34 +135,6 @@ module Api
         end
 
 
-        def get_one_team_score_categories_by_all_judges
-          teams = Team.where(event_id: params[:event_id], id: params[:team_id])
-          if teams.empty?
-            render json: { success: false, error: "Team not found" }, status: :not_found and return
-          end
-
-          team = teams.last
-          team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
-          team_data[:score_category] = []
-          judges=Judge.where(event_id: params[:event_id])
-          score_matrics = ScoreMatrix.includes(:score_info).where(event_id: params[:event_id])
-          score_matrics.each do |score_matrix|
-            weighted_score = 0
-            team_event = team.team_events.last
-            judges.each do |judge|
-              tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
-              if tran_scores.any?
-                last_tran_score = tran_scores.last
-                weighted_score += last_tran_score.score * score_matrix.weight if last_tran_score
-              end
-            end
-            score=weighted_score/judges.length
-            formatted_score = score.zero? ? 0 : score.round(2)
-            team_data[:score_category] << { category: score_matrix.name, score: formatted_score, short_term:  score_matrix.score_info.shortTerm}
-          end
-          render json: { success: true, message: { team: team_data } }, status: :ok
-        end
-
         def get_one_team_score_category_by_individual_judge
           teams = Team.where(event_id: params[:event_id], id: params[:team_id])
           if teams.empty?
@@ -231,9 +203,7 @@ module Api
 
                 all_teams_data << team_data
               end
-              puts("judges==",judges.length)
-              puts("team,.length==", teams.length)
-              puts("All team data length==",all_teams_data.length)
+
               render json: { success: true, message: { teams: all_teams_data } }, status: :ok
         end
 
