@@ -111,7 +111,7 @@ module Api
               scores = Hash.new(0)
               team_event = team.team_events.first
               score_matrics.each do |score_matrix|
-                tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix['id'], judge_id: judge.last.id)
+                tran_scores = TranScore.where(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.last.id)
 
                 if tran_scores.any?
                   last_tran_score = tran_scores.last
