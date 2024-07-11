@@ -38,11 +38,11 @@ module Api
 
         def get_all_team_score_categories_by_judge
           service=TranScore::FetchAllTeamScoreCategoriesByJudge.new(@event_id,@member_id)
-          teams=service.call
-          if !teams[:error]
-             render json: { success: true, message: { teams: teams } }, status: :ok
+          teams_data=service.call
+          if !teams_data[:error]
+             render json: { success: true, message: { teams: teams_data[:teams] } }, status: :ok
           else
-             render json: { success: false, message: { error: teams[:error]} }, status: :not_found
+             render json: { success: false, message: { error: teams_data[:error]} }, status: :not_found
           end
         end
 
