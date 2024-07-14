@@ -10,7 +10,6 @@ class TranScore::FetchAllTeamScoreCategoriesByJudge
 
     get_all_team_score_categories_by_judge(teams, judge)
   end
-
   private
 
   def get_all_team_score_categories_by_judge(teams, judge)
@@ -26,18 +25,18 @@ class TranScore::FetchAllTeamScoreCategoriesByJudge
   def build_team_data(team, judge, score_matrices)
     team_event = team.team_events.first
     return nil if team_event.nil?
-
     weighted_scores = {}
     scores = {}
-
     score_matrices.each do |score_matrix|
-      tran_score = TranScore.find_by(team_event_id: team_event.id, score_matrix_id: score_matrix.id, judge_id: judge.id)
+      tran_score = TranScore.where(
+        team_event_id: team_event.id,
+        score_matrix_id: score_matrix.id,
+        judge_id: judge.id
+      ).order(created_at: :desc).last
       next unless tran_score
-
       weighted_scores[score_matrix.name] = tran_score.score * score_matrix.weight
       scores[score_matrix.name] = tran_score.score
     end
-
     format_score_matrix_data(team, score_matrices, weighted_scores, scores)
   end
 
