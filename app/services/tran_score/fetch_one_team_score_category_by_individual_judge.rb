@@ -10,9 +10,9 @@ class TranScore::FetchOneTeamScoreCategoryByIndividualJudge
     team = teams.last
     team_data = team.as_json(only: [:id, :event_id, :active, :desc, :name, :pitching_order, :website_link])
     team_data[:judges] = []
-    score_matrics = ScoreMatrix.includes(:score_info).where(event_id: params[:event_id])
+    score_matrics = ScoreMatrix.includes(:score_info).where(event_id: @event_id)
 
-    Judge.where(event_id: params[:event_id]).each do |judge|
+    Judge.where(event_id: @event_id).each do |judge|
       score_category = []
       score_matrics.each do |score_matrix|
         team_event = team.team_events.last
