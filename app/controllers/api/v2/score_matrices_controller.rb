@@ -21,6 +21,7 @@ module Api
         end
 
         def create
+          # authorize current_user, :editor_or_owner?(params[:event_id])
           result=@service.createScoreMatrics
           message={}
           message[:scoreMatrics]=result
@@ -28,11 +29,12 @@ module Api
         end
 
         private
-        def member_params
-          params[:score_matrics]
+        def score_matrix_params
+          params.require(:score_matrics)
         end
+
         def set_service
-          @service = ScoreMatrix::CreateService.new(member_params)
+          @service = ScoreMatrix::CreateService.new(score_matrix_params)
         end
 
 

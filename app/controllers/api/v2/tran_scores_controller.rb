@@ -3,6 +3,7 @@ require 'active_model_serializers'
 module Api
     module V2
       class TranScoresController < ApplicationController
+
         before_action :set_service, only: [:create]
         before_action :set_event_id, only: [
           :get_teams_total_score,
@@ -25,6 +26,7 @@ module Api
         end
 
         def get_teams_total_score
+          # authorize current_user, :call_test?
           service =TranScore::FetchTotalScoresService.new(@event_id)
           teams=service.call
           render json: {success: true, message: { teams: teams}}, status: :ok
@@ -37,6 +39,8 @@ module Api
         end
 
         def get_all_team_score_categories_by_judge
+          # @user=User.find_by(member_id: @member_id)
+          # authorize @user, :call_test_owner?
           service=TranScore::FetchAllTeamScoreCategoriesByJudge.new(@event_id,@member_id)
           teams_data=service.call
           if !teams_data[:error]
