@@ -55,7 +55,7 @@ class Team::CreateService
     team = nil
     resultTeamEvent = nil
     resultTeamMember = nil
-    result = @teamMemberService.check_team_member(@params[:member_ids].first)
+    result = @teamMemberService.check_team_member(@params[:member_id])
 
     if result[:errors].present?
       errors.concat(result[:errors].flatten)

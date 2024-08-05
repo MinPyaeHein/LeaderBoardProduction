@@ -1,5 +1,5 @@
 require_dependency 'concerns/policy_concern'
-class ScoreMatrixPolicy < ApplicationPolicy
+class JudgePolicy < ApplicationPolicy
   include InvestorMatrixPolicyConcern
   def create?
     create_policy_authorization(record)

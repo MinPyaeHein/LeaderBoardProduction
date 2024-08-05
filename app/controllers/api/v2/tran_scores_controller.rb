@@ -91,6 +91,9 @@ module Api
 
 
         def create
+          filtered_params = member_params.except(:team_id,:tran_score)
+          @tran_score = TranScore.new(filtered_params)
+          authorize @tran_score
           result = @service.create()
           if result[:tranScores]
             message = {}

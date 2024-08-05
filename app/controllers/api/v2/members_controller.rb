@@ -58,10 +58,16 @@ module Api
       end
       def get_member_by_id
         @member = Member.find(params[:member_id])
-        message={}
-        message[:member] = @member
+        @user = @member.users.first
+        @token = @user.generate_jwt
 
-        render json: { success: true,message: message }
+        message = {
+          member: @member,
+          user: @user,
+          token: @token
+        }
+
+        render json: { success: true, message: message }
 
       end
       def update

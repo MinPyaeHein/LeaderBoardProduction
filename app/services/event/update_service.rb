@@ -8,8 +8,8 @@
       end
 
       def update
-        puts("event_id=", @params[:event_id])
-        @event = ::Event.find(@params[:event_id])
+        puts("event_id=", @params[:id])
+        @event = ::Event.find(@params[:id])
 
         old_values = {
           name: @event.name,

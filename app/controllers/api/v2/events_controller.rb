@@ -31,6 +31,10 @@ module Api
         end
 
         def update
+          filtered_params = event_params.except(:score_type_id)
+          @event = Event.new(filtered_params)
+          puts("@event.id===", @event.id)
+          authorize @event
           result=@update_service.update
           message={}
           message[:event] = result[:event]
@@ -65,7 +69,7 @@ module Api
 
         private
         def event_params
-          params.require(:event).permit(:event_id,:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id,:status )
+          params.require(:event).permit(:id,:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id,:status )
         end
         def set_service
           @service = Event::CreateService.new(event_params,current_user)

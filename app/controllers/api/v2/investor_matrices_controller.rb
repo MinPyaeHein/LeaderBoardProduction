@@ -10,6 +10,8 @@ module Api
           render json:{success: true,message: message}, status: :ok
         end
         def create
+          @investor_matrix = InvestorMatrix.new(member_params)
+          authorize @investor_matrix
           result=@service.create()
           if result[:investorMatrix].present?
             message={}

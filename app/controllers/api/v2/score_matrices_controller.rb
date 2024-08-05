@@ -21,7 +21,10 @@ module Api
         end
 
         def create
-          # authorize current_user, :editor_or_owner?(params[:event_id])
+          # Ensure user is authorized to create score matrices
+          filtered_params = score_matrix_params.first.except(:shortTerm)
+          authorize ScoreMatrix.new(filtered_params) # Assuming the policy is for individual ScoreMatrix
+
           result=@service.createScoreMatrics
           message={}
           message[:scoreMatrics]=result
@@ -30,7 +33,8 @@ module Api
 
         private
         def score_matrix_params
-          params.require(:score_matrics)
+          params.require(:score_matrices)
+                .map { |matrix| matrix.permit(:weight, :max, :min, :event_id, :name, :shortTerm) }
         end
 
         def set_service

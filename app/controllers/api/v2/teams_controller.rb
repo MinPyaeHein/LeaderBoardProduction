@@ -23,6 +23,8 @@ module Api
         end
 
         def create
+          @team = Team.new(team_params)
+          authorize @team
           result=@service.create()
           message={}
           if !result[:errors].present?
@@ -37,6 +39,9 @@ module Api
           end
         end
         def create_team_with_leaders
+          filtered_params = team_params.except(:member_ids)
+          @team = Team.new(filtered_params)
+          authorize @team
           result=@service.createTeamWithLeaders()
           message={}
           message[:teams] = result[:teams]

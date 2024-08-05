@@ -5,6 +5,6 @@ class Event < ApplicationRecord
     has_many :teams
     has_many :judges
     has_many :editors
-    belongs_to :organizer, class_name: 'Member'
+    belongs_to :organizer, class_name: 'Member', foreign_key: 'organizer_id'
     validates :organizer_id, presence: true
   end

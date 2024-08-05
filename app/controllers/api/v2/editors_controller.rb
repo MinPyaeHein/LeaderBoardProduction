@@ -12,6 +12,9 @@ module Api
         end
 
         def create
+          filtered_params = editor_params.except(:member_ids)
+          @editor = Editor.new(filtered_params)
+          authorize @editor
           result=@service.create()
           message={}
           if result.present?

@@ -13,6 +13,9 @@ module Api
         end
 
         def create
+          filtered_params = judge_params.except(:member_ids)
+          @judge = Judge.new(filtered_params)
+          authorize @judge
           result=@service.create()
           message={}
           if result.present?
