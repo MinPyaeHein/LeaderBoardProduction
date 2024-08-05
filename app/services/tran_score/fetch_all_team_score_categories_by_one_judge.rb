@@ -1,4 +1,4 @@
-class TranScore::FetchAllTeamScoreCategoriesByJudge
+class TranScore::FetchAllTeamScoreCategoriesByOneJudge
   def initialize(event_id, member_id)
     @event_id = event_id
     @member_id = member_id
