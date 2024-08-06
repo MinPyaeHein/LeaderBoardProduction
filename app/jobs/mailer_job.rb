@@ -2,8 +2,8 @@ class MailerJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    puts " Mailer Job started"
+    Rails.logger.info "Mailer Job started"
     sleep 5
-    puts "Mailer Job completed"
+    Rails.logger.info "Mailer Job started"
   end
 end
