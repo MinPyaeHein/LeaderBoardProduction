@@ -1,6 +1,6 @@
 require_dependency 'concerns/policy_concern'
 class InvestorMatrixPolicy < ApplicationPolicy
-  include InvestorMatrixPolicyConcern
+  include PolicyConcern
   def create?
     create_policy_authorization(record)
   end
