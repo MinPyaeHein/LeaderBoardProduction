@@ -53,3 +53,6 @@ end
 gem 'rspec-rails', '~> 5.0'
 gem 'rswag', '~> 2.5'
 gem 'pundit'
+gem 'sidekiq'
+gem 'redis'
+

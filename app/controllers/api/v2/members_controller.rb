@@ -100,9 +100,11 @@ module Api
 
         def events_by_member_id
 
+
           @member= Member.includes(:teams,:judges,:users,:editors).find(params[:id])
 
           if  @member
+         
 
             ongoing_judge_events = @member.judges.joins(:event).where(events: { status: :ongoing }).select('events.*')
             past_judge_events = @member.judges.joins(:event).where(events: { status: :past }).select('events.*')

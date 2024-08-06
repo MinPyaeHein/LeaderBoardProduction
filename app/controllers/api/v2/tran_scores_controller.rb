@@ -3,7 +3,6 @@ require 'active_model_serializers'
 module Api
     module V2
       class TranScoresController < ApplicationController
-
         before_action :set_service, only: [:create]
         before_action :set_event_id, only: [
           :get_teams_total_score,
