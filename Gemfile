@@ -55,4 +55,4 @@ gem 'rswag', '~> 2.5'
 gem 'pundit'
 gem 'sidekiq'
 gem 'redis'
-
+gem 'sinatra', require: nil
