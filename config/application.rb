@@ -1,9 +1,5 @@
 require_relative "boot"
-
 require "rails/all"
-
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
 module LeaderBoard
@@ -13,5 +9,7 @@ module LeaderBoard
     config.autoload_paths += %W(#{config.root}/app/services)
     config.api_only = true
     config.active_job.queue_adapter = :sidekiq
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: '_your_app_session'
   end
 end
