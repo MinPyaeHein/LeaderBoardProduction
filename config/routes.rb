@@ -70,6 +70,7 @@ Rails.application.routes.draw do
         post 'signIn', on: :collection, to: 'members#login'
         patch '',on: :collection, to: 'members#update'
         get ':member_id',on: :collection, to: 'members#get_member_by_id'
+        post 'vote/team', on: :collection, to: 'member_votes#create'
       end
       get 'members', to: 'members#index'
 
@@ -93,10 +94,12 @@ Rails.application.routes.draw do
         get 'event/scoreTypes', to: 'score_types#index'
         post 'event/scoreMatrix', to: 'score_matrices#create'
         put 'event/:event_id/scoreType/:score_type_id', to: "events#update_event_score_type"
+        put 'event/team/status', to: "teams#update_status"
+        put 'event/status', to: "events#update_status"
 
 
       #Team Leader
-       post 'team/member', to: 'team_members#create'
+       post 'team/members', to: 'team_members#create'
        patch 'team', to: 'teams#update'
        delete 'team/:team_id/member/:member_id', to: 'team_members#remove_team_member'
 
@@ -105,6 +108,7 @@ Rails.application.routes.draw do
        get 'event/:id', to: 'events#get_events_by_id'
        put 'event', to: 'events#update'
        get 'scoreCategory/event/:event_id', to: 'score_matrices#get_score_matrix_by_event_id'
+       get 'events/member/:member_id', to: 'events#get_event_by_member_id'
 
       #Team
        get 'teams/event/:event_id', to: 'teams#get_teams_by_event_id'
@@ -116,6 +120,8 @@ Rails.application.routes.draw do
        get '/team/:team_id/event/:event_id/categoriesScore/judge', to: 'tran_scores#get_one_team_score_category_by_individual_judge'
        get 'team/:team_id/event/:event_id/categoriesScores/judges', to: "tran_scores#get_one_team_score_categories_by_all_judges"
        get '/teams/event/:event_id/categoriesScore/judge', to: 'tran_scores#get_all_teams_score_category_by_individual_judges'
+       get 'teams/:member_id', to: 'teams#get_teams_by_member_id'
+
 
       #Transcation Log
        get 'transaction/event/:id', to: 'tran_investors#get_all_tran_investors_by_event'

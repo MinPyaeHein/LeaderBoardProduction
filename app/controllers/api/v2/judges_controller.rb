@@ -13,7 +13,7 @@ module Api
         end
 
         def create
-          MailerJob.perform_later
+         
           filtered_params = judge_params.except(:member_ids)
           @judge = Judge.new(filtered_params)
           authorize @judge

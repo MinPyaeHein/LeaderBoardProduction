@@ -87,7 +87,7 @@ module Api
           message[:user]=result[:user]
           message[:member]=result[:member]
           message[:success]=true
-          render json: message, status: :created
+          render json: {success: true,message: message}, status: :ok
         elsif result[:errors]
           message[:success]=false
           message[:errors]=result[:errors]
@@ -99,13 +99,8 @@ module Api
       end
 
         def events_by_member_id
-
-
           @member= Member.includes(:teams,:judges,:users,:editors).find(params[:id])
-
           if  @member
-         
-
             ongoing_judge_events = @member.judges.joins(:event).where(events: { status: :ongoing }).select('events.*')
             past_judge_events = @member.judges.joins(:event).where(events: { status: :past }).select('events.*')
             future_judge_events = @member.judges.joins(:event).where(events: { status: :future }).select('events.*')
@@ -127,7 +122,7 @@ module Api
             message[:past_judge_events]=past_judge_events
             message[:future_judge_events]=future_judge_events
 
-            render json: message
+            render json: {success: true,message: message}, status: :ok
           else
             render json: { error: 'Member not found for the provided member_id' }, status: :not_found
           end
@@ -135,9 +130,7 @@ module Api
 
         private
         def member_params
-
           params.require(:member).permit(:member_id,:name,:email,:password,:phone,:password,:active,:profile_url,:address,:role,:faculty_id,:org_name, :desc)
-
         end
 
         def set_service

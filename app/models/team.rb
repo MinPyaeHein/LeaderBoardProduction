@@ -1,4 +1,5 @@
 class Team < ApplicationRecord
+    enum status: { pending: 1, approved: 2}
     has_many :team_members
     has_many :team_events
     has_many :tran_scores

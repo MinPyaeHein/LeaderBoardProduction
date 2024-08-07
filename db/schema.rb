@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_03_144712) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_07_162329) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -76,6 +76,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_03_144712) do
     t.datetime "updated_at", null: false
     t.boolean "active"
     t.integer "judge_type", default: 1
+  end
+
+  create_table "member_votes", force: :cascade do |t|
+    t.bigint "member_id", null: false
+    t.bigint "team_id", null: false
+    t.boolean "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id", "team_id"], name: "index_member_votes_on_member_id_and_team_id", unique: true
+    t.index ["member_id"], name: "index_member_votes_on_member_id"
+    t.index ["team_id"], name: "index_member_votes_on_team_id"
   end
 
   create_table "members", force: :cascade do |t|
@@ -146,6 +157,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_03_144712) do
     t.integer "event_id"
     t.float "total_score"
     t.integer "pitching_order", default: 1
+    t.integer "status", default: 2, null: false
   end
 
   create_table "tran_investors", force: :cascade do |t|
@@ -193,6 +205,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_03_144712) do
   add_foreign_key "investor_matrices", "events"
   add_foreign_key "judges", "events"
   add_foreign_key "judges", "members"
+  add_foreign_key "member_votes", "members"
+  add_foreign_key "member_votes", "teams"
   add_foreign_key "members", "faculties"
   add_foreign_key "score_matrices", "events"
   add_foreign_key "score_matrices", "score_infos"

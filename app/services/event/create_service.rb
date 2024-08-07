@@ -8,7 +8,7 @@
       end
 
       def create
-       
+
         event= ::Event.create(
                 name: @params[:name],
                 desc: @params[:desc],
@@ -19,7 +19,7 @@
                 end_time: @params[:end_time],
                 all_day: @params[:all_day],
                 location: @params[:location],
-                organizer_id: @current_user.id,
+                organizer_id: @current_user.member_id,
                 status: @params[:status],
                 event_type_id: @params[:event_type_id],
                 score_type_id: @params[:score_type_id])

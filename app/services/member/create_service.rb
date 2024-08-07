@@ -4,14 +4,12 @@
     class Member::CreateService
       def initialize(params)
         @params = params
-        puts("email Test0 ==",@params[:email])
-        puts("name Test0 ==",@params[:name])
+
       end
 
 
       def create_member
-        puts("email Test1 ==",@params[:email])
-        puts("name Test1 ==",@params[:name])
+
         result=check_team_member
         if result[:errors].present?
           return result
@@ -40,13 +38,11 @@
           active: @params[:active]
           )
           if member.save
+
            { message: 'Member created successfully' }
           else
             { errors: @member.errors.full_messages }
           end
-
-          puts("email==",@params[:email])
-          puts("name==",@params[:name])
           user = User.new(
             email: @params[:email],
             role: @params[:role],
@@ -57,6 +53,8 @@
 
 
           if user.save
+            puts("call function to sent mail")
+            MailerJob.perform_later(user,member)
             token = user.generate_jwt
             user.update(reset_password_token: token)
             { user: user, member: member, token: token, password: password }
@@ -83,9 +81,9 @@
 
       private
 
-      def send_password_email(member, password, user)
-        MemberMailer.welcome_email(member, user, password).deliver_now
-      end
+      # def send_password_email(user,member)
+      #   MemberMailer.welcome_email(user,member).deliver_now
+      # end
       def check_team_member
         user = ::User.find_by(email: @params[:email])
         if user.present?

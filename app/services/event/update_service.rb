@@ -2,13 +2,14 @@
 
 
     class Event::UpdateService
-      def initialize(params,current_user)
+      def initialize(params=nil,current_user=nil)
         @params = params
         @current_user=current_user
       end
 
+
       def update
-        puts("event_id=", @params[:id])
+
         @event = ::Event.find(@params[:id])
 
         old_values = {
@@ -22,9 +23,9 @@
           all_day: @event.all_day,
           location: @event.location,
           organizer_id: @event.organizer_id,
-          status: @event.status,
           event_type_id: @event.event_type_id,
-          score_type_id: @event.score_type_id
+          score_type_id: @event.score_type_id,
+          status: @event.status
         }
 
         new_values = {
@@ -38,7 +39,6 @@
           all_day: @params[:all_day].nil? ? old_values[:all_day] : @params[:all_day],
           location: @params[:location] || old_values[:location],
           organizer_id: @params[:organizer_id] || old_values[:organizer_id],
-          status: @params[:status] || old_values[:status],
           event_type_id: @params[:event_type_id] || old_values[:event_type_id],
           score_type_id: @params[:score_type_id] || old_values[:score_type_id]
         }
@@ -51,6 +51,20 @@
           { errors: @event.errors.full_messages }
         end
       end
+
+      def update_status(event)
+        @event = ::Event.find(event[:id])
+        new_values = {
+          status: event[:status]
+        }
+        @event.assign_attributes(new_values)
+        if @event.save
+          { event: @event.reload }
+        else
+          { errors: @event.errors.full_messages }
+        end
+      end
+
       def update_event_score_type(event_id,score_type_id)
         @event = ::Event.find(@params[:event_id])
         @event.assign_attributes(

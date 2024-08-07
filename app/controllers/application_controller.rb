@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-    include Pundit
+    include Pundit::Authorization
     before_action :authenticate_request
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
     private
@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
       puts("token==",request.headers['Authorization']&.split(' ')&.last)
       @current_user ||= User.decode_jwt(request.headers['Authorization']&.split(' ')&.last)
     end
-    
+
     def nothing
       head :not_found
     end

@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-    enum status: { ongoing: 1, past: 2, future: 3 }
+    enum status: { ongoing: 1, past: 2, future: 3, pending: 4, approved: 5}
     belongs_to :event_type
     belongs_to :score_type
     has_many :teams

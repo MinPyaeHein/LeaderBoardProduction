@@ -21,6 +21,20 @@ module Api
            render json:{success: false,message: message}
          end
         end
+        def update_status
+          team=params.require(:team).permit(:status,:id)
+          @update_service= Team::UpdateService.new
+          result=@update_service.update_status(team)
+          message={}
+          if result[:team].present?
+            message[:team] = result[:team]
+            render json:{success: true,message: message}
+         else
+           message[:error] = result[:error]
+           render json:{success: false,message: message}
+         end
+        end
+
 
         def create
           @team = Team.new(team_params)
@@ -62,10 +76,22 @@ module Api
             render json: { success: false, message: message }
           end
         end
+        def get_teams_by_member_id
+          message = {}
+          team_members = TeamMember.includes(:team).where(member_id: params[:member_id])
+          serialized_team_member = ActiveModelSerializers::SerializableResource.new(team_members,each_serializer: TeamMemberSerializer)
+          if team_members.present?
+            message[:team_members] = serialized_team_member
+            render json: { success: true, message: message }
+          else
+            message[:errors] = "Team Member did not found in database"
+            render json: { success: false, message: message }
+          end
+        end
 
         private
         def team_params
-          params.require(:team).permit(:team_id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
+          params.require(:team).permit(:id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
         end
         def set_service
           @update_service = Team::UpdateService.new(team_params)
