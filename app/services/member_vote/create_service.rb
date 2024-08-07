@@ -9,14 +9,13 @@ class MemberVote::CreateService
 
     if member_vote.persisted?
       member_vote.status = !member_vote.status
-      message = 'Member Vote status updated successfully'
     else
       member_vote.status = true
-      message = 'Member Vote created successfully'
+
     end
 
     if member_vote.save
-      { message: message }
+      { member_vote: member_vote }
     else
       { errors: member_vote.errors.full_messages }
     end
