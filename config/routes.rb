@@ -111,6 +111,7 @@ Rails.application.routes.draw do
        get 'events/member/:member_id', to: 'events#get_event_by_member_id'
 
       #Team
+       get 'teams', to: 'teams#index'
        get 'teams/event/:event_id/totalAmount', to: 'teams#get_teams_by_event_id'
        get 'team/event/:event_id/judge/:judge_id', to: 'judges#get_judge_by_id'
        get 'teams/event/:event_id/totalScore', to: 'tran_scores#get_teams_total_score'
