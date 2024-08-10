@@ -7,7 +7,7 @@ module Api
         before_action :set_service, only: [:create,:create_team_with_leaders,:update]
         def index
           message={}
-          message[:teams]=Team.all
+          message[:teams] = ActiveModelSerializers::SerializableResource.new(Team.all, each_serializer: TeamWithVoteCountSerializer).as_json
           render json:{success: true,message: message}
         end
         def update
