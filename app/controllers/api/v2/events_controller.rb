@@ -34,10 +34,12 @@ module Api
         def get_event_by_member_id
           begin
             member = Member.find(params[:member_id])
-            organized_events = member.events
-            judged_events = Event.joins(:judges).where(judges: { member_id: member.id })
-            team_member_events = Event.joins(teams: :team_members).where(team_members: { member_id: member.id })
-            edited_events = Event.joins(:editors).where(editors: { member_id: member.id })
+
+            organized_events = ActiveModelSerializers::SerializableResource.new(member.events, each_serializer: EventSerializer)
+            judged_events = ActiveModelSerializers::SerializableResource.new(Event.joins(:judges).where(judges: { member_id: member.id }), each_serializer: EventSerializer)
+            team_member_events = ActiveModelSerializers::SerializableResource.new(Event.joins(teams: :team_members).where(team_members: { member_id: member.id }), each_serializer: EventSerializer)
+            edited_events = ActiveModelSerializers::SerializableResource.new(Event.joins(:editors).where(editors: { member_id: member.id }), each_serializer: EventSerializer)
+
             message = {
               organized_events: organized_events,
               judged_events: judged_events,
@@ -55,7 +57,6 @@ module Api
         end
 
         def update
-
           filtered_params = event_params.except(:score_type_id)
           @event = Event.new(filtered_params)
           authorize @event
