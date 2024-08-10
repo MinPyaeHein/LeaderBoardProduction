@@ -60,7 +60,8 @@ module Api
       def get_member_by_id
         @member = Member.find_by(id: params[:member_id])
         if @member.nil?
-          render json: { success: false, error: "Member not found" }, status: :not_found
+          message[:errors]="Member not found"
+          render json: { success: false, message: message }, status: :not_found
           return
         end
         @user = @member.users.first

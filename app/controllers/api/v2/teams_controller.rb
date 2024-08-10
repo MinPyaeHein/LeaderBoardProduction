@@ -37,8 +37,8 @@ module Api
 
 
         def create
-          @team = Team.new(team_params)
-          authorize @team
+          # @team = Team.new(team_params)
+          # authorize @team
           result=@service.create()
           message={}
           if !result[:errors].present?
