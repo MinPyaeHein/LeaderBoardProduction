@@ -56,19 +56,21 @@ module Api
           render json: {success: false,message: "Failed to delete all members."}, status: :unprocessable_entity
         end
       end
+
       def get_member_by_id
-        @member = Member.find(params[:member_id])
+        @member = Member.find_by(id: params[:member_id])
+        if @member.nil?
+          render json: { success: false, error: "Member not found" }, status: :not_found
+          return
+        end
         @user = @member.users.first
         @token = @user.generate_jwt
-
         message = {
           member: @member,
           user: @user,
           token: @token
         }
-
         render json: { success: true, message: message }
-
       end
       def update
         result=@update_service.update

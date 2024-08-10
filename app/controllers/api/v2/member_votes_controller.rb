@@ -4,11 +4,16 @@ module Api
     module V2
       class MemberVotesController < ApplicationController
         before_action :set_service, only: [:create]
-        
+
         def create
           result=@service.create()
-          message={success: true, message: result}
-          render json: message, status: :ok
+          if !result[:errors].present?
+            message={success: true, message: result}
+            render json: message, status: :ok
+          else
+            message={success: false, message: result}
+            render json: message, status: :not_found
+          end
         end
 
         private
