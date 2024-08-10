@@ -6,7 +6,8 @@ module Api
         before_action :set_service, only: [:create,:update,:update_event_score_type]
         def index
           message={}
-          message[:events]=Event.all
+          events=ActiveModelSerializers::SerializableResource.new(Event.all, each_serializer: EventSerializer)
+          message[:events]=events
           render json: {success: true,message: message}, status: :ok
         end
 
