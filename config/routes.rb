@@ -111,7 +111,7 @@ Rails.application.routes.draw do
        get 'events/member/:member_id', to: 'events#get_event_by_member_id'
 
       #Team
-       get 'teams/event/:event_id', to: 'teams#get_teams_by_event_id'
+       get 'teams/event/:event_id/totalAmount', to: 'teams#get_teams_by_event_id'
        get 'team/event/:event_id/judge/:judge_id', to: 'judges#get_judge_by_id'
        get 'teams/event/:event_id/totalScore', to: 'tran_scores#get_teams_total_score'
        get 'teams/event/:event_id/categoriesScore', to: 'tran_scores#get_teams_score_by_category'
@@ -121,6 +121,8 @@ Rails.application.routes.draw do
        get 'team/:team_id/event/:event_id/categoriesScores/judges', to: "tran_scores#get_one_team_score_categories_by_all_judges"
        get '/teams/event/:event_id/categoriesScore/judge', to: 'tran_scores#get_all_teams_score_category_by_individual_judges'
        get 'teams/:member_id', to: 'teams#get_teams_by_member_id'
+       get 'team/:team_id', to: 'teams#get_teams_by_id'
+       put 'team', to: 'teams#update'
 
 
       #Transcation Log

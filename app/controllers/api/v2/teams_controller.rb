@@ -68,12 +68,24 @@ module Api
         def get_teams_by_event_id
           message = {}
           teams = Team.where(event_id: params[:event_id])
+
           if teams.present?
-            message[:teams] = teams
-            render json: { success: true, message: message }
+            message[:teams] = ActiveModelSerializers::SerializableResource.new(teams, each_serializer: TeamWithVoteCountSerializer).as_json
+            render json: { success: true, message: message }, status: :ok
           else
             message[:errors] = "No teams found for the event"
-            render json: { success: false, message: message }
+            render json: { success: false, message: message }, status: :not_found
+          end
+        end
+        def get_teams_by_id
+          team = Team.find_by(id: params[:team_id])
+          message = {}
+          if team.present?
+            message[:team] = ActiveModelSerializers::SerializableResource.new(team, serializer: TeamWithVoteCountSerializer).as_json
+            render json: { success: true, message: message }, status: :ok
+          else
+            message[:errors] = "No team found with the provided ID"
+            render json: { success: false, message: message }, status: :not_found
           end
         end
         def get_teams_by_member_id

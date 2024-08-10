@@ -5,6 +5,7 @@ class MemberVote::CreateService
   end
 
   def create
+    return { errors: ["Team not found"] } unless team_exists?
     member_vote = find_or_initialize_member_vote
 
     if member_vote.persisted?
@@ -24,5 +25,8 @@ class MemberVote::CreateService
   private
   def find_or_initialize_member_vote
     MemberVote.find_or_initialize_by(member_id: @current_user.member_id, team_id: @params[:team_id])
+  end
+  def team_exists?
+    Team.exists?(id: @params[:team_id])
   end
 end

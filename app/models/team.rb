@@ -6,4 +6,5 @@ class Team < ApplicationRecord
     has_many :members, through: :team_members
     belongs_to :event
     belongs_to :organizer, class_name: 'Member'
+    has_many :member_votes
   end

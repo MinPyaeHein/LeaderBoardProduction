@@ -4,6 +4,7 @@ module Api
     module V2
       class MemberVotesController < ApplicationController
         before_action :set_service, only: [:create]
+        
         def create
           result=@service.create()
           message={success: true, message: result}
@@ -17,7 +18,6 @@ module Api
         def set_service
           @service = MemberVote::CreateService.new(vote_params,@current_user)
         end
-
       end
     end
   end
