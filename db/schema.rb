@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_07_162329) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_13_034746) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -144,6 +144,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_07_162329) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "event_id"
+    t.string "name"
+    t.string "bio"
+    t.string "role"
   end
 
   create_table "teams", force: :cascade do |t|

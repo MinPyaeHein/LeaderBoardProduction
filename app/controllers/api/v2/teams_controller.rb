@@ -10,6 +10,11 @@ module Api
           message[:teams] = ActiveModelSerializers::SerializableResource.new(Team.all, each_serializer: TeamWithVoteCountSerializer).as_json
           render json:{success: true,message: message}
         end
+        def get_teams_by_event_id
+          message={}
+          message[:teams] = ActiveModelSerializers::SerializableResource.new(Team.where(event_id:params[:event_id]), each_serializer: TeamWithVoteCountSerializer).as_json
+          render json:{success: true,message: message}
+        end
         def update
           result=@update_service.update
           message={}
@@ -37,8 +42,6 @@ module Api
 
 
         def create
-          # @team = Team.new(team_params)
-          # authorize @team
           result=@service.create()
           message={}
           if !result[:errors].present?
@@ -65,7 +68,7 @@ module Api
           render json:{success: true,message: message}, status: :created
 
         end
-        def get_teams_by_event_id
+        def get_teams_total_amount_by_event_id
           message = {}
           teams = Team.where(event_id: params[:event_id])
 

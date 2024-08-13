@@ -3,7 +3,7 @@
 module Api
     module V2
       class TeamMembersController < ApplicationController
-        before_action :set_service, only: [:create]
+        before_action :set_service, only: [:create,:update]
 
         def index
           teamMembers = TeamMember.all
@@ -26,6 +26,17 @@ module Api
           render json: message, status: :ok
         end
 
+        def update
+          result=@service_update.update()
+          if result[:team_member].present?
+             message={success: true, message: result}
+             render json: message, status: :ok
+          else
+            message={success: false, messge: result }
+            render json: message, status: :ok
+          end
+        end
+
         def remove_team_member
           member_id = params[:member_id]
           team_member = TeamMember.find_by(member_id: member_id)
@@ -46,8 +57,12 @@ module Api
         def team_params
           params.require(:team_member).permit(:team_id,:event_id ,:active, :leader, member_ids: [])
         end
+        def team_params_update
+          params.require(:team_member).permit(:team_id,:event_id ,:active, :leader, :member_id, :bio, :role, :name)
+        end
         def set_service
           @service = TeamMember::CreateService.new(team_params)
+          @service_update=TeamMember::UpdateService.new(team_params_update)
         end
 
       end
