@@ -18,7 +18,7 @@ module Api
         end
 
         def get_tran_score_by_judge_id
-          latest_tran_score = TranScore.where(judge_id: params[:judge_id]).order(created_at: :desc).first
+          latest_tran_score = TranScore.where(judge_id: params[:member_id]).order(created_at: :desc).first
           message={}
           message[:tranScore] = latest_tran_score
           render json: {success: true, message: message}, status: :ok
