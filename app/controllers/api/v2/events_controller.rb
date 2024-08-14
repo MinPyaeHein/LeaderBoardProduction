@@ -11,49 +11,27 @@ module Api
           render json: {success: true,message: message}, status: :ok
         end
 
-        def get_events_by_id
+        def get_event_by_id
           begin
-            @event = Event.includes(:teams, :organizer, :judges, :editors, :event_type, :score_type).find(params[:id])
-            message = {
-              event: @event,
-              organizer: @event.organizer,
-              judges: @event.judges,
-              teams: @event.teams,
-              editors: @event.editors,
-              event_type: @event.event_type,
-              score_type: @event.score_type
-            }
-            render json: { success: true, message: message }, status: :ok
+            event=Event::FetchEvenDataService.new().fetch_event_by_id(params[:id])
+            render json: { success: true, message:  event}, status: :ok
           rescue ActiveRecord::RecordNotFound
             render json: { success: false, message: { errors: ["Event not found"] } }, status: :not_found
           rescue => e
             Rails.logger.error("Error processing request: #{e.message}")
             render json: { success: false, message: { errors: ["An unexpected error occurred"] } }, status: :internal_server_error
           end
+
         end
 
         def get_event_by_member_id
           begin
-            member = Member.find(params[:member_id])
-
-            organized_events = ActiveModelSerializers::SerializableResource.new(member.events, each_serializer: EventSerializer)
-            judged_events = ActiveModelSerializers::SerializableResource.new(Event.joins(:judges).where(judges: { member_id: member.id }), each_serializer: EventSerializer)
-            team_member_events = ActiveModelSerializers::SerializableResource.new(Event.joins(teams: :team_members).where(team_members: { member_id: member.id }), each_serializer: EventSerializer)
-            edited_events = ActiveModelSerializers::SerializableResource.new(Event.joins(:editors).where(editors: { member_id: member.id }), each_serializer: EventSerializer)
-
-            message = {
-              organized_events: organized_events,
-              judged_events: judged_events,
-              team_member_events: team_member_events,
-              edited_events: edited_events
-            }
-
-            render json: { success: true, message: message }, status: :ok
+            events = Event::FetchEvenDataService.new().fetch_event_by_member_id(params[:member_id])
+            render json: { success: true, message: events}, status: :ok
           rescue ActiveRecord::RecordNotFound
             render json: { success: false, message: { errors: ["Member not found"] } }, status: :not_found
           rescue => e
-            Rails.logger.error("Error processing request: #{e.message}")
-            render json: { success: false, message: { errors: ["An unexpected error occurred"] } }, status: :internal_server_error
+            render json: { success: false, message: { errors: [e.message] } }, status: :internal_server_error
           end
         end
 

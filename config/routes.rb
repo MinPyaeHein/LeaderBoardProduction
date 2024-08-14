@@ -105,7 +105,7 @@ Rails.application.routes.draw do
 
       #Event
        get 'events', to: 'events#index'
-       get 'event/:id', to: 'events#get_events_by_id'
+       get 'event/:id', to: 'events#get_event_by_id'
        put 'event', to: 'events#update'
        get 'scoreCategory/event/:event_id', to: 'score_matrices#get_score_matrix_by_event_id'
        get 'events/member/:member_id', to: 'events#get_event_by_member_id'
