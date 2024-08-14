@@ -113,7 +113,7 @@ Rails.application.routes.draw do
       #Team
        get 'teams', to: 'teams#index'
        get 'teams/event/:event_id/totalAmount', to: 'teams#get_teams_total_amount_by_event_id'
-       get 'team/event/:event_id/judge/:judge_id', to: 'judges#get_judge_by_id'
+       get 'team/event/:event_id/judge/:member_id', to: 'judges#get_judge_by_event_id_and_judge_id'
        get 'teams/event/:event_id/totalScore', to: 'tran_scores#get_teams_total_score'
        get 'teams/event/:event_id/categoriesScore', to: 'tran_scores#get_teams_score_by_category'
        get 'scoreCategory/event/:event_id', to: 'score_matrices#get_score_matrix_by_event_id'
