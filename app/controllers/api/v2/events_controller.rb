@@ -13,7 +13,7 @@ module Api
 
         def get_event_by_id
           begin
-            event=Event::FetchEvenDataService.new().fetch_event_by_id(params[:id])
+            event=Event::FetchEvenService.new().fetch_event_by_id(params[:id])
             render json: { success: true, message:  event}, status: :ok
           rescue ActiveRecord::RecordNotFound
             render json: { success: false, message: { errors: ["Event not found"] } }, status: :not_found
@@ -24,9 +24,9 @@ module Api
 
         end
 
-        def get_event_by_member_id
+        def get_events_by_member_id
           begin
-            events = Event::FetchEvenDataService.new().fetch_event_by_member_id(params[:member_id])
+            events = Event::FetchEvenService.new().fetch_events_by_member_id(params[:member_id])
             render json: { success: true, message: events}, status: :ok
           rescue ActiveRecord::RecordNotFound
             render json: { success: false, message: { errors: ["Member not found"] } }, status: :not_found
@@ -61,11 +61,12 @@ module Api
         end
 
         def get_events_by_judge_id
-          events = Event.joins(:judges).where(judges: { member_id: params[:judge_id] })
+          events = Event.joins(:judges).where(judges: { member_id: params[:member_id] })
           message={}
           message[:events]=events
           render json: {success: true,message: message}
         end
+
 
         def create
           result=@service.create()

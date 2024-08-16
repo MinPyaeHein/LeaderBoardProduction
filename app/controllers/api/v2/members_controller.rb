@@ -101,35 +101,7 @@ module Api
         end
       end
 
-        def events_by_member_id
-          @member= Member.includes(:teams,:judges,:users,:editors).find(params[:id])
-          if  @member
-            ongoing_judge_events = @member.judges.joins(:event).where(events: { status: :ongoing }).select('events.*')
-            past_judge_events = @member.judges.joins(:event).where(events: { status: :past }).select('events.*')
-            future_judge_events = @member.judges.joins(:event).where(events: { status: :future }).select('events.*')
-
-            ongoing_editor_events = @member.editors.joins(:event).where(events: { status: :ongoing }).select('events.*')
-            past_editor_events = @member.editors.joins(:event).where(events: { status: :past }).select('events.*')
-            future_editor_events = @member.editors.joins(:event).where(events: { status: :future }).select('events.*')
-
-            message={}
-            message[:users]=@users
-            message[:member]=@member
-            message[:teams]=@member.teams
-
-            message[:ongoing_editor_events]=ongoing_editor_events
-            message[:past_editor_events]=past_editor_events
-            message[:future_editor_events]=future_editor_events
-
-            message[:ongoing_judge_events]=ongoing_judge_events
-            message[:past_judge_events]=past_judge_events
-            message[:future_judge_events]=future_judge_events
-
-            render json: {success: true,message: message}, status: :ok
-          else
-            render json: { error: 'Member not found for the provided member_id' }, status: :not_found
-          end
-        end
+       
 
         private
         def member_params

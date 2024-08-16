@@ -6,7 +6,7 @@
 
       end
 
-      def fetch_event_by_member_id(member_id)
+      def fetch_events_by_member_id(member_id)
         member = Member.find(member_id)
         organized_events = serialize_events(member.events)
         judged_events = serialize_events(Event.joins(:judges).where(judges: { member_id: member.id }))
@@ -33,6 +33,8 @@
           score_type: @event.score_type
         }
       end
+
+
 
       private
       def serialize_events(events)
