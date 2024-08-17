@@ -48,10 +48,8 @@ module Api
         def update_status
           event=params.require(:event).permit(:status,:id)
           @update_service= Event::UpdateService.new
-          result=@update_service.update_status(event)
-          message={}
-          message[:event] = result[:event]
-          render json: {success: true,message: message}, status: :ok
+          message=@update_service.update_status(event)
+          render json: message, status: :ok
         end
         def update_event_score_type
           result=@update_service.update_event_score_type(params[:event_id],params[:score_type_id])

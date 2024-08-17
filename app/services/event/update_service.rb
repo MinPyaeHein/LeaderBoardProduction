@@ -52,18 +52,18 @@
         end
       end
 
-      def update_status(event)
-        @event = ::Event.find(event[:id])
-        new_values = {
-          status: event[:status]
-        }
-        @event.assign_attributes(new_values)
-        if @event.save
-          { event: @event.reload }
+      def update_status(event_params)
+        puts("event_params[:id]=",event_params[:id])
+        event = Event.find_by(id: event_params[:id])
+
+        return {success: false,message:{ errors: "Team does not exist in the System" }} unless  event
+        if event.update(status: event_params[:status])
+           return {success: true,message: {event: event }}
         else
-          { errors: @event.errors.full_messages }
+         return {success:false,message: {error: event.errors.full_messages}}
         end
       end
+
 
       def update_event_score_type(event_id,score_type_id)
         @event = ::Event.find(@params[:event_id])

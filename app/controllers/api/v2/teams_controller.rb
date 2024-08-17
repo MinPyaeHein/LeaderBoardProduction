@@ -27,15 +27,17 @@ module Api
          end
         end
         def update_status
-          team=params.require(:team).permit(:status,:id)
+          team_params = params.require(:team).permit(:status, :id)
+          @team = Team.new(team_params)
+          authorize @team
           @update_service= Team::UpdateService.new
-          result=@update_service.update_status(team)
+          result=@update_service.update_status(@team)
           message={}
           if result[:team].present?
             message[:team] = result[:team]
             render json:{success: true,message: message}
          else
-           message[:error] = result[:error]
+           message[:errors] = result[:error]
            render json:{success: false,message: message}
          end
         end

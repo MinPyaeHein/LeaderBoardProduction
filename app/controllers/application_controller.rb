@@ -7,11 +7,11 @@ class ApplicationController < ActionController::API
     def authenticate_request
 
       unless current_user
-        render json: { error: 'Unauthorized' }, status: :unauthorized
+        render json: {success: false,message: {error: 'Unauthorized' }}, status: :unauthorized
       end
     end
     def user_not_authorized
-      render json: { error: "You are not authorized to perform this action." }, status: :forbidden
+      render json: { success: false,message: {error: "You are not authorized to perform this action." }}, status: :forbidden
     end
 
     def current_user

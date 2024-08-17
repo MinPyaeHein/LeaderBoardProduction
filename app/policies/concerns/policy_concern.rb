@@ -6,7 +6,6 @@ module PolicyConcern
     authorized = user.member.events.any? do |event|
       event.id == record.event_id
     end
-
     @event = Event.find_by(id: record.event_id)
     return false unless @event
 
