@@ -11,55 +11,62 @@ class Team::CreateService
     teams = []
     teamEvents = []
     teamLeaders = []
+
     unless Event.exists?(@params[:event_id])
-      return { errors: ["Event does not exist in the database."], teams: teams, teamEvents: teamEvents, teamLeaders: teamLeaders,}
+      return { errors: ["Event does not exist in the database."], teams: teams, teamEvents: teamEvents, teamLeaders: teamLeaders }
     end
 
-    @params[:member_ids].each do |member_id|
-      resultCheckTeamMember = @teamMemberService.check_team_member(member_id)
+    ActiveRecord::Base.transaction do
+      @params[:member_ids].each do |member_id|
+        result_check_team_member = @teamMemberService.check_team_member(member_id, @params[:event_id])
 
-      if resultCheckTeamMember[:errors].present?
-        errors.concat(resultCheckTeamMember[:errors].flatten)
-      else
-        team = ::Team.new(
-          name: resultCheckTeamMember[:member].name,
-          desc: @params[:desc],
-          active: true,
-          website_link: @params[:website_link],
-          organizer_id: @current_user.id,
-          total_score: @params[:total_score],
-          event_id: @params[:event_id]
-        )
-
-        if team.save
-          @params[:team_id] = team.id
-          resultTeamMember = @teamMemberService.create_one(team.id, member_id, @params[:event_id])
-          if resultTeamMember[:teamMember].present?
-            resultTeamEvent = @teamEventService.create(@params[:event_id], team.id)
-            teamLeaders << resultTeamMember[:teamMember]
-            teamEvents << resultTeamEvent[:teamEvent]
-            teams << team
-          else
-            errors.concat(resultTeamMember[:errors].flatten)
-          end
+        if result_check_team_member[:errors].present?
+          errors.concat(result_check_team_member[:errors].flatten)
         else
-          errors.concat(team.errors.full_messages)
+          team = ::Team.new(
+            name: result_check_team_member[:member].name,
+            desc: @params[:desc],
+            active: true,
+            website_link: @params[:website_link],
+            organizer_id: @current_user.id,
+            total_score: @params[:total_score],
+            event_id: @params[:event_id]
+          )
+
+          if team.save
+            @params[:team_id] = team.id
+            result_team_member = @teamMemberService.create_one(team.id, member_id, @params[:event_id])
+
+            if result_team_member[:teamMember].present?
+              result_team_event = @teamEventService.create(@params[:event_id], team.id)
+              teamLeaders << result_team_member[:teamMember]
+              teamEvents << result_team_event[:teamEvent]
+              teams << team
+            else
+              errors.concat(result_team_member[:errors].flatten)
+              raise ActiveRecord::Rollback
+            end
+          else
+            errors.concat(team.errors.full_messages)
+            raise ActiveRecord::Rollback
+          end
         end
       end
     end
-    { teams: teams, teamEvents: teamEvents, teamLeaders: teamLeaders, errors: errors }
+
+    {success: true,message: { teams: teams, teamEvents: teamEvents, teamLeaders: teamLeaders, errors: errors }}
   end
 
   def create
     errors = []
     team = nil
-    resultTeamEvent = nil
-    resultTeamMember = nil
-    result = @teamMemberService.check_team_member(@params[:member_id])
+    result_team_event = nil
+    result_team_member = nil
+    result = @teamMemberService.check_team_member(@params[:member_id], @params[:event_id])
 
     if result[:errors].present?
       errors.concat(result[:errors].flatten)
-      { errors: errors }
+      return { success: false, message: { errors: errors } }
     else
       ActiveRecord::Base.transaction do
         team = ::Team.new(
@@ -75,13 +82,12 @@ class Team::CreateService
 
         if team.save
           @params[:team_id] = team.id
-          resultTeamMember = @teamMemberService.create
-          resultTeamEvent = @teamEventService.create(@params[:event_id], team.id)
+          result_team_member = @teamMemberService.create_one(@params[:team_id], @params[:member_id], @params[:event_id])
+          result_team_event = @teamEventService.create(@params[:event_id], team.id)
 
-          unless resultTeamMember[:teamMembers].present? && resultTeamEvent[:teamEvent].present?
-            errors.concat(team.errors.full_messages) if team.errors.full_messages.present?
-            errors.concat(resultTeamMember[:errors].flatten) if resultTeamMember[:errors].present?
-            errors.concat(resultTeamEvent[:errors].flatten) if resultTeamEvent[:errors].present?
+          unless result_team_member[:teamMember].present? && result_team_event[:teamEvent].present?
+            errors.concat(result_team_member[:errors].flatten) if result_team_member[:errors].present?
+            errors.concat(result_team_event[:errors].flatten) if result_team_event[:errors].present?
             raise ActiveRecord::Rollback
           end
         else
@@ -92,16 +98,15 @@ class Team::CreateService
     end
 
     if errors.empty?
-      {
+      {success: true ,
+        message:{
         team: team,
-        teamLeader: resultTeamMember[:teamMembers].first,
-        teamEvent: resultTeamEvent[:teamEvent],
-        tran_investor: resultTeamEvent[:tranInvestor]
-      }
+        teamLeader: result_team_member[:teamMember],
+        teamEvent: result_team_event[:teamEvent]
+      }}
     else
       { errors: errors }
     end
-  end
 
-  private
+  end
 end

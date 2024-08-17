@@ -42,21 +42,15 @@ module Api
          end
         end
 
-
         def create
           result=@service.create()
-          message={}
-          if !result[:errors].present?
-            message[:team] = result[:team]
-            message[:teamLeader]= result[:teamLeader]
-            message[:teamEvent]= result[:teamEvent]
-            message[:tranInvestor]= result[:tranInvestor]
-            render json:{success: true,message: message}, status: :created
+          if result[:success]
+            render json:result, status: :created
           else
-            message[:errors] = result[:errors]
-            render json: {success: false ,message: message }, status: :unprocessable_entity
+            render json: result, status: :unprocessable_entity
           end
         end
+
         def create_team_with_leaders
           filtered_params = team_params.except(:member_ids)
           @team = Team.new(filtered_params)
@@ -82,6 +76,7 @@ module Api
             render json: { success: false, message: message }, status: :not_found
           end
         end
+
         def get_teams_by_id
           team = Team.find_by(id: params[:team_id])
           message = {}
@@ -93,6 +88,7 @@ module Api
             render json: { success: false, message: message }, status: :not_found
           end
         end
+
         def get_teams_by_member_id
           message = {}
           team_members = TeamMember.includes(:team).where(member_id: params[:member_id])
@@ -108,7 +104,7 @@ module Api
 
         private
         def team_params
-          params.require(:team).permit(:id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score, member_ids: [])
+          params.require(:team).permit(:id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score,:member_id, member_ids: [])
         end
         def set_service
           @update_service = Team::UpdateService.new(team_params)
