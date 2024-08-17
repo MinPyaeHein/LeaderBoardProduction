@@ -1,7 +1,7 @@
 # app/services/member_service.rb
 
 
-    class Event::FetchEvenDataService
+    class Event::FetchEvenService
       def initialize()
 
       end
