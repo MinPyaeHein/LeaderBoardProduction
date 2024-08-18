@@ -52,10 +52,8 @@ module Api
           render json: message, status: :ok
         end
         def update_event_score_type
-          result=@update_service.update_event_score_type(params[:event_id],params[:score_type_id])
-          message={}
-          message[:event]=result[:event]
-          render json: {success: true,message: message}, status: :ok
+          message=@update_service.update_event_score_type(params[:event_id],params[:score_type_id])
+          render json:  message, status: :ok
         end
 
         def get_events_by_judge_id

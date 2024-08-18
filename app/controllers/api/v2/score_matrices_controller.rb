@@ -21,14 +21,11 @@ module Api
         end
 
         def create
-          # Ensure user is authorized to create score matrices
-          filtered_params = score_matrix_params.first.except(:shortTerm)
-          authorize ScoreMatrix.new(filtered_params) # Assuming the policy is for individual ScoreMatrix
 
-          result=@service.createScoreMatrics
-          message={}
-          message[:scoreMatrics]=result
-          render json: {success: true,message: message}, status: :created
+          filtered_params = score_matrix_params.first.except(:shortTerm)
+          authorize ScoreMatrix.new(filtered_params)
+          message=@service.createScoreMatrices
+          render json: message, status: :created
         end
 
         private

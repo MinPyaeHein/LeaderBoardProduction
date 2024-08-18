@@ -66,14 +66,15 @@
 
 
       def update_event_score_type(event_id,score_type_id)
-        @event = ::Event.find(@params[:event_id])
+        @event = ::Event.find_by(id: event_id)
+        return {success: false,message:{ errors: "Event does not exist in the System" }} unless  @event
         @event.assign_attributes(
           score_type_id: score_type_id
         )
         if @event.save
-          { event: @event.reload }
+          { success: true,message: { event: @event.reload} }
         else
-          { errors: @event.errors.full_messages }
+          {success: false,message:{errors: @event.errors.full_messages }}
         end
       end
 

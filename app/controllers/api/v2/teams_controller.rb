@@ -28,18 +28,20 @@ module Api
         end
         def update_status
           team_params = params.require(:team).permit(:status, :id)
-          @team = Team.new(team_params)
+          @team = Team.find_by(id: team_params[:id])
+
+          unless @team
+            return render json: { success: false, message: { errors: 'Team not found in the system' } }, status: :not_found
+          end
+
           authorize @team
-          @update_service= Team::UpdateService.new
-          result=@update_service.update_status(@team)
-          message={}
-          if result[:team].present?
-            message[:team] = result[:team]
-            render json:{success: true,message: message}
-         else
-           message[:errors] = result[:error]
-           render json:{success: false,message: message}
-         end
+
+          result = Team::UpdateService.new.update_status(@team)
+
+          render json: {
+            success: result[:team].present?,
+            message: result[:team].present? ? { team: result[:team] } : { errors: result[:error] }
+          }
         end
 
         def create
@@ -55,13 +57,9 @@ module Api
           filtered_params = team_params.except(:member_ids)
           @team = Team.new(filtered_params)
           authorize @team
-          result=@service.createTeamWithLeaders()
-          message={}
-          message[:teams] = result[:teams]
-          message[:teamLeaders]= result[:teamLeaders]
-          message[:teamEvents]= result[:teamEvents]
-          message[:errors]=result[:errors]
-          render json:{success: true,message: message}, status: :created
+          message=@service.createTeamWithLeaders()
+
+          render json: message, status: :created
 
         end
         def get_teams_total_amount_by_event_id

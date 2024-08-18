@@ -19,9 +19,12 @@ class TeamPolicy < ApplicationPolicy
   def team_update_policy
       @team=Team::find_by(id: record.id)
       return false unless @team
+      puts("user.member==",user.member.id)
       authorized = user.member.events.any? do |event|
+      puts("ordanized event event.id==", event.id)
       event.id == @team.event_id
-    end
+      end
+      puts("authorized==",authorized)
     @event = Event.find_by(id: @team.event_id)
     return false unless @event
 
