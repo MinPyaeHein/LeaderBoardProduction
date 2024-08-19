@@ -3,7 +3,7 @@
 module Api
     module V2
       class EventsController < ApplicationController
-        before_action :set_service, only: [:create,:update,:update_event_score_type]
+        before_action :set_service, only: [:create,:update]
         def index
           message={}
           events=ActiveModelSerializers::SerializableResource.new(Event.all, each_serializer: EventSerializer)
@@ -52,6 +52,7 @@ module Api
           render json: message, status: :ok
         end
         def update_event_score_type
+          @update_service= Event::UpdateService.new(current_user)
           message=@update_service.update_event_score_type(params[:event_id],params[:score_type_id])
           render json:  message, status: :ok
         end
@@ -82,8 +83,6 @@ module Api
         end
         def set_service
           @service = Event::CreateService.new(event_params,current_user)
-          @update_service= Event::UpdateService.new(event_params,current_user)
-
         end
 
       end

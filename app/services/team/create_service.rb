@@ -13,7 +13,7 @@ class Team::CreateService
     teamLeaders = []
 
     unless Event.exists?(@params[:event_id])
-      return { errors: ["Event does not exist in the database."], teams: teams, teamEvents: teamEvents, teamLeaders: teamLeaders }
+      return { success: false ,message: {errors: "Event does not exist in the database."}}
     end
 
     ActiveRecord::Base.transaction do
@@ -53,7 +53,6 @@ class Team::CreateService
         end
       end
     end
-
     {success: true,message: { teams: teams, teamEvents: teamEvents, teamLeaders: teamLeaders, errors: errors }}
   end
 

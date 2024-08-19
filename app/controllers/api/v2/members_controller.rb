@@ -3,7 +3,7 @@
 module Api
     module V2
       class MembersController < ApplicationController
-        skip_before_action :authenticate_request, only: [:create, :login,:gest_login ]
+        skip_before_action :authenticate_request, only: [:create, :login,:gest_login,:get_member_by_id ]
         before_action :set_service, only: [:create, :login, :update, :gest_login]
         def score_boards
           render 'score_cards/home'
@@ -60,7 +60,7 @@ module Api
       def get_member_by_id
         @member = Member.find_by(id: params[:member_id])
         if @member.nil?
-       
+
           render json: { success: false, message: {errors: "Member not found in the system!!!"} }, status: :not_found
           return
         end

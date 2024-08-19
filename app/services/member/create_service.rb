@@ -54,7 +54,7 @@
 
           if user.save
             puts("call function to sent mail")
-            MailerJob.perform_later(user,member)
+            # MailerJob.perform_later(user,member)
             token = user.generate_jwt
             user.update(reset_password_token: token)
             { user: user, member: member, token: token, password: password }

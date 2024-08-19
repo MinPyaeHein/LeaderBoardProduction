@@ -11,7 +11,7 @@ module Api
         end
         def create
           @investor_matrix = InvestorMatrix.new(member_params)
-          authorize @investor_matrix
+          # authorize @investor_matrix
           result=@service.create()
           if result[:investorMatrix].present?
             message={}

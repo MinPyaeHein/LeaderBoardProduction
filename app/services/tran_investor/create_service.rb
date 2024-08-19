@@ -60,7 +60,7 @@
 
         end
         def create_initailal_tran(event_id,team_id)
-          invest_matrix=InvestorMatrix.find_by(event_id: @params[:event_id])
+        
           team_event=TeamEvent.find_by(event_id: @params[:event_id], team_id: team_id)
               tranInvestor= ::TranInvestor.create(
               amount: 0.0,
