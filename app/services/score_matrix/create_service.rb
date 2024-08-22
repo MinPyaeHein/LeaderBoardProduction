@@ -28,6 +28,11 @@ class ScoreMatrix::CreateService
       return { errors: score_info.errors.full_messages }
     end
 
+    total_weight = calculate_total_weight(score_matrix["event_id"])
+    if total_weight + score_matrix["weight"].to_f > 1
+      return { errors: ["Total weight for the event exceeds 100%."] }
+    end
+
     result = check_existing_score_matrix(score_matrix, score_info)
 
     if result[:errors].nil?
@@ -48,6 +53,10 @@ class ScoreMatrix::CreateService
     else
       result
     end
+  end
+
+  def calculate_total_weight(event_id)
+    ::ScoreMatrix.where(event_id: event_id).sum(:weight)
   end
 
   def check_existing_score_matrix(score_matrix, score_info)
