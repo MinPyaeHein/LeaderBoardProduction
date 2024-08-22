@@ -106,7 +106,7 @@ module Api
         end
         def set_service
           @update_service = Team::UpdateService.new(team_params)
-          @service = Team::CreateService.new(team_params,current_user)
+          @service = Team::CreateService.new(team_params,@current_user)
         end
 
       end
