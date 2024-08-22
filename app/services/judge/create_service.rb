@@ -43,7 +43,7 @@ class Judge::CreateService
     existing_team_mamber = ::TeamMember.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
     if existing_team_mamber.present?
       user_email = member.users.first&.email
-      return { errors: ["This user "+user_email+" should not be judge because this user is team member in this event"] }
+      return { errors: ["A Team member cannot become a Judge",member.name] }
     end
 
     {}

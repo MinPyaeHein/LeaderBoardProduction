@@ -30,7 +30,10 @@
           teams: @event.teams,
           editors: @event.editors,
           event_type: @event.event_type,
-          score_type: @event.score_type
+          score_type: @event.score_type,
+          investor_matrices: @event.investor_matrices,
+          score_matrices: @event.score_matrices
+
         }
       end
 

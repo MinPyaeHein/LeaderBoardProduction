@@ -4,5 +4,4 @@ class EventSerializer < ActiveModel::Serializer
    :event_type, :updated_at, :created_at, :start_date, :end_date, :start_time,
    :end_time, :all_day, :location, :organizer_id, :score_type_id
   has_one :organizer
-
 end

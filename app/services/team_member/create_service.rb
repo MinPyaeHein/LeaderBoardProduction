@@ -63,7 +63,7 @@ class TeamMember::CreateService
     return { errors: ["This member #{member.users.first.email} is already part of the team."] } if existing_team_member.present?
 
     judge=::Judge.find_by(event_id: event_id, member_id: member_id)
-    return { errors: ["This member #{member.users.first.email} is a judge of this event can't add as a team member."] } if judge.present?
+    return { errors: ["A judge cannot become Team Member",member.name] } if judge.present?
 
     { member: member }
   end

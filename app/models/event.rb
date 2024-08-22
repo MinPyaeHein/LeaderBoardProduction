@@ -5,6 +5,8 @@ class Event < ApplicationRecord
     has_many :teams
     has_many :judges
     has_many :editors
+    has_many :investor_matrices
+    has_many :score_matrices
     belongs_to :organizer, class_name: 'Member', foreign_key: 'organizer_id'
     validates :organizer_id, presence: true
   end
