@@ -27,12 +27,12 @@ module Api
 
         def create
 
-          result=@service.create()
-          if result[:tranInvestor].present?
-            message={}
-            render json: {success: true, errors: message}, status: :created
+          message=@service.create()
+          if message[:success]
+
+            render json: message, status: :created
           else
-            render json: {success: false, errors: result[:errors] }, status: :ok
+            render json: message, status: :unprocessable_entity
           end
         end
 

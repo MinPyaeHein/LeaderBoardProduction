@@ -8,9 +8,9 @@ class TranInvestor::CreateService
     team_event = TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
     judge = Judge.find_by(member_id: @params[:judge_id], event_id: @params[:event_id], judge_type: @params[:investor_type])
 
-    return { errors: ["Team Event not found in the database"] } if team_event.nil?
-    return { errors: ["Investor Matrix not found for the given event and investor type"] } if invest_matrix.nil?
-    return { errors: ["Judge not found for the given event and investor type"] } if judge.nil?
+    return { success: false,message:{ errors: "Team Event not found in the database" } }if team_event.nil?
+    return { success: false,message:{errors: "Investor Matrix not found for the given event and investor type" } }if invest_matrix.nil?
+    return { success: false,message:{ errors: "Judge not found for the given event and investor type" }} if judge.nil?
 
     case @params[:tran_type]
     when "add"
@@ -24,7 +24,7 @@ class TranInvestor::CreateService
 
   def create_initial_tran(event_id, team_id)
     team_event = TeamEvent.find_by(event_id: event_id, team_id: team_id)
-    return { errors: ["Team event not found"] } if team_event.nil?
+    return { success: false,message: {errors: "Team event not found" } }if team_event.nil?
 
     tran_investor = TranInvestor.new(
       amount: 0.0,
@@ -34,7 +34,7 @@ class TranInvestor::CreateService
     )
 
     if tran_investor.save
-      { tranInvestor: tran_investor }
+      {success: false,message:{tranInvestor: tran_investor }}
     else
       { errors: tran_investor.errors.full_messages }
     end
@@ -44,7 +44,7 @@ class TranInvestor::CreateService
 
   def handle_add_transaction(judge, invest_matrix, team_event)
     if judge.current_amount - invest_matrix.one_time_pay < 0
-      { errors: ["Insufficient Judge Account Balance"] }
+     return {success: false,message: { errors: "Insufficient Judge Account Balance" }}
     else
       create_transaction(judge, invest_matrix, team_event, invest_matrix.one_time_pay)
     end
@@ -54,7 +54,7 @@ class TranInvestor::CreateService
     total_investment = TranInvestor.where(event_id: @params[:event_id], judge_id: judge.id, team_event_id: team_event.id).sum(:amount)
 
     if total_investment - invest_matrix.one_time_pay < 0
-      { errors: ["You should not subtract investment amount more than you invested!"] }
+      { success: false ,message:{errors: "You should not subtract investment amount more than you invested!" }}
     else
       create_transaction(judge, invest_matrix, team_event, -invest_matrix.one_time_pay)
     end
@@ -70,9 +70,9 @@ class TranInvestor::CreateService
 
     if tran_investor.save
       update_judge_balance(judge, invest_matrix.one_time_pay * (amount.positive? ? -1 : 1))
-      { tranInvestor: tran_investor, judge: judge.reload }
+      {success: true,message:{ tranInvestor: tran_investor, judge: judge.reload }}
     else
-      { errors: tran_investor.errors.full_messages }
+      {success: false,message:{ errors: tran_investor.errors.full_messages }}
     end
   end
 
