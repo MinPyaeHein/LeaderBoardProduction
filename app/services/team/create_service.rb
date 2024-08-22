@@ -18,6 +18,7 @@ class Team::CreateService
 
     ActiveRecord::Base.transaction do
       @params[:member_ids].each do |member_id|
+        puts("@current_user.member_id====",@current_user.member_id)
         result_check_team_member = @teamMemberService.check_team_member(member_id, @params[:event_id])
 
         if result_check_team_member[:errors].present?
@@ -28,7 +29,7 @@ class Team::CreateService
             desc: @params[:desc],
             active: true,
             website_link: @params[:website_link],
-            organizer_id: @current_user.id,
+            organizer_id: @current_user.member_id,
             total_score: @params[:total_score],
             event_id: @params[:event_id]
           )
