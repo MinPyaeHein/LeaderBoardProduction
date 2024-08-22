@@ -16,9 +16,7 @@ module Api
           @judge = Judge.new(filtered_params)
           authorize @judge
           result=@service.create()
-          if result.present?
-            render json:{success: true,message: result}, status: :created
-          end
+          render json: result, status: :created
         end
 
 

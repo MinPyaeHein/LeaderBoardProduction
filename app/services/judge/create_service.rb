@@ -22,7 +22,7 @@ class Judge::CreateService
       end
     end
 
-    { judges: judges, errors: errors }
+    {success: true,message:{ judges: judges, errors: errors }}
   end
 
   private
@@ -37,13 +37,13 @@ class Judge::CreateService
     existing_judge = ::Judge.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
     if existing_judge.present?
       user_email = member.users.first&.email
-      return { errors: ["This judge #{user_email || 'already part of the this Event.'}"] }
+      return { errors: ["This judge "+user_email+" already part of the this Event."] }
     end
 
     existing_team_mamber = ::TeamMember.find_by(member_id: member_id, event_id: @params[:event_id], active: true)
     if existing_team_mamber.present?
       user_email = member.users.first&.email
-      return { errors: ["This user #{user_email || 'should not be judge because this user is team member in this event'}"] }
+      return { errors: ["This user "+user_email+" should not be judge because this user is team member in this event"] }
     end
 
     {}
