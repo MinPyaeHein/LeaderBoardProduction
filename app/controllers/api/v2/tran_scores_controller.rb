@@ -116,7 +116,7 @@ module Api
         end
 
         def set_service
-          @service = TranScore::CreateService.new(member_params)
+          @service = TranScore::CreateService.new(member_params,@current_user)
         end
         def set_event_id
           @event_id = params[:event_id]

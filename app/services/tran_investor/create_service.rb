@@ -1,12 +1,13 @@
 class TranInvestor::CreateService
-  def initialize(params)
+  def initialize(params,current_user)
     @params = params
+    @current_user=current_user
   end
 
   def create
     invest_matrix = InvestorMatrix.find_by(event_id: @params[:event_id], investor_type: @params[:investor_type])
     team_event = TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
-    judge = Judge.find_by(member_id: @params[:judge_id], event_id: @params[:event_id], judge_type: @params[:investor_type])
+    judge = Judge.find_by(member_id: @current_user.member_id, event_id: @params[:event_id], judge_type: @params[:investor_type])
 
     return { success: false,message:{ errors: "Team Event not found in the database" } }if team_event.nil?
     return { success: false,message:{errors: "Investor Matrix not found for the given event and investor type" } }if invest_matrix.nil?
@@ -28,7 +29,7 @@ class TranInvestor::CreateService
 
     tran_investor = TranInvestor.new(
       amount: 0.0,
-      judge_id: 4, # This hardcoded value may need review
+      judge_id: @current_user.member_id,
       team_event_id: team_event.id,
       event_id: event_id
     )
@@ -51,7 +52,7 @@ class TranInvestor::CreateService
   end
 
   def handle_subtract_transaction(judge, invest_matrix, team_event)
-    total_investment = TranInvestor.where(event_id: @params[:event_id], judge_id: judge.id, team_event_id: team_event.id).sum(:amount)
+    total_investment = TranInvestor.where(event_id: @params[:event_id], judge_id: @current_user.member_id, team_event_id: team_event.id).sum(:amount)
 
     if total_investment - invest_matrix.one_time_pay < 0
       { success: false ,message:{errors: "You should not subtract investment amount more than you invested!" }}
@@ -63,7 +64,7 @@ class TranInvestor::CreateService
   def create_transaction(judge, invest_matrix, team_event, amount)
     tran_investor = TranInvestor.new(
       amount: amount,
-      judge_id: judge.id,
+      judge_id: @current_user.member_id,
       team_event_id: team_event.id,
       event_id: @params[:event_id]
     )

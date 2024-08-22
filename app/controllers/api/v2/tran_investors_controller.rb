@@ -41,7 +41,7 @@ module Api
           params.require(:tran_investor).permit(:desc,:team_id,:event_id,:judge_id,:tran_type,:investor_type)
         end
         def set_service
-          @service = TranInvestor::CreateService.new(member_params)
+          @service = TranInvestor::CreateService.new(member_params,@current_user)
         end
 
 
