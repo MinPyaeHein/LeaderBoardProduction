@@ -29,7 +29,7 @@ class TranInvestor::CreateService
 
     tran_investor = TranInvestor.new(
       amount: 0.0,
-      judge_id: @current_user.member_id,
+      judge_id: 4,
       team_event_id: team_event.id,
       event_id: event_id
     )
@@ -52,7 +52,7 @@ class TranInvestor::CreateService
   end
 
   def handle_subtract_transaction(judge, invest_matrix, team_event)
-    total_investment = TranInvestor.where(event_id: @params[:event_id], judge_id: @current_user.member_id, team_event_id: team_event.id).sum(:amount)
+    total_investment = TranInvestor.where(event_id: @params[:event_id], judge_id: judge.id, team_event_id: team_event.id).sum(:amount)
 
     if total_investment - invest_matrix.one_time_pay < 0
       { success: false ,message:{errors: "You should not subtract investment amount more than you invested!" }}
@@ -64,7 +64,7 @@ class TranInvestor::CreateService
   def create_transaction(judge, invest_matrix, team_event, amount)
     tran_investor = TranInvestor.new(
       amount: amount,
-      judge_id: @current_user.member_id,
+      judge_id: judge.id,
       team_event_id: team_event.id,
       event_id: @params[:event_id]
     )
