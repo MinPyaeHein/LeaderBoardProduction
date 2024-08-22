@@ -4,13 +4,22 @@ class Member::UpdateService
   end
 
   def update
-    @member = ::Member.find(@params[:member_id])
+    @member = ::Member.find(@params[:member_id]) # Assuming you're updating an existing member
+    if @member.nil?
+      return { errors: ["Member not found"] }
+    end
 
-    # Filter out nil values from the params
-    filtered_params = @params.reject { |_, value| value.nil? }
-
-    # Assign attributes that are present
-    @member.assign_attributes(filtered_params)
+    # Retain old values if new ones are null
+    @member.assign_attributes(
+      name: @params[:name] || @member.name,
+      phone: @params[:phone] || @member.phone,
+      address: @params[:address] || @member.address,
+      desc: @params[:desc] || @member.desc,
+      faculty_id: @params[:faculty_id] || @member.faculty_id,
+      org_name: @params[:org_name] || @member.org_name,
+      profile_url: @params[:profile_url] || @member.profile_url,
+      active: @params[:active].nil? ? @member.active : @params[:active]
+    )
 
     if @member.save
       { member: @member.reload } # Reload to get the latest data
