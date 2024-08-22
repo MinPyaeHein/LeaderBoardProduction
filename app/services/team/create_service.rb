@@ -18,9 +18,7 @@ class Team::CreateService
 
     ActiveRecord::Base.transaction do
       @params[:member_ids].each do |member_id|
-        puts("@current_user.member_id====",@current_user.member_id)
         result_check_team_member = @teamMemberService.check_team_member(member_id, @params[:event_id])
-
         if result_check_team_member[:errors].present?
           errors.concat(result_check_team_member[:errors].flatten)
         else
