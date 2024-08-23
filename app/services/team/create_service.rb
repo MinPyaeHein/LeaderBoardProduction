@@ -2,8 +2,8 @@ class Team::CreateService
   def initialize(params, current_user)
     @params = params
     @current_user = current_user
-    @teamMemberService = TeamMember::CreateService.new(params)
-    @teamEventService = TeamEvent::CreateService.new(params)
+    @teamMemberService = TeamMember::CreateService.new(params,current_user)
+    @teamEventService = TeamEvent::CreateService.new(params,current_user)
   end
 
   def createTeamWithLeaders
