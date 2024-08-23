@@ -28,7 +28,7 @@
         @team = ::Team.find_by(id: team[:id])
         return { error: "Team does not exist in the database" } unless @team
         @team.assign_attributes(
-          status:  @team[:status],
+          status:  team[:status],
         )
         if @team.save
           { team: @team.reload }
