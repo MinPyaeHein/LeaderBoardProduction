@@ -4,7 +4,7 @@ module Api
     module V2
       class TeamsController < ApplicationController
 
-        before_action :set_service, only: [:create,:create_team_with_leaders,:update]
+        before_action :set_service, only: [:create,:create_team_with_leaders,:update, :update_status]
         def index
           message={}
           message[:teams] = ActiveModelSerializers::SerializableResource.new(Team.all, each_serializer: TeamWithVoteCountSerializer).as_json
@@ -36,7 +36,7 @@ module Api
 
           authorize @team
 
-          result = Team::UpdateService.new.update_status(@team)
+          result = Team::UpdateService.new.update_status(team_params)
 
           render json: {
             success: result[:team].present?,
