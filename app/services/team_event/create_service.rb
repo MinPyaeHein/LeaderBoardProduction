@@ -35,7 +35,7 @@
             team_id: team_id)
             if teamEvent.save
 
-              tranInvestor=@tranInvestorsService.create_initailal_tran(event_id,team_id)
+              tranInvestor=@tranInvestorsService.create_initial_tran(event_id,team_id)
               {teamEvent:teamEvent,tranInvestor:tranInvestor}
             else
               { errors: teamEvent.errors.full_messages }

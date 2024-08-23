@@ -27,7 +27,7 @@ module Api
           params.require(:investor_matrix).permit(:total_amount,:one_time_pay,:event_id,:judge_acc_amount,:investor_type)
         end
         def set_service
-          @service = InvestorMatrix::CreateService.new(member_params)
+          @service = InvestorMatrix::CreateService.new(member_params,@current_user)
         end
 
 

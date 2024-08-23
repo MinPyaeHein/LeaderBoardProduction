@@ -2,9 +2,9 @@
 
 
     class InvestorMatrix::CreateService
-      def initialize(params)
+      def initialize(params,current_user)
         @params = params
-        @teamEventService = TeamEvent::CreateService.new(@params)
+        @teamEventService = TeamEvent::CreateService.new(@params,current_user)
       end
 
       def create
