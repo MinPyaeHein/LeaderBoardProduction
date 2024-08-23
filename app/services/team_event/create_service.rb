@@ -2,11 +2,11 @@
 
 
     class TeamEvent::CreateService
-      def initialize(params)
+      def initialize(params,current_user)
         @params = params
-        @tranInvestorsService=TranInvestor::CreateService.new(@params)     
+        @tranInvestorsService=TranInvestor::CreateService.new(@params,current_user)
       end
-  
+
       def create
         result=check_team_event
         if result[:errors].nil?
@@ -15,8 +15,8 @@
             event_id: @params[:event_id],
             team_id: @params[:team_id])
             if teamEvent.save
-             
-              
+
+
               {teamEvent:teamEvent}
             else
               { errors: teamEvent.errors.full_messages }
@@ -24,7 +24,7 @@
         else
           result
         end
-      
+
       end
       def create(event_id,team_id)
         result=check_team_event
@@ -34,7 +34,7 @@
             event_id: event_id,
             team_id: team_id)
             if teamEvent.save
-             
+
               tranInvestor=@tranInvestorsService.create_initailal_tran(event_id,team_id)
               {teamEvent:teamEvent,tranInvestor:tranInvestor}
             else
@@ -43,19 +43,17 @@
         else
           result
         end
-      
+
       end
       private
-      
+
       def check_team_event
         team_event = ::TeamEvent.find_by(event_id: @params[:event_id], team_id: @params[:team_id])
-        if !team_event.nil? 
+        if !team_event.nil?
           return { errors: ["This Team Event is already exist in the TeamEvent."] }
         end
-        
+
         {}
       end
-    
-    end
 
-  
+    end
