@@ -82,7 +82,8 @@ module Api
           params.require(:event).permit(:id,:name, :desc, :active, :start_date, :end_date, :start_time, :end_time, :all_day, :location, :event_type_id,:score_type_id )
         end
         def set_service
-          @service = Event::CreateService.new(event_params,current_user)
+          @service = Event::CreateService.new(event_params,@current_user)
+          @update_service=Event::UpdateService.new(event_params,@current_user)
         end
 
       end
