@@ -23,6 +23,7 @@
 
       def fetch_event_by_id(event_id)
         @event = Event.includes(:teams, :organizer, :judges, :editors, :event_type, :score_type).find(event_id)
+        @score_info=ScoreInfo.find(@event.score_type.score_info_id)
        {
           event: @event,
           organizer: @event.organizer,
@@ -31,7 +32,7 @@
           editors: @event.editors,
           event_type: @event.event_type,
           score_type: @event.score_type,
-          score_info: @event.score_type.score_info,
+          score_info: @score_info,
           investor_matrices: @event.investor_matrices,
           score_matrices: @event.score_matrices
 
