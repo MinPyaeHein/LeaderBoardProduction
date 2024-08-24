@@ -19,7 +19,7 @@ class ScoreMatrix::CreateService
   def createScoreMatrix(score_matrix)
     score_info = ::ScoreInfo.find_or_create_by(
       name: score_matrix["name"],
-      shortTerm: score_matrix["shortTerm"]
+      short_term: score_matrix["shortTerm"]
     ) do |info|
       info.desc = score_matrix["desc"]
     end

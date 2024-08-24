@@ -22,7 +22,15 @@
       end
 
       def fetch_event_by_id(event_id)
-        @event = Event.includes(:teams, :organizer, :judges, :editors, :event_type, :score_type, score_matrices: :score_info).find(event_id)
+        @event = Event.includes(
+          :teams,
+          :organizer,
+          :judges,
+          :editors,
+          :event_type,
+          :score_type,
+          score_matrices: :score_info # Make sure to include score_info
+        ).find(event_id)
 
         serialize_event = ActiveModelSerializers::SerializableResource.new(@event, serializer: EventSerializer)
 
