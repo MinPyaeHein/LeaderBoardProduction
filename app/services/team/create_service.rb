@@ -72,7 +72,7 @@ class Team::CreateService
           desc: @params[:desc],
           active: @params[:active],
           website_link: @params[:website_link],
-          organizer_id: @current_user.id,
+          organizer_id: @current_user.member.id,
           total_score: @params[:total_score],
           event_id: @params[:event_id],
           pitching_order: @params[:pitching_order]
