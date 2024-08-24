@@ -31,6 +31,7 @@
           editors: @event.editors,
           event_type: @event.event_type,
           score_type: @event.score_type,
+          score_info: @event.score_type.score_info,
           investor_matrices: @event.investor_matrices,
           score_matrices: @event.score_matrices
 
