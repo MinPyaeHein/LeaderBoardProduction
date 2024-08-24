@@ -29,7 +29,8 @@ class Team::CreateService
             website_link: @params[:website_link],
             organizer_id: @current_user.member_id,
             total_score: @params[:total_score],
-            event_id: @params[:event_id]
+            event_id: @params[:event_id],
+            status: @params[:status]
           )
 
           if team.save

@@ -102,7 +102,7 @@ module Api
 
         private
         def team_params
-          params.require(:team).permit(:id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score,:member_id, member_ids: [])
+          params.require(:team).permit(:id,:name,:leader, :desc, :active,:website_link, :event_id, :total_score,:member_id,:status,member_ids: [])
         end
         def set_service
           @update_service = Team::UpdateService.new(team_params)
