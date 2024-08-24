@@ -23,7 +23,10 @@
 
       def fetch_event_by_id(event_id)
         @event = Event.includes(:teams, :organizer, :judges, :editors, :event_type, :score_type, score_matrices: :score_info).find(event_id)
-        render json: @event, serializer: EventSerializer
+
+        serialize_event = ActiveModelSerializers::SerializableResource.new(@event, serializer: EventSerializer)
+
+        { event: serialize_event.as_json }
       end
 
 
