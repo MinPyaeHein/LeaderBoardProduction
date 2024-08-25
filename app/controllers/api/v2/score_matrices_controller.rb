@@ -35,7 +35,7 @@ module Api
         private
         def score_matrix_params
           params.require(:score_matrices)
-                .map { |matrix| matrix.permit(:weight, :max, :min, :event_id, :name, :shortTerm ,:id) }
+                .map { |matrix| matrix.permit(:weight, :max, :min, :event_id, :name, :short_term ,:id) }
         end
 
         def set_service

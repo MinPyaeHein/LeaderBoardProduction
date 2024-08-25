@@ -30,7 +30,7 @@ class ScoreMatrix::UpdateService
 
     score_info = ::ScoreInfo.find_or_create_by(
       name: score_matrix["name"],
-      short_term: score_matrix["shortTerm"]
+      short_term: score_matrix["short_term"]
     ) do |info|
       info.desc = score_matrix["desc"]
     end
