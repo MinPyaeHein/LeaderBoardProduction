@@ -65,7 +65,6 @@ module Api
         def get_teams_total_amount_by_event_id
           message = {}
           teams = Team.where(event_id: params[:event_id])
-
           if teams.present?
             message[:teams] = ActiveModelSerializers::SerializableResource.new(teams, each_serializer: TeamWithVoteCountSerializer).as_json
             render json: { success: true, message: message }, status: :ok

@@ -22,6 +22,7 @@ class Team::CreateService
         if result_check_team_member[:errors].present?
           errors.concat(result_check_team_member[:errors].flatten)
         else
+          puts("@params[:status]==",@params[:status])
           team = ::Team.new(
             name: result_check_team_member[:member].name,
             desc: @params[:desc],
@@ -30,7 +31,7 @@ class Team::CreateService
             organizer_id: @current_user.member_id,
             total_score: @params[:total_score],
             event_id: @params[:event_id],
-            status: @params[:status]
+            status: "pending"
           )
 
           if team.save
@@ -76,7 +77,8 @@ class Team::CreateService
           organizer_id: @current_user.member.id,
           total_score: @params[:total_score],
           event_id: @params[:event_id],
-          pitching_order: @params[:pitching_order]
+          pitching_order: @params[:pitching_order],
+          status: "pending"
         )
 
         if team.save
