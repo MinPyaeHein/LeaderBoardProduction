@@ -4,7 +4,7 @@ module Api
     module V2
       class ScoreMatricesController < ApplicationController
 
-        before_action :set_service, only: [:create]
+        before_action :set_service, only: [:create,:update]
         def index
           message={}
           message[:scoreMatrics]=ScoreMatrix.all
@@ -21,21 +21,26 @@ module Api
         end
 
         def create
-
           filtered_params = score_matrix_params.first.except(:shortTerm)
           authorize ScoreMatrix.new(filtered_params)
           message=@service.createScoreMatrices
           render json: message, status: :created
         end
 
+        def update
+          message=@updateService.updateScoreMatrices
+          render json: message, status: :created
+        end
+
         private
         def score_matrix_params
           params.require(:score_matrices)
-                .map { |matrix| matrix.permit(:weight, :max, :min, :event_id, :name, :shortTerm) }
+                .map { |matrix| matrix.permit(:weight, :max, :min, :event_id, :name, :shortTerm ,:id) }
         end
 
         def set_service
           @service = ScoreMatrix::CreateService.new(score_matrix_params)
+          @updateService=ScoreMatrix::UpdateService.new(score_matrix_params)
         end
 
 

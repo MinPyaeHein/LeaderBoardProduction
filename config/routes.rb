@@ -96,6 +96,7 @@ Rails.application.routes.draw do
         put 'event/:event_id/scoreType/:score_type_id', to: "events#update_event_score_type"
         put 'event/team/status', to: "teams#update_status"
         put 'event/status', to: "events#update_status"
+        put 'event/scoreMatrix', to: 'score_matrices#update'
 
 
       #Team Leader
