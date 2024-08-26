@@ -47,6 +47,8 @@ module Api
 
         def update_status
           event=params.require(:event).permit(:status,:id)
+          @event = Event.new(event)
+          authorize @event
           @update_service= Event::UpdateService.new
           message=@update_service.update_status(event)
           render json: message, status: :ok
