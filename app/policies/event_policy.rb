@@ -16,6 +16,8 @@ class EventPolicy < ApplicationPolicy
   end
 
   def update_status?
+    puts("user.member.id===",user.member.id)
+    puts("user.superAdmin?===",user.superAdmin?)
     # Allow if the user is a superAdmin
     return true if user.superAdmin?
 
@@ -26,7 +28,7 @@ class EventPolicy < ApplicationPolicy
     event_approved = @event.editors&.any? { |editor| editor.member_id == user.member.id } || false
 
     # Allow if the user is authorized or if the event is approved
-    user.role.present? || event_approved
+    event_approved
   end
 
 end
