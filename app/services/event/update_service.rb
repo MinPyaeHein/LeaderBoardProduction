@@ -56,7 +56,7 @@
         puts("event_params[:id]=",event_params[:id])
         event = Event.find_by(id: event_params[:id])
 
-        return {success: false,message:{ errors: "Team does not exist in the System" }} unless  event
+        return {success: false,message:{ errors: "Event does not exist in the System" }} unless  event
         if event.update(status: event_params[:status])
            return {success: true,message: {event: event }}
         else

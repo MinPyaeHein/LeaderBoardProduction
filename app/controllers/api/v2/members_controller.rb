@@ -79,6 +79,14 @@ module Api
         message[:member] = result[:member]
         render json: {success: true,message: message}, status: :ok
       end
+      def update_member_status
+        member=params.require(:member).permit(:status,:id)
+        @member = Member.new(member)
+        authorize @member
+        @update_service= Member::UpdateService.new
+        message=@update_service.update_status(@member)
+        render json: message, status: :ok
+      end
 
       def create
 
