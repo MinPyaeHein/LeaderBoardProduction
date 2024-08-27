@@ -21,13 +21,15 @@ module Api
         end
 
         def create
-          filtered_params = score_matrix_params.first.except(:shortTerm)
+          filtered_params = score_matrix_params.first.except(:short_term)
           authorize ScoreMatrix.new(filtered_params)
           message=@service.createScoreMatrices
           render json: message, status: :created
         end
 
         def update
+          filtered_params = score_matrix_params.first.except(:short_term)
+          authorize ScoreMatrix.new(filtered_params)
           message=@updateService.updateScoreMatrices
           render json: message, status: :created
         end

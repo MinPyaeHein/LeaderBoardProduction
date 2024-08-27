@@ -42,9 +42,7 @@
           event_type_id: @params[:event_type_id] || old_values[:event_type_id],
           score_type_id: @params[:score_type_id] || old_values[:score_type_id]
         }
-
         @event.assign_attributes(new_values)
-
         if @event.save
           { event: @event.reload }
         else

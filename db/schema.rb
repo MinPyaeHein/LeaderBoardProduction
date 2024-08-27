@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_24_153034) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_27_141505) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -211,7 +211,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_24_153034) do
   add_foreign_key "member_votes", "members"
   add_foreign_key "member_votes", "teams"
   add_foreign_key "members", "faculties"
-  add_foreign_key "score_matrices", "events"
+  add_foreign_key "score_matrices", "events", on_delete: :cascade
   add_foreign_key "score_matrices", "score_infos"
   add_foreign_key "team_events", "events"
   add_foreign_key "team_events", "teams"

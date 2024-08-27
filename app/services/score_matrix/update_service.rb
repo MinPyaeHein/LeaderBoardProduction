@@ -7,9 +7,13 @@ class ScoreMatrix::UpdateService
     return { errors: ["No score matrices provided."] } if @score_matrices.empty?
 
     event_id = @score_matrices.first["event_id"]
-
+    puts("event_id==",event_id)
     # Step 1: Delete all existing score matrices for the event
-    ::ScoreMatrix.where(event_id: event_id).destroy_all
+    delete_count = ::ScoreMatrix.where(event_id: event_id).destroy_all.size
+    puts("delete_count==",delete_count)
+    if delete_count == 0
+      return { errors: ["Failed to delete existing score matrices or no score matrices found for the event."] }
+    end
 
     # Step 2: Create new score matrices
     created_matrices = @score_matrices.map do |score_matrix|

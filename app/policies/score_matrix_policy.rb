@@ -4,4 +4,8 @@ class ScoreMatrixPolicy < ApplicationPolicy
   def create?
     create_policy_authorization(record)
   end
+  def update?
+    @event=Event.find(record.event_id)
+    create_policy_authorization(record)&&@event.approved?
+  end
 end
