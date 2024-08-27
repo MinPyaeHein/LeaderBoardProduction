@@ -4,26 +4,29 @@ class ScoreMatrix::UpdateService
   end
 
   def updateScoreMatrices
-    updated_matrices = @score_matrices.map do |score_matrix|
-      updateScoreMatrix(score_matrix)
+    return { errors: ["No score matrices provided."] } if @score_matrices.empty?
+
+    event_id = @score_matrices.first["event_id"]
+
+    # Step 1: Delete all existing score matrices for the event
+    ::ScoreMatrix.where(event_id: event_id).destroy_all
+
+    # Step 2: Create new score matrices
+    created_matrices = @score_matrices.map do |score_matrix|
+      createScoreMatrix(score_matrix)
     end
 
     {
-      success: updated_matrices.none? { |result| result[:errors].present? },
-      message: updated_matrices
+      success: created_matrices.none? { |result| result[:errors].present? },
+      message: created_matrices
     }
   end
 
   private
 
-  def updateScoreMatrix(score_matrix)
-    existing_matrix = ::ScoreMatrix.find_by(id: score_matrix["id"])
+  def createScoreMatrix(score_matrix)
+    total_weight = calculate_total_weight(score_matrix["event_id"])
 
-    unless existing_matrix
-      return { errors: ["Score Matrix with ID #{score_matrix['id']} not found."] }
-    end
-
-    total_weight = calculate_total_weight(score_matrix["event_id"], score_matrix["id"])
     if total_weight + score_matrix["weight"].to_f > 1
       return { errors: ["Total weight for the event exceeds 100%."] }
     end
@@ -39,7 +42,7 @@ class ScoreMatrix::UpdateService
       return { errors: score_info.errors.full_messages }
     end
 
-    existing_matrix.assign_attributes(
+    new_matrix = ::ScoreMatrix.new(
       weight: score_matrix["weight"],
       min: score_matrix["min"],
       max: score_matrix["max"],
@@ -48,14 +51,14 @@ class ScoreMatrix::UpdateService
       score_info_id: score_info.id
     )
 
-    if existing_matrix.save
-      { scoreMatrix: existing_matrix, scoreInfo: score_info }
+    if new_matrix.save
+      { scoreMatrix: new_matrix, scoreInfo: score_info }
     else
-      { errors: existing_matrix.errors.full_messages }
+      { errors: new_matrix.errors.full_messages }
     end
   end
 
-  def calculate_total_weight(event_id, exclude_id)
-    ::ScoreMatrix.where(event_id: event_id).where.not(id: exclude_id).sum(:weight)
+  def calculate_total_weight(event_id)
+    ::ScoreMatrix.where(event_id: event_id).sum(:weight)
   end
 end

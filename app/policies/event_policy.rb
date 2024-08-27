@@ -17,8 +17,6 @@ class EventPolicy < ApplicationPolicy
 
   def update_status?
     if(record.status=='approved')
-      puts("status is approve")
-      puts("user.superAdmin?=",user.superAdmin?)
       return true if user.superAdmin?
     else
       authorized = user.member.events.any? do |event|
