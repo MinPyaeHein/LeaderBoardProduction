@@ -29,7 +29,7 @@ class EventPolicy < ApplicationPolicy
       else
         @event.editors.any? { |editor| editor.member_id == user.member.id }
       end
-      authorized || event_approved
+      authorized || event_approved ||user.superAdmin?
     end
   end
 

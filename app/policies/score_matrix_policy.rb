@@ -6,6 +6,7 @@ class ScoreMatrixPolicy < ApplicationPolicy
   end
   def update?
     @event=Event.find(record.event_id)
-    create_policy_authorization(record)&&@event.approved?
+    puts("@event.approved?==",@event.approved?)
+    (create_policy_authorization(record)||user.superAdmin?)&&@event.approved?
   end
 end
