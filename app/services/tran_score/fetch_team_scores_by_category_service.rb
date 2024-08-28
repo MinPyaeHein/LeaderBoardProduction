@@ -46,7 +46,7 @@
         total_score += formatted_score
         {
           category: score_matrix.name,
-          short_term: score_matrix.score_info.shortTerm,
+          short_term: score_matrix.score_info.short_term,
           score: formatted_score
         }
       end
@@ -54,4 +54,3 @@
       team_data
     end
   end
-

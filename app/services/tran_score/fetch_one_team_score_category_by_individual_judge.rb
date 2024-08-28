@@ -38,7 +38,7 @@ class TranScore::FetchOneTeamScoreCategoryByIndividualJudge
       {
         category: score_matrix.name,
         score: tran_score&.score || 0,
-        short_term: score_matrix.score_info.shortTerm,
+        short_term: score_matrix.score_info.short_term,
         weight: score_matrix.weight
       }
     end

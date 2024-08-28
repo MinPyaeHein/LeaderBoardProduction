@@ -30,7 +30,7 @@ class TranScore::FetchOneTeamScoreCategoriesByAllJudges
           end
           score = valid_judge_count > 0 ? (weighted_score / valid_judge_count) : 0
           formatted_score = score.zero? ? 0 : score.round(2)
-          team_data[:score_category] << { category: score_matrix.name, score: formatted_score, short_term: score_matrix.score_info.shortTerm }
+          team_data[:score_category] << { category: score_matrix.name, score: formatted_score, short_term: score_matrix.score_info.short_term }
     end
     { success: true, message: { team: team_data } }
   end

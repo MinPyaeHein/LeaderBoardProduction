@@ -47,7 +47,7 @@ class TranScore::FetchAllTeamScoreCategoriesByOneJudge
         category: score_matrix.name,
         weighted_scores: weighted_scores[score_matrix.name],
         scores: scores[score_matrix.name],
-        short_term: score_matrix.score_info.shortTerm
+        short_term: score_matrix.score_info.short_term
       }
     end
     team_data
